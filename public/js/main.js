@@ -19031,67 +19031,96 @@ module.exports = validateDOMNesting;
 module.exports = require('./lib/React');
 
 },{"./lib/React":53}],159:[function(require,module,exports){
-// Imports.
-var React = require("react");
-var ListItem = require("./ListItem.jsx");
-
-var ingredients = [{
-  "id": 1,
-  "text": "ham"
-}, {
-  "id": 2,
-  "text": "green eggs"
-}, {
-  "id": 3,
-  "text": "potatoes"
-}];
-
-var List = React.createClass({
-  displayName: "List",
-
-  render: function () {
-    var listItems = ingredients.map(function (item) {
-      return React.createElement(ListItem, { key: item.id, ingredient: item.text });
-    });
-
-    return React.createElement(
-      "ul",
-      null,
-      " ",
-      listItems,
-      " "
-    );
-  }
-});
-
-module.exports = List;
-
-},{"./ListItem.jsx":160,"react":158}],160:[function(require,module,exports){
 var React = require("react");
 
-var ListItem = React.createClass({
-  displayName: "ListItem",
+var SignInPanel = React.createClass({
+  displayName: "SignInPanel",
+
+  getInitialState: function () {
+    return { userInitialClick: true, passwordInitialClick: true, usernameText: "username", passwordText: "password" };
+  },
+
+  handleSubmit: function (element) {
+    //TODO: Setup SQL handling.
+    element.preventDefault();
+    alert("sql stuff should happen.");
+  },
+
+  handleClick: function (element) {
+    if (this.state.userInitialClick && element.target.value === "username") {
+      this.setState({ userInitialClick: false, usernameText: "" });
+    } else if (this.state.passwordInitialClick && element.target.value === "password") {
+      this.setState({ passwordInitialClick: false, passwordText: "" });
+    }
+  },
+
+  onUserChange: function (data) {
+    this.setState({ usernameText: data.target.value });
+  },
+
+  onPasswordChange: function (data) {
+    this.setState({ passwordText: data.target.value });
+  },
 
   render: function () {
+    var divStyle = {
+      marginTop: 10
+    };
+
     return React.createElement(
-      "li",
-      null,
+      "div",
+      { style: divStyle, className: "col-sm-4" },
       React.createElement(
-        "h4",
-        null,
-        this.props.ingredient
+        "div",
+        { className: "panel panel-primary" },
+        React.createElement(
+          "div",
+          { className: "panel-heading" },
+          React.createElement(
+            "h3",
+            null,
+            " Sign In "
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "row panel-body" },
+          React.createElement(
+            "form",
+            { onSubmit: this.handleSubmit },
+            React.createElement(
+              "div",
+              { className: "col-sm-12" },
+              React.createElement("input", { onChange: this.onUserChange, onClick: this.handleClick, type: "text", className: "form-control", value: this.state.usernameText })
+            ),
+            React.createElement(
+              "div",
+              { className: "col-sm-12" },
+              React.createElement("input", { onChange: this.onPasswordChange, onClick: this.handleClick, type: "password", className: "form-control", value: this.state.passwordText })
+            ),
+            React.createElement(
+              "div",
+              { className: "col-sm-12" },
+              React.createElement(
+                "button",
+                { className: "btn btn-primary" },
+                " Sign in "
+              )
+            )
+          )
+        )
       )
     );
   }
 });
 
-module.exports = ListItem;
+module.exports = SignInPanel;
 
-},{"react":158}],161:[function(require,module,exports){
+},{"react":158}],160:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
-var List = require("./components/List.jsx");
+var SignInPanel = require("./components/SignInPanel.jsx");
 
-ReactDOM.render(React.createElement(List, null), document.getElementById("ingredients"));
+ReactDOM.render(React.createElement(SignInPanel, null), document.getElementById("signIn"));
 
-},{"./components/List.jsx":159,"react":158,"react-dom":29}]},{},[161]);
+},{"./components/SignInPanel.jsx":159,"react":158,"react-dom":29}]},{},[160]);
