@@ -1,7 +1,5 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
-var SignInPanel = require("./components/SignInPanel.jsx");
-var CreateAccountPanel = require("./components/CreateAccountPanel.jsx");
+var Routes = require("./Routes.jsx");
 
-ReactDOM.render(<SignInPanel />, document.getElementById("signIn"));
-ReactDOM.render(<CreateAccountPanel />, document.getElementById("createAccount"));
+ReactDOM.render(Routes, document.getElementById("Base"));

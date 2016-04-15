@@ -14,7 +14,6 @@ var SignInPanel = React.createClass({
 
   onUserChange: function(data) {
     this.setState({usernameText: data.target.value});
-    console.log(this.state.usernameText);
   },
 
   onPasswordChange: function(data) {
@@ -24,10 +23,6 @@ var SignInPanel = React.createClass({
   render: function() {
     var divStyle = {
       marginTop: 10
-    };
-
-    var usernameClass = {
-
     };
 
     return (
