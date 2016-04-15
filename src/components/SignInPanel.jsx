@@ -2,25 +2,19 @@ var React = require("react");
 
 var SignInPanel = React.createClass({
   getInitialState: function() {
-      return {userInitialClick: true, passwordInitialClick: true, usernameText: "username", passwordText: "password"};
+      return {usernameText: "", passwordText: ""};
   },
 
   handleSubmit: function(element) {
     //TODO: Setup SQL handling.
     element.preventDefault();
+    this.setState({usernameBsStyle: "error"});
     alert("sql stuff should happen.");
-  },
-
-  handleClick: function(element) {
-    if (this.state.userInitialClick && element.target.value === "username") {
-      this.setState({userInitialClick: false, usernameText: ""});
-    } else if (this.state.passwordInitialClick && element.target.value === "password") {
-      this.setState({passwordInitialClick: false, passwordText: ""});
-    }
   },
 
   onUserChange: function(data) {
     this.setState({usernameText: data.target.value});
+    console.log(this.state.usernameText);
   },
 
   onPasswordChange: function(data) {
@@ -32,31 +26,33 @@ var SignInPanel = React.createClass({
       marginTop: 10
     };
 
+    var usernameClass = {
+
+    };
+
     return (
-      <div style = {divStyle} className = "col-sm-4">
+      <div style = {divStyle} className = "col-xs-6 col-sm-6 col-lg-6">
         <div className = "panel panel-primary">
           <div className = "panel-heading">
-            <h3> Sign In </h3>
+            <h3 className = "text-center"> Sign In </h3>
           </div>
 
           <div className = "row panel-body">
             <form onSubmit = {this.handleSubmit}>
               <div className = "col-sm-12">
-                <input onChange = {this.onUserChange} onClick = {this.handleClick} type = "text" className="form-control" value = {this.state.usernameText}/>
+                <input onChange = {this.onUserChange} type = "text" className="form-control" placeholder = "username" />
               </div>
 
-              <div className = "col-sm-12">
-                <input onChange = {this.onPasswordChange} onClick = {this.handleClick} type = "password" className="form-control" value = {this.state.passwordText}/>
+              <div style = {divStyle} className = "col-sm-12">
+                <input onChange = {this.onPasswordChange} type = "password" className="form-control" placeholder = "password" />
               </div>
 
-              <div className = "col-sm-12">
-                <button className = "btn btn-primary"> Sign in </button>
+              <div style = {divStyle} className = "col-sm-12">
+                <button className = "btn btn-primary pull-right"> Sign in </button>
               </div>
             </form>
 
-
           </div>
-
         </div>
       </div>
     );

@@ -10977,6 +10977,10 @@ var ReactEmptyComponentInjection = {
   }
 };
 
+function registerNullComponentID() {
+  ReactEmptyComponentRegistry.registerNullComponentID(this._rootNodeID);
+}
+
 var ReactEmptyComponent = function (instantiate) {
   this._currentElement = null;
   this._rootNodeID = null;
@@ -10985,7 +10989,7 @@ var ReactEmptyComponent = function (instantiate) {
 assign(ReactEmptyComponent.prototype, {
   construct: function (element) {},
   mountComponent: function (rootID, transaction, context) {
-    ReactEmptyComponentRegistry.registerNullComponentID(rootID);
+    transaction.getReactMountReady().enqueue(registerNullComponentID, this);
     this._rootNodeID = rootID;
     return ReactReconciler.mountComponent(this._renderedComponent, rootID, transaction, context);
   },
@@ -15291,7 +15295,7 @@ module.exports = ReactUpdates;
 
 'use strict';
 
-module.exports = '0.14.7';
+module.exports = '0.14.8';
 },{}],114:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -19033,29 +19037,74 @@ module.exports = require('./lib/React');
 },{"./lib/React":53}],159:[function(require,module,exports){
 var React = require("react");
 
+var CreateAccountPanel = React.createClass({
+  displayName: "CreateAccountPanel",
+
+  handleSignUp: function () {
+    //TODO: HTML transfer.
+    alert("HTML stuff should happen");
+  },
+
+  render: function () {
+    var divStyle = {
+      marginTop: 10
+    };
+
+    var panelBodyStyle = {
+      minHeight: 150
+    };
+
+    return React.createElement(
+      "div",
+      { style: divStyle, className: "col-xs-6 col-sm-6 col-lg-6" },
+      React.createElement(
+        "div",
+        { className: "panel panel-primary" },
+        React.createElement(
+          "div",
+          { className: "panel-heading" },
+          React.createElement(
+            "h3",
+            { className: "text-center" },
+            " Create an Account "
+          )
+        ),
+        React.createElement(
+          "div",
+          { style: panelBodyStyle, className: "row panel-body text-center" },
+          React.createElement(
+            "button",
+            { onClick: this.handleSignUp, className: "btn btn-primary center-block" },
+            " Sign Up "
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = CreateAccountPanel;
+
+},{"react":158}],160:[function(require,module,exports){
+var React = require("react");
+
 var SignInPanel = React.createClass({
   displayName: "SignInPanel",
 
   getInitialState: function () {
-    return { userInitialClick: true, passwordInitialClick: true, usernameText: "username", passwordText: "password" };
+    return { usernameText: "", passwordText: "" };
   },
 
   handleSubmit: function (element) {
     //TODO: Setup SQL handling.
     element.preventDefault();
+    this.setState({ usernameBsStyle: "error" });
     alert("sql stuff should happen.");
-  },
-
-  handleClick: function (element) {
-    if (this.state.userInitialClick && element.target.value === "username") {
-      this.setState({ userInitialClick: false, usernameText: "" });
-    } else if (this.state.passwordInitialClick && element.target.value === "password") {
-      this.setState({ passwordInitialClick: false, passwordText: "" });
-    }
   },
 
   onUserChange: function (data) {
     this.setState({ usernameText: data.target.value });
+    console.log(this.state.usernameText);
   },
 
   onPasswordChange: function (data) {
@@ -19067,9 +19116,11 @@ var SignInPanel = React.createClass({
       marginTop: 10
     };
 
+    var usernameClass = {};
+
     return React.createElement(
       "div",
-      { style: divStyle, className: "col-sm-4" },
+      { style: divStyle, className: "col-xs-6 col-sm-6 col-lg-6" },
       React.createElement(
         "div",
         { className: "panel panel-primary" },
@@ -19078,7 +19129,7 @@ var SignInPanel = React.createClass({
           { className: "panel-heading" },
           React.createElement(
             "h3",
-            null,
+            { className: "text-center" },
             " Sign In "
           )
         ),
@@ -19091,19 +19142,19 @@ var SignInPanel = React.createClass({
             React.createElement(
               "div",
               { className: "col-sm-12" },
-              React.createElement("input", { onChange: this.onUserChange, onClick: this.handleClick, type: "text", className: "form-control", value: this.state.usernameText })
+              React.createElement("input", { onChange: this.onUserChange, type: "text", className: "form-control", placeholder: "username" })
             ),
             React.createElement(
               "div",
-              { className: "col-sm-12" },
-              React.createElement("input", { onChange: this.onPasswordChange, onClick: this.handleClick, type: "password", className: "form-control", value: this.state.passwordText })
+              { style: divStyle, className: "col-sm-12" },
+              React.createElement("input", { onChange: this.onPasswordChange, type: "password", className: "form-control", placeholder: "password" })
             ),
             React.createElement(
               "div",
-              { className: "col-sm-12" },
+              { style: divStyle, className: "col-sm-12" },
               React.createElement(
                 "button",
-                { className: "btn btn-primary" },
+                { className: "btn btn-primary pull-right" },
                 " Sign in "
               )
             )
@@ -19116,11 +19167,13 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"react":158}],160:[function(require,module,exports){
+},{"react":158}],161:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var SignInPanel = require("./components/SignInPanel.jsx");
+var CreateAccountPanel = require("./components/CreateAccountPanel.jsx");
 
 ReactDOM.render(React.createElement(SignInPanel, null), document.getElementById("signIn"));
+ReactDOM.render(React.createElement(CreateAccountPanel, null), document.getElementById("createAccount"));
 
-},{"./components/SignInPanel.jsx":159,"react":158,"react-dom":29}]},{},[160]);
+},{"./components/CreateAccountPanel.jsx":159,"./components/SignInPanel.jsx":160,"react":158,"react-dom":29}]},{},[161]);

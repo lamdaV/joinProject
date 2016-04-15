@@ -7,9 +7,16 @@
     "start": "watchify src/main.jsx -v -t [ babelify --presets [ react ] ] -o public/js/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lamdaV/joinProject.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lamdaV/joinProject/issues"
+  },
+  "homepage": "https://github.com/lamdaV/joinProject#readme",
   "author": "David Lam",
   "license": "ISC",
-
   "dependencies": {
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
