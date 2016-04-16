@@ -34,14 +34,17 @@ var SignInPanel = React.createClass({
 
           <div className = "row panel-body">
             <form onSubmit = {this.handleSubmit}>
+              {/* Username field */}
               <div className = "col-sm-12">
                 <input onChange = {this.onUserChange} type = "text" className="form-control" placeholder = "username" />
               </div>
 
+              {/* Password field */}
               <div style = {divStyle} className = "col-sm-12">
                 <input onChange = {this.onPasswordChange} type = "password" className="form-control" placeholder = "password" />
               </div>
 
+              {/* Sign in button */}
               <div style = {divStyle} className = "col-sm-12">
                 <button className = "btn btn-primary pull-right"> Sign in </button>
               </div>
