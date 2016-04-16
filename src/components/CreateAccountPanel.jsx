@@ -1,9 +1,13 @@
 var React = require("react");
+var BrowserHistory = require("react-router").browserHistory;
 
 var CreateAccountPanel = React.createClass({
   handleSignUp: function() {
     //TODO: HTML transfer.
-    alert("HTML stuff should happen");
+    console.log("Moving to Create Account page...");
+    this.props.onClick();
+    // Sets url but does not update page.
+    // BrowserHistory.push("/testpage");
   },
 
   render: function() {

@@ -8,7 +8,6 @@ var SignInPanel = React.createClass({
   handleSubmit: function(element) {
     //TODO: Setup SQL handling.
     element.preventDefault();
-    this.setState({usernameBsStyle: "error"});
     alert("sql stuff should happen.");
   },
 

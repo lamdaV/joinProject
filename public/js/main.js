@@ -24315,11 +24315,13 @@ var React = require("react");
 var ReactRouter = require("react-router");
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
+var IndexRoute = ReactRouter.IndexRoute;
 var CreateHistory = require("history").createHashHistory;
 var useRouterHistory = ReactRouter.useRouterHistory;
 
 var Base = require("./components/Base.jsx");
 var HomePage = require("./components/HomePage.jsx");
+var Page1 = require("./components/Page1.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -24331,13 +24333,15 @@ var Routes = React.createElement(
   React.createElement(
     Route,
     { path: "/", component: Base },
-    React.createElement(Route, { path: "/home", component: HomePage })
+    React.createElement(IndexRoute, { component: HomePage }),
+    React.createElement(Route, { path: "/home", component: HomePage }),
+    React.createElement(Route, { path: "/testpage", component: Page1 })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":222,"./components/HomePage.jsx":224,"history":46,"react":218,"react-router":82}],222:[function(require,module,exports){
+},{"./components/Base.jsx":222,"./components/HomePage.jsx":224,"./components/Page1.jsx":225,"history":46,"react":218,"react-router":82}],222:[function(require,module,exports){
 var React = require("react");
 
 var Base = React.createClass({
@@ -24366,13 +24370,17 @@ module.exports = Base;
 
 },{"react":218}],223:[function(require,module,exports){
 var React = require("react");
+var BrowserHistory = require("react-router").browserHistory;
 
 var CreateAccountPanel = React.createClass({
   displayName: "CreateAccountPanel",
 
   handleSignUp: function () {
     //TODO: HTML transfer.
-    alert("HTML stuff should happen");
+    console.log("Moving to Create Account page...");
+    this.props.onClick();
+    // Sets url but does not update page.
+    // BrowserHistory.push("/testpage");
   },
 
   render: function () {
@@ -24415,7 +24423,7 @@ var CreateAccountPanel = React.createClass({
 
 module.exports = CreateAccountPanel;
 
-},{"react":218}],224:[function(require,module,exports){
+},{"react":218,"react-router":82}],224:[function(require,module,exports){
 var React = require("react");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
@@ -24423,19 +24431,40 @@ var CreateAccountPanel = require("./CreateAccountPanel.jsx");
 var HomePage = React.createClass({
   displayName: "HomePage",
 
+  clickTest: function (data) {
+    this.props.history.push("/testpage");
+  },
+
   render: function () {
     return React.createElement(
       "div",
       { className: "row" },
       React.createElement(SignInPanel, null),
-      React.createElement(CreateAccountPanel, null)
+      React.createElement(CreateAccountPanel, { onClick: this.clickTest })
     );
   }
 });
 
 module.exports = HomePage;
 
-},{"./CreateAccountPanel.jsx":223,"./SignInPanel.jsx":225,"react":218}],225:[function(require,module,exports){
+},{"./CreateAccountPanel.jsx":223,"./SignInPanel.jsx":226,"react":218}],225:[function(require,module,exports){
+var React = require("react");
+
+var Page1 = React.createClass({
+  displayName: "Page1",
+
+  render: function () {
+    return React.createElement(
+      "h1",
+      null,
+      "Page 1"
+    );
+  }
+});
+
+module.exports = Page1;
+
+},{"react":218}],226:[function(require,module,exports){
 var React = require("react");
 
 var SignInPanel = React.createClass({
@@ -24448,7 +24477,6 @@ var SignInPanel = React.createClass({
   handleSubmit: function (element) {
     //TODO: Setup SQL handling.
     element.preventDefault();
-    this.setState({ usernameBsStyle: "error" });
     alert("sql stuff should happen.");
   },
 
@@ -24514,11 +24542,11 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"react":218}],226:[function(require,module,exports){
+},{"react":218}],227:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
 
 ReactDOM.render(Routes, document.getElementById("Base"));
 
-},{"./Routes.jsx":221,"react":218,"react-dom":54}]},{},[226]);
+},{"./Routes.jsx":221,"react":218,"react-dom":54}]},{},[227]);
