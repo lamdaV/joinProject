@@ -9,6 +9,7 @@ var useRouterHistory = ReactRouter.useRouterHistory;
 var Base = require("./components/Base.jsx");
 var HomePage = require("./components/HomePage.jsx");
 var Page1 = require("./components/Page1.jsx");
+var CreateAccountForm = require("./components/CreateAccountForm.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -19,6 +20,7 @@ var Routes = (
     <Route path = "/" component = {Base}>
       <IndexRoute component = {HomePage}></IndexRoute>
       <Route path = "/home" component = {HomePage}></Route>
+      <Route path = "/create" component = {CreateAccountForm}></Route>
       <Route path = "/testpage" component = {Page1}></Route>
     </Route>
   </Router>

@@ -1,22 +1,18 @@
 var React = require("react");
+var EmailField = require("./EmailField.jsx");
+var PasswordField = require("./PasswordField.jsx");
 
 var SignInPanel = React.createClass({
   getInitialState: function() {
       return {usernameText: "", passwordText: ""};
   },
 
-  handleSubmit: function(element) {
-    //TODO: Setup SQL handling.
-    element.preventDefault();
+  handleSubmit: function(event) {
+    //TODO: Setup SQL handling and appropriate routing.
+    event.preventDefault();
+    console.log("Email: " + this.refs.fieldEmail.state.email);
+    console.log("Password: " + this.refs.fieldPassword.state.password);
     alert("sql stuff should happen.");
-  },
-
-  onUserChange: function(data) {
-    this.setState({usernameText: data.target.value});
-  },
-
-  onPasswordChange: function(data) {
-    this.setState({passwordText: data.target.value})
   },
 
   render: function() {
@@ -31,21 +27,21 @@ var SignInPanel = React.createClass({
             <h3 className = "text-center"> Sign In </h3>
           </div>
 
-          <div className = "row panel-body">
+          <div className = "panel-body">
             <form onSubmit = {this.handleSubmit}>
               {/* Username field */}
-              <div className = "col-sm-12">
-                <input onChange = {this.onUserChange} type = "text" className="form-control" placeholder = "username" />
+              <div className = "row">
+                <EmailField validityAlert = {false} ref = "fieldEmail" />
               </div>
 
               {/* Password field */}
-              <div style = {divStyle} className = "col-sm-12">
-                <input onChange = {this.onPasswordChange} type = "password" className="form-control" placeholder = "password" />
+              <div className = "row">
+                <PasswordField ref = "fieldPassword" />
               </div>
 
               {/* Sign in button */}
-              <div style = {divStyle} className = "col-sm-12">
-                <button className = "btn btn-primary pull-right"> Sign in </button>
+              <div style = {divStyle} className = "row">
+                <button className = "btn btn-primary col-sm-offset-10"> Sign in </button>
               </div>
             </form>
 

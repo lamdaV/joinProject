@@ -4,7 +4,8 @@ var CreateAccountPanel = require("./CreateAccountPanel.jsx");
 
 var HomePage = React.createClass({
   clickTest: function(data) {
-    this.props.history.push("/testpage");
+    // TODO: improve/rename
+    this.props.history.push("/create");
   },
 
   render: function() {
