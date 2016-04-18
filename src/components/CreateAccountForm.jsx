@@ -2,6 +2,7 @@ var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var TimezoneField = require("./TimezoneField.jsx");
+var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
 
 var CreateAccountForm = React.createClass({
   onSubmit: function() {
@@ -17,9 +18,12 @@ var CreateAccountForm = React.createClass({
   checkValidity: function() {
     this.refs.emailField.onBlur();
     this.refs.passwordField.onBlur();
-    this.refs.timezoneField.onBlur();
+    this.refs.timezoneRadio.checkValidity();
 
-    return this.refs.emailField.state.isValid && (this.refs.emailField.state.email.length != 0) && this.refs.passwordField.state.isValid && this.refs.timezoneField.state.isValid && (this.refs.timezoneField.state.timezone.length != 0);
+    console.log(this.refs.timezoneRadio.state.selectedValue.length != 0);
+
+    return this.refs.emailField.state.isValid && (this.refs.emailField.state.email.length != 0) && this.refs.passwordField.state.isValid && this.refs.timezoneRadio.isValid &&
+    (this.refs.timezoneRadio.state.selectedValue.length != 0);
   },
 
   render: function() {
@@ -40,13 +44,16 @@ var CreateAccountForm = React.createClass({
                 <PasswordField ref = "passwordField"/>
               </div>
 
+
+
               <div className = "row">
-                <TimezoneField ref = "timezoneField"/>
+              <TimezoneRadioGroup ref = "timezoneRadio"/>
               </div>
 
               <div className = "row">
                 <button className = "btn btn-primary col-sm-offset-11"> Next </button>
               </div>
+
             </form>
           </div>
         </div>

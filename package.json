@@ -25,6 +25,7 @@
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-dropdown": "^1.0.3",
+    "react-radio-group": "^2.2.0",
     "react-router": "^2.2.4",
     "react-ux-password-field": "^0.9.10",
     "watchify": "^3.7.0"
