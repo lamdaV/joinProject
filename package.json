@@ -20,14 +20,14 @@
   "dependencies": {
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
+    "body-parser": "^1.15.0",
     "email-validator": "^1.0.4",
+    "express": "^4.13.4",
     "node-mysql": "^0.4.2",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
-    "react-dropdown": "^1.0.3",
     "react-radio-group": "^2.2.0",
     "react-router": "^2.2.4",
-    "react-ux-password-field": "^0.9.10",
     "watchify": "^3.7.0"
   }
 }

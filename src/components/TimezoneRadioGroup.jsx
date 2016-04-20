@@ -21,7 +21,7 @@ var TimezoneRadioGroup = React.createClass({
   },
 
   handleChange: function(event) {
-    this.setState({hasChanged: true, selectedValue: event.currentTarget.value});
+    this.setState({hasChanged: true, selectedValue: event});
   },
 
   render: function() {

@@ -1,7 +1,6 @@
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
-var TimezoneField = require("./TimezoneField.jsx");
 var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
 
 var CreateAccountForm = React.createClass({
@@ -9,7 +8,8 @@ var CreateAccountForm = React.createClass({
     router: React.PropTypes.object
   },
 
-  handleSubmit: function() {
+  handleSubmit: function(event) {
+    event.preventDefault();
     var isValid = this.checkValidity();
     console.log("Valid: " + isValid);
 
@@ -23,14 +23,14 @@ var CreateAccountForm = React.createClass({
   },
 
   checkValidity: function() {
-    this.refs.emailField.onBlur()
-    this.refs.passwordField.onBlur()
-    this.refs.timezoneRadio.checkValidity()
+    this.refs.emailField.onBlur();
+    this.refs.passwordField.onBlur();
+    this.refs.timezoneRadio.checkValidity();
 
-    var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.hasChanged;
+    var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.state.hasChanged;
 
     var isValid = this.refs.emailField.state.isValid &&
-    this.refs.passwordField.isValid && this.refs.timezoneRadio.isValid
+    this.refs.passwordField.state.isValid && this.refs.timezoneRadio.state.isValid;
 
     return hasChanged && isValid;
   },

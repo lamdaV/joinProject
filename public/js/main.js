@@ -24495,11 +24495,10 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":236,"react":221}],226:[function(require,module,exports){
+},{"../nav/NavBar.jsx":235,"react":221}],226:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
-var TimezoneField = require("./TimezoneField.jsx");
 var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
 
 var CreateAccountForm = React.createClass({
@@ -24509,7 +24508,8 @@ var CreateAccountForm = React.createClass({
     router: React.PropTypes.object
   },
 
-  handleSubmit: function () {
+  handleSubmit: function (event) {
+    event.preventDefault();
     var isValid = this.checkValidity();
     console.log("Valid: " + isValid);
 
@@ -24527,9 +24527,9 @@ var CreateAccountForm = React.createClass({
     this.refs.passwordField.onBlur();
     this.refs.timezoneRadio.checkValidity();
 
-    var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.hasChanged;
+    var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.state.hasChanged;
 
-    var isValid = this.refs.emailField.state.isValid && this.refs.passwordField.isValid && this.refs.timezoneRadio.isValid;
+    var isValid = this.refs.emailField.state.isValid && this.refs.passwordField.state.isValid && this.refs.timezoneRadio.state.isValid;
 
     return hasChanged && isValid;
   },
@@ -24588,7 +24588,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"./EmailField.jsx":228,"./PasswordField.jsx":231,"./TimezoneField.jsx":233,"./TimezoneRadioGroup.jsx":234,"react":221}],227:[function(require,module,exports){
+},{"./EmailField.jsx":228,"./PasswordField.jsx":231,"./TimezoneRadioGroup.jsx":233,"react":221}],227:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -24612,6 +24612,12 @@ var CreateAccountPanel = React.createClass({
       minHeight: 225
     };
 
+    var panelHeaderStyle = {};
+
+    if (this.props.headerColor) {
+      panelHeaderStyle.background = this.props.headerColor;
+    };
+
     return React.createElement(
       "div",
       { style: divStyle, className: "col-xs-6 col-sm-6 col-lg-6" },
@@ -24620,7 +24626,7 @@ var CreateAccountPanel = React.createClass({
         { className: "panel panel-primary" },
         React.createElement(
           "div",
-          { className: "panel-heading" },
+          { style: panelHeaderStyle, className: "panel-heading" },
           React.createElement(
             "h3",
             { className: "text-center" },
@@ -24712,8 +24718,12 @@ var HomePage = React.createClass({
     return React.createElement(
       "div",
       { className: "row" },
-      React.createElement(SignInPanel, null),
-      React.createElement(CreateAccountPanel, null)
+      React.createElement(
+        "div",
+        { className: "panel-group" },
+        React.createElement(SignInPanel, { headerColor: "#563d7c" }),
+        React.createElement(CreateAccountPanel, { headerColor: "#563d7c" })
+      )
     );
   }
 });
@@ -24819,6 +24829,12 @@ var SignInPanel = React.createClass({
       marginTop: 10
     };
 
+    var panelHeaderStyle = {};
+
+    if (this.props.headerColor) {
+      panelHeaderStyle.background = this.props.headerColor;
+    };
+
     return React.createElement(
       "div",
       { style: divStyle, className: "col-xs-6 col-sm-6 col-lg-6" },
@@ -24827,7 +24843,7 @@ var SignInPanel = React.createClass({
         { className: "panel panel-primary" },
         React.createElement(
           "div",
-          { className: "panel-heading" },
+          { style: panelHeaderStyle, className: "panel-heading" },
           React.createElement(
             "h3",
             { className: "text-center" },
@@ -24848,7 +24864,7 @@ var SignInPanel = React.createClass({
             React.createElement(
               "div",
               { className: "row" },
-              React.createElement(PasswordField, { ref: "passwordField" })
+              React.createElement(PasswordField, { validityAlert: false, ref: "passwordField" })
             ),
             React.createElement(
               "div",
@@ -24874,64 +24890,6 @@ module.exports = SignInPanel;
 
 },{"./EmailField.jsx":228,"./PasswordField.jsx":231,"react":221}],233:[function(require,module,exports){
 var React = require("react");
-
-var TimezoneField = React.createClass({
-  displayName: "TimezoneField",
-
-  getDefaultProps: function () {
-    return {
-      validityAlert: true
-    };
-  },
-
-  getInitialState: function () {
-    return { isValid: true, timezone: "" };
-  },
-
-  onBlur: function (event) {
-    var data = this.state.timezone;
-    data = data.toLowerCase();
-
-    if (data === "pacific" || data === "mountain" || data === "central" || data === "eastern") {
-      this.setState({ isValid: true });
-    } else {
-      this.setState({ isValid: false });
-    }
-  },
-
-  onChange: function (event) {
-    this.setState({ timezone: event.target.value });
-  },
-
-  render: function () {
-    var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
-
-    var divStyle = {
-      marginTop: 10
-    };
-
-    return React.createElement(
-      "div",
-      { className: formClass },
-      React.createElement(
-        "label",
-        { htmlFor: "timezone" },
-        " Time Zone: "
-      ),
-      React.createElement("input", { id: "timezone", className: "form-control", onBlur: this.onBlur, onChange: this.onChange, placeholder: "Pacific, Mountain, Central, or Eastern", value: this.state.timezone }),
-      !this.state.isValid && this.props.validityAlert ? React.createElement(
-        "div",
-        { style: divStyle, className: "alert alert-danger" },
-        " Error: Invalid Time Zone. "
-      ) : null
-    );
-  }
-});
-
-module.exports = TimezoneField;
-
-},{"react":221}],234:[function(require,module,exports){
-var React = require("react");
 var RadioGroup = require("react-radio-group");
 
 var TimezoneRadioGroup = React.createClass({
@@ -24956,7 +24914,7 @@ var TimezoneRadioGroup = React.createClass({
   },
 
   handleChange: function (event) {
-    this.setState({ hasChanged: true, selectedValue: event.currentTarget.value });
+    this.setState({ hasChanged: true, selectedValue: event });
   },
 
   render: function () {
@@ -25015,14 +24973,14 @@ var TimezoneRadioGroup = React.createClass({
 
 module.exports = TimezoneRadioGroup;
 
-},{"react":221,"react-radio-group":56}],235:[function(require,module,exports){
+},{"react":221,"react-radio-group":56}],234:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
 
 ReactDOM.render(Routes, document.getElementById("Base"));
 
-},{"./Routes.jsx":224,"react":221,"react-dom":55}],236:[function(require,module,exports){
+},{"./Routes.jsx":224,"react":221,"react-dom":55}],235:[function(require,module,exports){
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
 
@@ -25118,7 +25076,7 @@ var NavBar = React.createClass({
 
 module.exports = NavBar;
 
-},{"./NavItem.jsx":237,"react":221}],237:[function(require,module,exports){
+},{"./NavItem.jsx":236,"react":221}],236:[function(require,module,exports){
 var React = require("react");
 
 var NavItem = React.createClass({
@@ -25151,4 +25109,4 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"react":221}]},{},[235]);
+},{"react":221}]},{},[234]);

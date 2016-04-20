@@ -16,10 +16,16 @@ var SignInPanel = React.createClass({
       marginTop: 10
     };
 
+    var panelHeaderStyle = {};
+
+    if (this.props.headerColor) {
+      panelHeaderStyle.background = this.props.headerColor;
+    };
+
     return (
       <div style = {divStyle} className = "col-xs-6 col-sm-6 col-lg-6">
         <div className = "panel panel-primary">
-          <div className = "panel-heading">
+          <div style = {panelHeaderStyle} className = "panel-heading">
             <h3 className = "text-center"> Sign In </h3>
           </div>
 
@@ -32,7 +38,7 @@ var SignInPanel = React.createClass({
 
               {/* Password field */}
               <div className = "row">
-                <PasswordField ref = "passwordField" />
+                <PasswordField validityAlert = {false} ref = "passwordField" />
               </div>
 
               {/* Sign in button */}
