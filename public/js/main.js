@@ -24447,20 +24447,43 @@ module.exports = Routes;
 
 },{"./components/Base.jsx":225,"./components/CreateAccountForm.jsx":226,"./components/HomePage.jsx":229,"./components/Page1.jsx":230,"history":47,"react":221,"react-router":85}],225:[function(require,module,exports){
 var React = require("react");
+var NavBar = require("../nav/NavBar.jsx");
+
+// TODO: Set this correctly.
+var navLinks = [{
+  title: "Praise the Overlord",
+  href: "#"
+}, {
+  title: "Home",
+  href: "#"
+}, {
+  title: "Courses",
+  href: "#"
+}, {
+  title: "Blog",
+  href: "#"
+}];
 
 var Base = React.createClass({
   displayName: "Base",
 
   render: function () {
+    var childrenStyle = {
+      marginTop: 80
+    };
     return React.createElement(
       "div",
       null,
       React.createElement(
-        "h1",
-        null,
-        "Generic Header"
+        "div",
+        { className: "row" },
+        React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: navLinks, brandName: "Join" })
       ),
-      this.props.children,
+      React.createElement(
+        "div",
+        { style: childrenStyle },
+        this.props.children
+      ),
       React.createElement(
         "h1",
         null,
@@ -24472,7 +24495,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"react":221}],226:[function(require,module,exports){
+},{"../nav/NavBar.jsx":236,"react":221}],226:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -24482,14 +24505,21 @@ var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
 var CreateAccountForm = React.createClass({
   displayName: "CreateAccountForm",
 
-  onSubmit: function () {
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  handleSubmit: function () {
     var isValid = this.checkValidity();
+    console.log("Valid: " + isValid);
+
+    // TODO: Transition to the correct page.
     if (isValid) {
-      console.log("routing...");
-      //TODO: transition to next page.
+      console.log("Routing...");
+      this.context.router.push("/testpage");
     } else {
-        console.log("not all fields are valid");
-      }
+      console.log("Not all fields are valid");
+    }
   },
 
   checkValidity: function () {
@@ -24497,9 +24527,11 @@ var CreateAccountForm = React.createClass({
     this.refs.passwordField.onBlur();
     this.refs.timezoneRadio.checkValidity();
 
-    console.log(this.refs.timezoneRadio.state.selectedValue.length != 0);
+    var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.hasChanged;
 
-    return this.refs.emailField.state.isValid && this.refs.emailField.state.email.length != 0 && this.refs.passwordField.state.isValid && this.refs.timezoneRadio.isValid && this.refs.timezoneRadio.state.selectedValue.length != 0;
+    var isValid = this.refs.emailField.state.isValid && this.refs.passwordField.isValid && this.refs.timezoneRadio.isValid;
+
+    return hasChanged && isValid;
   },
 
   render: function () {
@@ -24518,7 +24550,7 @@ var CreateAccountForm = React.createClass({
           { style: panelBodyStyle, className: "panel panel-body" },
           React.createElement(
             "form",
-            { onSubmit: this.onSubmit },
+            { onSubmit: this.handleSubmit },
             React.createElement(
               "div",
               { className: "row" },
@@ -24538,9 +24570,13 @@ var CreateAccountForm = React.createClass({
               "div",
               { className: "row" },
               React.createElement(
-                "button",
-                { className: "btn btn-primary col-sm-offset-11" },
-                " Next "
+                "div",
+                { className: "col-sm-12 col-lg-12" },
+                React.createElement(
+                  "button",
+                  { className: "btn btn-primary" },
+                  " Next "
+                )
               )
             )
           )
@@ -24554,17 +24590,17 @@ module.exports = CreateAccountForm;
 
 },{"./EmailField.jsx":228,"./PasswordField.jsx":231,"./TimezoneField.jsx":233,"./TimezoneRadioGroup.jsx":234,"react":221}],227:[function(require,module,exports){
 var React = require("react");
-var BrowserHistory = require("react-router").browserHistory;
 
 var CreateAccountPanel = React.createClass({
   displayName: "CreateAccountPanel",
 
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   handleSignUp: function () {
-    //TODO: HTML transfer.
     console.log("Moving to Create Account page...");
-    this.props.onClick();
-    // Sets url but does not update page.
-    // BrowserHistory.push("/testpage");
+    this.context.router.push("/create");
   },
 
   render: function () {
@@ -24573,7 +24609,7 @@ var CreateAccountPanel = React.createClass({
     };
 
     var panelBodyStyle = {
-      minHeight: 150
+      minHeight: 225
     };
 
     return React.createElement(
@@ -24607,7 +24643,7 @@ var CreateAccountPanel = React.createClass({
 
 module.exports = CreateAccountPanel;
 
-},{"react":221,"react-router":85}],228:[function(require,module,exports){
+},{"react":221}],228:[function(require,module,exports){
 var React = require("react");
 var Validator = require("email-validator");
 
@@ -24621,15 +24657,11 @@ var EmailField = React.createClass({
   },
 
   getInitialState: function () {
-    return { isValid: true, email: "" };
+    return { hasChanged: false, isValid: true, email: "" };
   },
 
   onBlur: function (event) {
-    if (!Validator.validate(this.state.email)) {
-      this.setState({ isValid: false });
-    } else {
-      this.setState({ isValid: true });
-    }
+    this.setState({ isValid: Validator.validate(this.state.email) });
   },
 
   clear: function () {
@@ -24637,7 +24669,7 @@ var EmailField = React.createClass({
   },
 
   onChange: function (event) {
-    this.setState({ email: event.target.value });
+    this.setState({ hasChanged: true, email: event.target.value });
   },
 
   render: function () {
@@ -24675,17 +24707,13 @@ var CreateAccountPanel = require("./CreateAccountPanel.jsx");
 var HomePage = React.createClass({
   displayName: "HomePage",
 
-  clickTest: function (data) {
-    // TODO: improve/rename
-    this.props.history.push("/create");
-  },
 
   render: function () {
     return React.createElement(
       "div",
       { className: "row" },
       React.createElement(SignInPanel, null),
-      React.createElement(CreateAccountPanel, { onClick: this.clickTest })
+      React.createElement(CreateAccountPanel, null)
     );
   }
 });
@@ -24712,26 +24740,42 @@ module.exports = Page1;
 },{"react":221}],231:[function(require,module,exports){
 var React = require("react");
 
+var MIN_PASSWORD_LENGTH = 5;
+
 var PasswordField = React.createClass({
   displayName: "PasswordField",
 
+  getDefaultProps: function () {
+    return {
+      validityAlert: true
+    };
+  },
+
   getInitialState: function () {
-    return { isValid: true, password: "" };
+    return { hasChanged: false, isValid: true, password: "" };
   },
 
   onBlur: function (data) {
-    //TODO: password validation.
+    if (this.state.password.length < MIN_PASSWORD_LENGTH) {
+      this.setState({ isValid: false });
+    } else {
+      this.setState({ isValid: true });
+    }
   },
 
   clear: function () {
     this.setState({ isValid: true, password: "" });
   },
 
-  onChange: function (data) {
-    this.setState({ password: data.target.value });
+  onChange: function (event) {
+    this.setState({ hasChanged: true, password: event.target.value });
   },
 
   render: function () {
+    var divStyle = {
+      marginTop: 10
+    };
+
     var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
 
     return React.createElement(
@@ -24742,7 +24786,12 @@ var PasswordField = React.createClass({
         { htmlFor: "password" },
         " Password: "
       ),
-      React.createElement("input", { id: "password", className: "form-control", type: "password", onBlur: this.onBlur, onChange: this.onChange, placeholder: "Password", value: this.state.password })
+      React.createElement("input", { id: "password", className: "form-control", type: "password", onBlur: this.onBlur, onChange: this.onChange, placeholder: "Password", value: this.state.password }),
+      !this.state.isValid && this.props.validityAlert ? React.createElement(
+        "div",
+        { style: divStyle, className: "alert alert-danger" },
+        " Error: Invalid Password. "
+      ) : null
     );
   }
 });
@@ -24757,15 +24806,11 @@ var PasswordField = require("./PasswordField.jsx");
 var SignInPanel = React.createClass({
   displayName: "SignInPanel",
 
-  getInitialState: function () {
-    return { usernameText: "", passwordText: "" };
-  },
-
   handleSubmit: function (event) {
     //TODO: Setup SQL handling and appropriate routing.
     event.preventDefault();
-    console.log("Email: " + this.refs.fieldEmail.state.email);
-    console.log("Password: " + this.refs.fieldPassword.state.password);
+    console.log("Email: " + this.refs.emailField.state.email);
+    console.log("Password: " + this.refs.passwordField.state.password);
     alert("sql stuff should happen.");
   },
 
@@ -24798,20 +24843,24 @@ var SignInPanel = React.createClass({
             React.createElement(
               "div",
               { className: "row" },
-              React.createElement(EmailField, { validityAlert: false, ref: "fieldEmail" })
+              React.createElement(EmailField, { validityAlert: false, ref: "emailField" })
             ),
             React.createElement(
               "div",
               { className: "row" },
-              React.createElement(PasswordField, { ref: "fieldPassword" })
+              React.createElement(PasswordField, { ref: "passwordField" })
             ),
             React.createElement(
               "div",
               { style: divStyle, className: "row" },
               React.createElement(
-                "button",
-                { className: "btn btn-primary col-sm-offset-10" },
-                " Sign in "
+                "div",
+                { className: "col-xs-12 col-sm-12 col-lg-12" },
+                React.createElement(
+                  "button",
+                  { className: "btn btn-primary" },
+                  " Sign in "
+                )
               )
             )
           )
@@ -24895,21 +24944,19 @@ var TimezoneRadioGroup = React.createClass({
   },
 
   getInitialState: function () {
-    return { isValid: true, selectedValue: "" };
+    return { hasChanged: false, isValid: true, selectedValue: "" };
   },
 
   checkValidity: function () {
-    var selection = this.state.selectedValue;
-
-    if (selection === "") {
+    if (this.state.selectedValue === "") {
       this.setState({ isValid: false });
     } else {
       this.setState({ isValid: true });
     }
   },
 
-  handleChange: function (value) {
-    this.setState({ selectedValue: value });
+  handleChange: function (event) {
+    this.setState({ hasChanged: true, selectedValue: event.currentTarget.value });
   },
 
   render: function () {
@@ -24975,4 +25022,133 @@ var Routes = require("./Routes.jsx");
 
 ReactDOM.render(Routes, document.getElementById("Base"));
 
-},{"./Routes.jsx":224,"react":221,"react-dom":55}]},{},[235]);
+},{"./Routes.jsx":224,"react":221,"react-dom":55}],236:[function(require,module,exports){
+var React = require("react");
+var NavItem = require("./NavItem.jsx");
+
+var NavBar = React.createClass({
+  displayName: "NavBar",
+
+  render: function () {
+    var navStyle = {
+      WebkitBoxShadow: "0 0 4px rgba(0, 0, 0, 0.4)",
+      MozBoxShadow: "0 0 0 4px rgba(0, 0, 0, 0.4)",
+      boxShadow: "0 0 0 4px rgba(0, 0, 0, 0.4)",
+      textShadow: "0 -1px 0 rgba(0,0,0,.15)",
+      borderRadius: 0
+    };
+
+    var titleStyle = {};
+
+    var linkStyle = {};
+
+    // Optional Props
+    if (this.props.bgColor) {
+      navStyle.background = this.props.bgColor;
+    };
+
+    if (this.props.titleColor) {
+      titleStyle.color = this.props.titleColor;
+    };
+
+    if (this.props.linkColor) {
+      linkStyle.color = this.props.linkColor;
+    };
+
+    var createLinkItem = function (item, index) {
+      return React.createElement(NavItem, { linkStyle: linkStyle, key: item.title + index, href: item.href, title: item.title });
+    };
+
+    return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "nav",
+        { style: navStyle, className: "navbar navbar-default navbar-fixed-top" },
+        React.createElement(
+          "div",
+          { className: "navbar-header" },
+          React.createElement(
+            "button",
+            { type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": "#nav-collapse" },
+            React.createElement("span", { className: "icon-bar" }),
+            React.createElement("span", { className: "icon-bar" }),
+            React.createElement("span", { className: "icon-bar" })
+          ),
+          React.createElement(
+            "a",
+            { style: titleStyle, className: "navbar-brand", href: "#" },
+            " ",
+            this.props.brandName,
+            " "
+          )
+        ),
+        React.createElement(
+          "div",
+          { className: "collapse navbar-collapse", id: "nav-collapse" },
+          React.createElement(
+            "ul",
+            { className: "nav navbar-nav nav-pills" },
+            this.props.navData.map(createLinkItem),
+            ";"
+          ),
+          React.createElement(
+            "div",
+            null,
+            React.createElement(
+              "form",
+              { className: "navbar-form navbar-right" },
+              React.createElement(
+                "div",
+                { className: "form-group" },
+                React.createElement("input", { type: "text", className: "form-control", placeholder: "Search" })
+              ),
+              React.createElement(
+                "button",
+                { type: "submit", className: "btn btn-default" },
+                "Submit"
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = NavBar;
+
+},{"./NavItem.jsx":237,"react":221}],237:[function(require,module,exports){
+var React = require("react");
+
+var NavItem = React.createClass({
+  displayName: "NavItem",
+
+  getInitialState: function () {
+    return { hover: false };
+  },
+
+  mouseOver: function (event) {
+    this.setState({ hover: true });
+  },
+
+  mouseOut: function (event) {
+    this.setState({ hover: false });
+  },
+
+  render: function () {
+    return React.createElement(
+      "li",
+      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseOut: this.mouseOut },
+      React.createElement(
+        "a",
+        { style: this.props.linkStyle, href: this.props.href },
+        this.props.title
+      )
+    );
+  }
+});
+
+module.exports = NavItem;
+
+},{"react":221}]},{},[235]);

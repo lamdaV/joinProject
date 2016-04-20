@@ -9,21 +9,19 @@ var TimezoneRadioGroup = React.createClass({
   },
 
   getInitialState: function() {
-    return ({isValid: true, selectedValue: ""});
+    return ({hasChanged: false, isValid: true, selectedValue: ""});
   },
 
   checkValidity: function() {
-    var selection = this.state.selectedValue;
-
-    if (selection === "") {
+    if (this.state.selectedValue === "") {
       this.setState({isValid: false});
     } else {
       this.setState({isValid: true});
     }
   },
 
-  handleChange: function(value) {
-    this.setState({selectedValue: value});
+  handleChange: function(event) {
+    this.setState({hasChanged: true, selectedValue: event.currentTarget.value});
   },
 
   render: function() {

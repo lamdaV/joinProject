@@ -3,15 +3,11 @@ var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 
 var SignInPanel = React.createClass({
-  getInitialState: function() {
-      return {usernameText: "", passwordText: ""};
-  },
-
   handleSubmit: function(event) {
     //TODO: Setup SQL handling and appropriate routing.
     event.preventDefault();
-    console.log("Email: " + this.refs.fieldEmail.state.email);
-    console.log("Password: " + this.refs.fieldPassword.state.password);
+    console.log("Email: " + this.refs.emailField.state.email);
+    console.log("Password: " + this.refs.passwordField.state.password);
     alert("sql stuff should happen.");
   },
 
@@ -31,17 +27,19 @@ var SignInPanel = React.createClass({
             <form onSubmit = {this.handleSubmit}>
               {/* Username field */}
               <div className = "row">
-                <EmailField validityAlert = {false} ref = "fieldEmail" />
+                <EmailField validityAlert = {false} ref = "emailField" />
               </div>
 
               {/* Password field */}
               <div className = "row">
-                <PasswordField ref = "fieldPassword" />
+                <PasswordField ref = "passwordField" />
               </div>
 
               {/* Sign in button */}
               <div style = {divStyle} className = "row">
-                <button className = "btn btn-primary col-sm-offset-10"> Sign in </button>
+                <div className = "col-xs-12 col-sm-12 col-lg-12">
+                  <button className = "btn btn-primary"> Sign in </button>
+                </div>
               </div>
             </form>
 

@@ -5,25 +5,34 @@ var TimezoneField = require("./TimezoneField.jsx");
 var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
 
 var CreateAccountForm = React.createClass({
-  onSubmit: function() {
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  handleSubmit: function() {
     var isValid = this.checkValidity();
+    console.log("Valid: " + isValid);
+
+    // TODO: Transition to the correct page.
     if (isValid) {
-      console.log("routing...");
-      //TODO: transition to next page.
+      console.log("Routing...");
+      this.context.router.push("/testpage");
     } else {
-      console.log("not all fields are valid");
+      console.log("Not all fields are valid");
     }
   },
 
   checkValidity: function() {
-    this.refs.emailField.onBlur();
-    this.refs.passwordField.onBlur();
-    this.refs.timezoneRadio.checkValidity();
+    this.refs.emailField.onBlur()
+    this.refs.passwordField.onBlur()
+    this.refs.timezoneRadio.checkValidity()
 
-    console.log(this.refs.timezoneRadio.state.selectedValue.length != 0);
+    var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.hasChanged;
 
-    return this.refs.emailField.state.isValid && (this.refs.emailField.state.email.length != 0) && this.refs.passwordField.state.isValid && this.refs.timezoneRadio.isValid &&
-    (this.refs.timezoneRadio.state.selectedValue.length != 0);
+    var isValid = this.refs.emailField.state.isValid &&
+    this.refs.passwordField.isValid && this.refs.timezoneRadio.isValid
+
+    return hasChanged && isValid;
   },
 
   render: function() {
@@ -35,7 +44,7 @@ var CreateAccountForm = React.createClass({
       <div className = "col-sm-12">
         <div className = "panel panel-primary">
           <div style = {panelBodyStyle} className = "panel panel-body">
-            <form onSubmit = {this.onSubmit}>
+            <form onSubmit = {this.handleSubmit}>
               <div className = "row">
                 <EmailField ref = "emailField"/>
               </div>
@@ -44,16 +53,15 @@ var CreateAccountForm = React.createClass({
                 <PasswordField ref = "passwordField"/>
               </div>
 
-
-
               <div className = "row">
               <TimezoneRadioGroup ref = "timezoneRadio"/>
               </div>
 
               <div className = "row">
-                <button className = "btn btn-primary col-sm-offset-11"> Next </button>
+                <div className = "col-sm-12 col-lg-12">
+                  <button className = "btn btn-primary"> Next </button>
+                </div>
               </div>
-
             </form>
           </div>
         </div>

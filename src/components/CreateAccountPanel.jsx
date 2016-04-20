@@ -1,13 +1,13 @@
 var React = require("react");
-var BrowserHistory = require("react-router").browserHistory;
 
 var CreateAccountPanel = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   handleSignUp: function() {
-    //TODO: HTML transfer.
     console.log("Moving to Create Account page...");
-    this.props.onClick();
-    // Sets url but does not update page.
-    // BrowserHistory.push("/testpage");
+    this.context.router.push("/create");
   },
 
   render: function() {
@@ -16,7 +16,7 @@ var CreateAccountPanel = React.createClass({
     };
 
     var panelBodyStyle = {
-      minHeight: 150
+      minHeight: 225
     };
 
     return (

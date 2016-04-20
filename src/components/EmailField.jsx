@@ -9,15 +9,11 @@ var EmailField = React.createClass({
   },
 
   getInitialState: function() {
-    return ({isValid: true, email: ""});
+    return ({hasChanged: false, isValid: true, email: ""});
   },
 
   onBlur: function(event) {
-    if (!Validator.validate(this.state.email)) {
-      this.setState({isValid: false});
-    } else {
-      this.setState({isValid: true});
-    }
+    this.setState({isValid: Validator.validate(this.state.email)});
   },
 
   clear: function() {
@@ -25,7 +21,7 @@ var EmailField = React.createClass({
   },
 
   onChange: function(event) {
-    this.setState({email: event.target.value});
+    this.setState({hasChanged: true, email: event.target.value});
   },
 
   render: function() {
