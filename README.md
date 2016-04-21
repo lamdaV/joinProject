@@ -32,6 +32,6 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [ ] Make Message page
 
 ### Christopher Knight
-- [ ] Make mysql database
-- [ ] Make generating, populating, and dropping scripts
-- [ ] Learn Javascript and ReactJS
+- [x] Make mysql database
+- [x] Make generating, populating, and dropping scripts
+- [x] Learn Javascript and ReactJS
