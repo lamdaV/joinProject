@@ -37,9 +37,9 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [x] Make Navbar
 
 ### Kennan French:
-- [ ] Make Profile page
-- [ ] Make Preference page
-- [ ] Make Message page
+- [x] Make Profile page
+- [x] Make Preference page
+- [x] Make Message page
 
 ### Christopher Knight
 - [x] Make mysql database
