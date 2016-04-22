@@ -32,16 +32,15 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 # Milestones:
 ## Milestone 01:
 ### David Lam:
-- [x] Make Login page
-- [x] Make Create Account page
-- [x] Make Navbar
+- [x] Create login page
+- [x] Account creation page
+- [x] Set up nav bar
 
 ### Kennan French:
-- [x] Make Profile page
-- [x] Make Preference page
-- [x] Make Message page
+- [x] Create preference selection form
+- [x] Create message/chat UI
+- [x] Design profile page
 
 ### Christopher Knight
-- [x] Make mysql database
-- [x] Make generating, populating, and dropping scripts
-- [x] Learn Javascript and ReactJS
+- [x] Create scripts
+- [x] Tutorials for javascript, node, mysql
