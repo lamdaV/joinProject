@@ -1,6 +1,6 @@
 # Join Project 
 
-Authors David Lam, Kennan French, and Christopher Knight
+Authors: David Lam, Kennan French, and Christopher Knight
 
 # Description:
 A repository for our CSSE 333 project. The goal of this project is to create a working prototype demonstration of a Tinder for Gamers. Not in the dating sense but as a social network for gamers to connect with other gamers with similar interest.
@@ -41,16 +41,16 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [x] Create message/chat UI
 - [x] Design profile page
 
-### Christopher Knight
+### Christopher Knight:
 - [x] Create scripts
 - [x] Tutorials for javascript, node, mysql
 
-# Milestones:
 ## Milestone 02:
 ### David Lam:
-  - [ ] Connect account creation page to backend
-  - [ ] Start games page
-  - [ ] Peer review stored procedures
+- [ ] Connect account creation page to backend
+- [ ] Start games page
+- [ ] Peer review stored procedures
+- [x] Have users retype password of front end validation
 
 ### Kennan French:
   - [ ] Learn React
@@ -60,7 +60,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] At least registration front-end validation
   - [ ] Create dummy user
 
-### Christopher Knight
+### Christopher Knight:
   - [ ] Stored procedures for user creation + account info updates
   - [ ] Stored procedures for creating + updating available hours
   - [ ] Stored procedures for user rating
