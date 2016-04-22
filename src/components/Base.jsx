@@ -4,20 +4,12 @@ var NavBar = require("../nav/NavBar.jsx");
 // TODO: Set this correctly.
 var navLinks = [
   {
-    title: "Praise the Overlord",
-    href: "#"
+    title: "Sign In",
+    href: "/"
   },
   {
-    title: "Home",
-    href: "#"
-  },
-  {
-    title: "Courses",
-    href: "#"
-  },
-  {
-    title: "Blog",
-    href: "#"
+    title: "Create An Account",
+    href: "/create"
   }
 ];
 

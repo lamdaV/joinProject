@@ -5,7 +5,8 @@ var MIN_PASSWORD_LENGTH = 5;
 var PasswordField = React.createClass({
   getDefaultProps: function() {
     return {
-      validityAlert: true
+      validityAlert: true,
+      formError: true
     };
   },
 
@@ -34,7 +35,12 @@ var PasswordField = React.createClass({
       marginTop: 10
     };
 
-    var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
+    console.log(this.props.for)
+    if (this.props.formError) {
+      var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
+    } else {
+      var formClass = "col-sm-12  form-group";
+    }
 
     return (
       <div className = {formClass}>

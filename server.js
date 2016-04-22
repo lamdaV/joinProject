@@ -1,7 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mysql = require("mysql");
-var Tunnel = require("tunnel-ssh");
 
 var connection = mysql.createConnection({
   host      : "127.0.0.1",
@@ -10,8 +9,6 @@ var connection = mysql.createConnection({
   password  : "eu4ahJu4",
   database  : "JoinSchema",
 });
-
-
 
 var app = express();
 
@@ -35,24 +32,35 @@ app.all("/*", function(request, response, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.get("/test", function(request, response) {
-  console.log("GET test from server");
+app.post("/signin", function(request, response) {
+  console.log("POST signin request...");
+  var user = request.body;
 
+  // TODO: replace with database call functions.
+  var query = "SELECT * FROM User WHERE User.email = '" + user.email + "' and User.password = '" + user.password + "'";
+
+  console.log("query: " + query);
+
+  connection.query(query, function(error, rows, fields) {
+    if (error) {
+      console.log("Error: " + error.message);
+      return;
+    }
+    console.log("response: " + JSON.stringify(rows));
+    response.send(rows);
+  });
+});
+
+app.get("/test", function(request, response) {
+  console.log("GET test page");
   connection.query("SELECT * FROM User", function(error, rows, fields) {
     if (error) {
       console.log("Error: " + error.message);
       return;
     }
-
-    console.log("row" + rows);
+    console.log("response: " + JSON.stringify(rows));
+    response.send(rows);
   });
-  connection.end(function(error) {
-    if (error) {
-      console.log(error);
-      return;
-    }
-  });
-  // response.send(testData);
 });
 
 app.post("/test", function(request, response) {
@@ -62,5 +70,5 @@ app.post("/test", function(request, response) {
   response.status(200).send("POST success");
 });
 
-app.listen(6069);
-console.log("Server at localhost:6069");
+app.listen(3333);
+console.log("Server at localhost:3333");

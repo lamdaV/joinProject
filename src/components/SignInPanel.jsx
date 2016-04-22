@@ -1,14 +1,36 @@
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
-
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var UserStore = require("../reflux/userStore.jsx");
 var SignInPanel = React.createClass({
+  mixins: [Reflux.listenTo(UserStore, "userValidation")],
+
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  userValidation: function(event, data) {
+    console.log("userValidation data: " + JSON.stringify(data));
+    console.log("userID: " + data[0].UserID);
+    if (data) {
+      this.context.router.push("/profile/" + data[0].UserID);
+    }
+  },
+
   handleSubmit: function(event) {
     //TODO: Setup SQL handling and appropriate routing.
     event.preventDefault();
-    console.log("Email: " + this.refs.emailField.state.email);
-    console.log("Password: " + this.refs.passwordField.state.password);
-    alert("sql stuff should happen.");
+    var email = this.refs.emailField.state.email;
+    var password = this.refs.passwordField.state.password;
+
+    console.log("Email: " + email);
+    console.log("Password: " + password);
+
+    if (email.length > 0 && password.length > 0) {
+      UserActions.getValidateUser(email, password);
+    }
   },
 
   render: function() {
@@ -38,7 +60,7 @@ var SignInPanel = React.createClass({
 
               {/* Password field */}
               <div className = "row">
-                <PasswordField validityAlert = {false} ref = "passwordField" />
+                <PasswordField validityAlert = {false} formError = {false} ref = "passwordField" />
               </div>
 
               {/* Sign in button */}

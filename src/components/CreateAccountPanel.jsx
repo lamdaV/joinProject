@@ -5,7 +5,8 @@ var CreateAccountPanel = React.createClass({
     router: React.PropTypes.object
   },
 
-  handleSignUp: function() {
+  handleSignUp: function(event) {
+    event.preventDefault();
     console.log("Moving to Create Account page...");
     this.context.router.push("/create");
   },
@@ -32,7 +33,7 @@ var CreateAccountPanel = React.createClass({
             <h3 className = "text-center"> Create an Account </h3>
           </div>
 
-          <div style = {panelBodyStyle} className = "row panel-body text-center">
+          <div style = {panelBodyStyle} onSubmit = {this.handleSignUp} className = "row panel-body text-center">
             <button onClick = {this.handleSignUp} className = "btn btn-primary center-block"> Sign Up </button>
           </div>
         </div>

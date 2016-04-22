@@ -10,6 +10,7 @@ var Base = require("./components/Base.jsx");
 var HomePage = require("./components/HomePage.jsx");
 var Page1 = require("./components/Page1.jsx");
 var CreateAccountForm = require("./components/CreateAccountForm.jsx");
+var UserProfile = require("./components/UserProfilePage.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -22,6 +23,7 @@ var Routes = (
       <Route path = "/home" component = {HomePage}></Route>
       <Route path = "/create" component = {CreateAccountForm}></Route>
       <Route path = "/testpage" component = {Page1}></Route>
+      <Route path = "/profile/:userID" component = {UserProfile}></Route>
     </Route>
   </Router>
 );

@@ -28,6 +28,8 @@
     "react-dom": "^0.14.7",
     "react-radio-group": "^2.2.0",
     "react-router": "^2.2.4",
-    "watchify": "^3.7.0"
+    "reflux": "^0.4.1",
+    "watchify": "^3.7.0",
+    "whatwg-fetch": "^0.11.0"
   }
 }

@@ -1,5 +1,7 @@
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
+var ReactRouter = require("react-router");
+var Link = ReactRouter.Link;
 
 var NavBar = React.createClass({
   render: function() {
@@ -47,7 +49,7 @@ var NavBar = React.createClass({
             </button>
 
             {/*Branding image*/}
-            <a style = {titleStyle} className = "navbar-brand" href = "#"> {this.props.brandName} </a>
+            <Link style = {titleStyle} className = "navbar-brand" to = "/"> {this.props.brandName} </Link>
           </div>
 
           {/*Collapsed Items*/}
