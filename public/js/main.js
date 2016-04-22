@@ -26401,6 +26401,10 @@ var CreateAccountForm = React.createClass({
     router: React.PropTypes.object
   },
 
+  getInitialState: function () {
+    return { matchError: false };
+  },
+
   handleSubmit: function (event) {
     event.preventDefault();
     var isValid = this.checkValidity();
@@ -26418,13 +26422,29 @@ var CreateAccountForm = React.createClass({
   checkValidity: function () {
     this.refs.emailField.onBlur();
     this.refs.passwordField.onBlur();
+    this.checkPassword();
     this.refs.timezoneRadio.checkValidity();
 
     var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.state.hasChanged;
 
     var isValid = this.refs.emailField.state.isValid && this.refs.passwordField.state.isValid && this.refs.timezoneRadio.state.isValid;
 
-    return hasChanged && isValid;
+    var isPasswordSame = this.refs.passwordField.state.password === this.refs.passwordFieldCheck.state.password;
+
+    console.log("isPasswordSame: " + isPasswordSame);
+
+    return hasChanged && isValid && isPasswordSame;
+  },
+
+  checkPassword: function () {
+    var password = this.refs.passwordField.state.password;
+    var passwordCheck = this.refs.passwordFieldCheck.state.password;
+
+    if (password === passwordCheck && password.length != 0 && passwordCheck.length != 0) {
+      this.setState({ matchError: false });
+    } else {
+      this.setState({ matchError: true });
+    }
   },
 
   render: function () {
@@ -26453,6 +26473,11 @@ var CreateAccountForm = React.createClass({
               "div",
               { className: "row" },
               React.createElement(PasswordField, { ref: "passwordField" })
+            ),
+            React.createElement(
+              "div",
+              { className: "row", onBlur: this.checkPassword },
+              React.createElement(PasswordField, { ref: "passwordFieldCheck", labelText: "Re-enter Password", validityAlert: false, matchError: this.state.matchError })
             ),
             React.createElement(
               "div",
@@ -26651,7 +26676,8 @@ var PasswordField = React.createClass({
   getDefaultProps: function () {
     return {
       validityAlert: true,
-      formError: true
+      formError: true,
+      matchError: false
     };
   },
 
@@ -26672,7 +26698,12 @@ var PasswordField = React.createClass({
   },
 
   onChange: function (event) {
+    console.log("in passwordfield on change");
     this.setState({ hasChanged: true, password: event.target.value });
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({});
   },
 
   render: function () {
@@ -26680,12 +26711,13 @@ var PasswordField = React.createClass({
       marginTop: 10
     };
 
-    console.log(this.props.for);
     if (this.props.formError) {
       var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
     } else {
       var formClass = "col-sm-12  form-group";
     }
+
+    var labelText = "Password";
 
     return React.createElement(
       "div",
@@ -26693,13 +26725,20 @@ var PasswordField = React.createClass({
       React.createElement(
         "label",
         { htmlFor: "password" },
-        " Password: "
+        " ",
+        labelText,
+        " "
       ),
       React.createElement("input", { id: "password", className: "form-control", type: "password", onBlur: this.onBlur, onChange: this.onChange, placeholder: "Password", value: this.state.password }),
       !this.state.isValid && this.props.validityAlert ? React.createElement(
         "div",
         { style: divStyle, className: "alert alert-danger" },
         " Error: Invalid Password. "
+      ) : null,
+      this.props.matchError ? React.createElement(
+        "div",
+        { style: divStyle, className: "col-sm-12 alert alert-danger" },
+        " Error: Passwords do not match. "
       ) : null
     );
   }

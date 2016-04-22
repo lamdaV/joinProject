@@ -6,7 +6,8 @@ var PasswordField = React.createClass({
   getDefaultProps: function() {
     return {
       validityAlert: true,
-      formError: true
+      formError: true,
+      matchError: false
     };
   },
 
@@ -27,7 +28,12 @@ var PasswordField = React.createClass({
   },
 
   onChange: function(event) {
+    console.log("in passwordfield on change");
     this.setState({hasChanged: true, password: event.target.value});
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.setState({})
   },
 
   render: function() {
@@ -35,19 +41,26 @@ var PasswordField = React.createClass({
       marginTop: 10
     };
 
-    console.log(this.props.for)
     if (this.props.formError) {
       var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
     } else {
       var formClass = "col-sm-12  form-group";
     }
 
+    var labelText = "Password"
+
+
     return (
       <div className = {formClass}>
-        <label htmlFor = "password"> Password: </label>
+        <label htmlFor = "password"> {labelText} </label>
         <input id = "password" className = "form-control" type = "password" onBlur = {this.onBlur} onChange = {this.onChange} placeholder = "Password" value = {this.state.password}></input>
+
+        {/*Error Messages*/}
         {(!this.state.isValid  && this.props.validityAlert) ?
           <div style = {divStyle} className = "alert alert-danger"> Error: Invalid Password. </div> : null}
+
+        {(this.props.matchError) ?
+          <div style = {divStyle} className = "col-sm-12 alert alert-danger"> Error: Passwords do not match. </div> : null}
       </div>
     );
   }

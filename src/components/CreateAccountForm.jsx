@@ -8,6 +8,10 @@ var CreateAccountForm = React.createClass({
     router: React.PropTypes.object
   },
 
+  getInitialState: function() {
+    return ({matchError: false});
+  },
+
   handleSubmit: function(event) {
     event.preventDefault();
     var isValid = this.checkValidity();
@@ -25,6 +29,7 @@ var CreateAccountForm = React.createClass({
   checkValidity: function() {
     this.refs.emailField.onBlur();
     this.refs.passwordField.onBlur();
+    this.checkPassword();
     this.refs.timezoneRadio.checkValidity();
 
     var hasChanged = this.refs.emailField.state.hasChanged && this.refs.passwordField.state.hasChanged && this.refs.timezoneRadio.state.hasChanged;
@@ -32,7 +37,22 @@ var CreateAccountForm = React.createClass({
     var isValid = this.refs.emailField.state.isValid &&
     this.refs.passwordField.state.isValid && this.refs.timezoneRadio.state.isValid;
 
-    return hasChanged && isValid;
+    var isPasswordSame = this.refs.passwordField.state.password === this.refs.passwordFieldCheck.state.password;
+
+    console.log("isPasswordSame: " + isPasswordSame);
+
+    return hasChanged && isValid && isPasswordSame;
+  },
+
+  checkPassword: function() {
+    var password = this.refs.passwordField.state.password;
+    var passwordCheck = this.refs.passwordFieldCheck.state.password;
+
+    if (password === passwordCheck && password.length != 0 && passwordCheck.length != 0) {
+      this.setState({matchError: false});
+    } else {
+      this.setState({matchError: true});
+    }
   },
 
   render: function() {
@@ -49,8 +69,12 @@ var CreateAccountForm = React.createClass({
                 <EmailField ref = "emailField"/>
               </div>
 
-              <div className = "row">
+              <div className = "row" >
                 <PasswordField ref = "passwordField"/>
+              </div>
+
+              <div className = "row" onBlur = {this.checkPassword}>
+                <PasswordField ref = "passwordFieldCheck" labelText = "Re-enter Password" validityAlert = {false} matchError = {this.state.matchError}/>
               </div>
 
               <div className = "row">
