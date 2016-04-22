@@ -44,3 +44,25 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ### Christopher Knight
 - [x] Create scripts
 - [x] Tutorials for javascript, node, mysql
+
+# Milestones:
+## Milestone 02:
+### David Lam:
+  - [ ] Connect account creation page to backend
+  - [ ] Start games page
+  - [ ] Peer review stored procedures
+
+### Kennan French:
+  - [ ] Learn React
+  - [ ] Hook stuff up with David's stuff (related to above)
+  - [ ] Write js to do the stuff I said js would do on previous pages
+  - [ ] Unify/standardize css, custom div classes
+  - [ ] At least registration front-end validation
+  - [ ] Create dummy user
+
+### Christopher Knight
+  - [ ] Stored procedures for user creation + account info updates
+  - [ ] Stored procedures for creating + updating available hours
+  - [ ] Stored procedures for user rating
+  - [ ] Help get mysql talk to front end
+  - [ ] Figure out dummy user permissions
