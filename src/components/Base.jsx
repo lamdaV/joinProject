@@ -10,6 +10,10 @@ var navLinks = [
   {
     title: "Create An Account",
     href: "/create"
+  },
+  {
+    title: "Games",
+    href: "/game/1"
   }
 ];
 

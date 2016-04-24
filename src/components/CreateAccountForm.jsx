@@ -2,8 +2,13 @@ var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var UserStore = require("../reflux/userStore.jsx");
 
 var CreateAccountForm = React.createClass({
+  mixins: [Reflux.listenTo(UserStore, "createUser")],
+
   contextTypes: {
     router: React.PropTypes.object
   },
@@ -12,15 +17,36 @@ var CreateAccountForm = React.createClass({
     return ({matchError: false});
   },
 
+  createUser: function(event, data) {
+    console.log("userValidation data: " + JSON.stringify(data));
+    console.log("userID: " + data[0].UserID);
+    // TODO: change where this is routed.
+    if (data) {
+      console.log("Routing...");
+      this.context.router.push("/profile/" + data[0].UserID);
+    } else {
+      // TODO: UI response.
+      console.log("failed to create");
+    }
+  },
+
   handleSubmit: function(event) {
     event.preventDefault();
     var isValid = this.checkValidity();
     console.log("Valid: " + isValid);
 
+    var email = this.refs.emailField.state.email;
+    var password = this.refs.passwordField.state.password;
+    var timezone = this.refs.timezoneRadio.state.selectedValue;
+
+    console.log("email: " + email);
+    console.log("password: " + password);
+    console.log("timezone: " + timezone);
+
     // TODO: Transition to the correct page.
     if (isValid) {
-      console.log("Routing...");
-      this.context.router.push("/testpage");
+      // this.context.router.push("/testpage");
+      UserActions.postCreateUser(email, password, timezone);
     } else {
       console.log("Not all fields are valid");
     }

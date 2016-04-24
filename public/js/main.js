@@ -26323,6 +26323,7 @@ var HomePage = require("./components/HomePage.jsx");
 var Page1 = require("./components/Page1.jsx");
 var CreateAccountForm = require("./components/CreateAccountForm.jsx");
 var UserProfile = require("./components/UserProfilePage.jsx");
+var GamePage = require("./components/GamePage.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -26338,13 +26339,14 @@ var Routes = React.createElement(
     React.createElement(Route, { path: "/home", component: HomePage }),
     React.createElement(Route, { path: "/create", component: CreateAccountForm }),
     React.createElement(Route, { path: "/testpage", component: Page1 }),
-    React.createElement(Route, { path: "/profile/:userID", component: UserProfile })
+    React.createElement(Route, { path: "/profile/:userID", component: UserProfile }),
+    React.createElement(Route, { path: "/game/:gameID", component: GamePage })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/HomePage.jsx":251,"./components/Page1.jsx":252,"./components/UserProfilePage.jsx":256,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":251,"./components/HomePage.jsx":252,"./components/Page1.jsx":253,"./components/UserProfilePage.jsx":257,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 
@@ -26355,6 +26357,9 @@ var navLinks = [{
 }, {
   title: "Create An Account",
   href: "/create"
+}, {
+  title: "Games",
+  href: "/game/1"
 }];
 
 var Base = React.createClass({
@@ -26388,14 +26393,19 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":258,"react":224}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":259,"react":224}],248:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var UserStore = require("../reflux/userStore.jsx");
 
 var CreateAccountForm = React.createClass({
   displayName: "CreateAccountForm",
+
+  mixins: [Reflux.listenTo(UserStore, "createUser")],
 
   contextTypes: {
     router: React.PropTypes.object
@@ -26405,15 +26415,36 @@ var CreateAccountForm = React.createClass({
     return { matchError: false };
   },
 
+  createUser: function (event, data) {
+    console.log("userValidation data: " + JSON.stringify(data));
+    console.log("userID: " + data[0].UserID);
+    // TODO: change where this is routed.
+    if (data) {
+      console.log("Routing...");
+      this.context.router.push("/profile/" + data[0].UserID);
+    } else {
+      // TODO: UI response.
+      console.log("failed to create");
+    }
+  },
+
   handleSubmit: function (event) {
     event.preventDefault();
     var isValid = this.checkValidity();
     console.log("Valid: " + isValid);
 
+    var email = this.refs.emailField.state.email;
+    var password = this.refs.passwordField.state.password;
+    var timezone = this.refs.timezoneRadio.state.selectedValue;
+
+    console.log("email: " + email);
+    console.log("password: " + password);
+    console.log("timezone: " + timezone);
+
     // TODO: Transition to the correct page.
     if (isValid) {
-      console.log("Routing...");
-      this.context.router.push("/testpage");
+      // this.context.router.push("/testpage");
+      UserActions.postCreateUser(email, password, timezone);
     } else {
       console.log("Not all fields are valid");
     }
@@ -26506,7 +26537,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"./EmailField.jsx":250,"./PasswordField.jsx":253,"./TimezoneRadioGroup.jsx":255,"react":224}],249:[function(require,module,exports){
+},{"../reflux/userActions.jsx":261,"../reflux/userStore.jsx":262,"./EmailField.jsx":250,"./PasswordField.jsx":254,"./TimezoneRadioGroup.jsx":256,"react":224,"reflux":240}],249:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -26626,6 +26657,23 @@ module.exports = EmailField;
 
 },{"email-validator":4,"react":224}],251:[function(require,module,exports){
 var React = require("react");
+
+var GamePage = React.createClass({
+  displayName: "GamePage",
+
+  render: function () {
+    return React.createElement(
+      "h1",
+      null,
+      "Game Page"
+    );
+  }
+});
+
+module.exports = GamePage;
+
+},{"react":224}],252:[function(require,module,exports){
+var React = require("react");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
 
@@ -26648,7 +26696,7 @@ var HomePage = React.createClass({
 
 module.exports = HomePage;
 
-},{"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":254,"react":224}],252:[function(require,module,exports){
+},{"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":255,"react":224}],253:[function(require,module,exports){
 var React = require("react");
 
 var Page1 = React.createClass({
@@ -26665,7 +26713,7 @@ var Page1 = React.createClass({
 
 module.exports = Page1;
 
-},{"react":224}],253:[function(require,module,exports){
+},{"react":224}],254:[function(require,module,exports){
 var React = require("react");
 
 var MIN_PASSWORD_LENGTH = 5;
@@ -26746,13 +26794,14 @@ var PasswordField = React.createClass({
 
 module.exports = PasswordField;
 
-},{"react":224}],254:[function(require,module,exports){
+},{"react":224}],255:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
+
 var SignInPanel = React.createClass({
   displayName: "SignInPanel",
 
@@ -26766,6 +26815,10 @@ var SignInPanel = React.createClass({
     console.log("userValidation data: " + JSON.stringify(data));
     console.log("userID: " + data[0].UserID);
     if (data) {
+      // localStorage.setItem({
+      //   "userID",
+      //   "isLoggedIn", true}
+      // );
       this.context.router.push("/profile/" + data[0].UserID);
     }
   },
@@ -26780,7 +26833,7 @@ var SignInPanel = React.createClass({
     console.log("Password: " + password);
 
     if (email.length > 0 && password.length > 0) {
-      UserActions.getValidateUser(email, password);
+      UserActions.postValidateUser(email, password);
     }
   },
 
@@ -26848,7 +26901,7 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"../reflux/userActions.jsx":260,"../reflux/userStore.jsx":261,"./EmailField.jsx":250,"./PasswordField.jsx":253,"react":224,"reflux":240}],255:[function(require,module,exports){
+},{"../reflux/userActions.jsx":261,"../reflux/userStore.jsx":262,"./EmailField.jsx":250,"./PasswordField.jsx":254,"react":224,"reflux":240}],256:[function(require,module,exports){
 var React = require("react");
 var RadioGroup = require("react-radio-group");
 
@@ -26933,11 +26986,11 @@ var TimezoneRadioGroup = React.createClass({
 
 module.exports = TimezoneRadioGroup;
 
-},{"react":224,"react-radio-group":57}],256:[function(require,module,exports){
+},{"react":224,"react-radio-group":57}],257:[function(require,module,exports){
 var React = require("react");
 
-var Page1 = React.createClass({
-  displayName: "Page1",
+var UserProfilePage = React.createClass({
+  displayName: "UserProfilePage",
 
   getInitialState: function () {
     return { userID: "" };
@@ -26961,16 +27014,16 @@ var Page1 = React.createClass({
   }
 });
 
-module.exports = Page1;
+module.exports = UserProfilePage;
 
-},{"react":224}],257:[function(require,module,exports){
+},{"react":224}],258:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
 
 ReactDOM.render(Routes, document.getElementById("Base"));
 
-},{"./Routes.jsx":246,"react":224,"react-dom":56}],258:[function(require,module,exports){
+},{"./Routes.jsx":246,"react":224,"react-dom":56}],259:[function(require,module,exports){
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
 var ReactRouter = require("react-router");
@@ -27068,7 +27121,7 @@ var NavBar = React.createClass({
 
 module.exports = NavBar;
 
-},{"./NavItem.jsx":259,"react":224,"react-router":88}],259:[function(require,module,exports){
+},{"./NavItem.jsx":260,"react":224,"react-router":88}],260:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
@@ -27103,27 +27156,41 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"react":224,"react-router":88}],260:[function(require,module,exports){
+},{"react":224,"react-router":88}],261:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var UserActions = Reflux.createActions(["getValidateUser"]);
+var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],261:[function(require,module,exports){
+},{"reflux":240}],262:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
 
 var UserStore = Reflux.createStore({
   listenables: [UserActions],
-  getValidateUser: function (email, password) {
+
+  postValidateUser: function (email, password) {
     var user = {
       "email": email,
       "password": password
     };
 
-    http.get("/signin", user).then(function (dataJSON) {
+    http.post("/signin", user).then(function (dataJSON) {
+      this.user = dataJSON;
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  postCreateUser: function (email, password, timezone) {
+    var user = {
+      "email": email,
+      "password": password,
+      "timezone": timezone
+    };
+
+    http.post("/create", user).then(function (dataJSON) {
       this.user = dataJSON;
       this.returnStatus();
     }.bind(this));
@@ -27136,12 +27203,12 @@ var UserStore = Reflux.createStore({
 
 module.exports = UserStore;
 
-},{"../services/httpService.js":262,"./userActions.jsx":260,"reflux":240}],262:[function(require,module,exports){
+},{"../services/httpService.js":263,"./userActions.jsx":261,"reflux":240}],263:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
 var baseUrl = "http://localhost:3333";
 
 var Service = {
-  get: function (url, data) {
+  post: function (url, data) {
     if (data) {
       return fetch(baseUrl + url, {
         headers: {
@@ -27162,4 +27229,4 @@ var Service = {
 
 module.exports = Service;
 
-},{"whatwg-fetch":245}]},{},[257]);
+},{"whatwg-fetch":245}]},{},[258]);

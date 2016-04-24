@@ -4,6 +4,7 @@ var PasswordField = require("./PasswordField.jsx");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
+
 var SignInPanel = React.createClass({
   mixins: [Reflux.listenTo(UserStore, "userValidation")],
 
@@ -15,6 +16,10 @@ var SignInPanel = React.createClass({
     console.log("userValidation data: " + JSON.stringify(data));
     console.log("userID: " + data[0].UserID);
     if (data) {
+      // localStorage.setItem({
+      //   "userID",
+      //   "isLoggedIn", true}
+      // );
       this.context.router.push("/profile/" + data[0].UserID);
     }
   },
@@ -29,7 +34,7 @@ var SignInPanel = React.createClass({
     console.log("Password: " + password);
 
     if (email.length > 0 && password.length > 0) {
-      UserActions.getValidateUser(email, password);
+      UserActions.postValidateUser(email, password);
     }
   },
 

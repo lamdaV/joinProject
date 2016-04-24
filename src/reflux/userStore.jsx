@@ -4,13 +4,27 @@ var UserActions = require("./userActions.jsx");
 
 var UserStore = Reflux.createStore({
   listenables: [UserActions],
-  getValidateUser: function(email, password) {
+
+  postValidateUser: function(email, password) {
     var user = {
       "email": email,
       "password": password
     };
 
-    http.get("/signin", user).then(function(dataJSON) {
+    http.post("/signin", user).then(function(dataJSON) {
+      this.user = dataJSON;
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  postCreateUser: function(email, password, timezone) {
+    var user = {
+      "email": email,
+      "password": password,
+      "timezone": timezone
+    };
+
+    http.post("/create", user).then(function(dataJSON) {
       this.user = dataJSON;
       this.returnStatus();
     }.bind(this));

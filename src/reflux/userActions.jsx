@@ -1,7 +1,8 @@
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions([
-  "getValidateUser"
+  "postValidateUser",
+  "postCreateUser"
 ]);
 
 module.exports = UserActions;

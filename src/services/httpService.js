@@ -2,7 +2,7 @@ var Fetch = require("whatwg-fetch");
 var baseUrl = "http://localhost:3333";
 
 var Service = {
-  get: function(url, data) {
+  post: function(url, data) {
     if (data) {
       return fetch(baseUrl + url, {
         headers: {

@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mysql = require("mysql");
 
+// TODO: Update this with limited user.
 var connection = mysql.createConnection({
   host      : "127.0.0.1",
   user      : "root",
@@ -40,6 +41,34 @@ app.post("/signin", function(request, response) {
   var query = "SELECT * FROM User WHERE User.email = '" + user.email + "' and User.password = '" + user.password + "'";
 
   console.log("query: " + query);
+
+  connection.query(query, function(error, rows, fields) {
+    if (error) {
+      console.log("Error: " + error.message);
+      return;
+    }
+    console.log("response: " + JSON.stringify(rows));
+    response.send(rows);
+  });
+});
+
+app.post("/create", function(request, response) {
+  console.log("POST create request...");
+  var user = request.body;
+
+  var query = "INSERT INTO User (Email, Password, TimeZone) Values ('" + user.email + "', '" + user.password + "', '" + user.timezone + "')";
+
+  console.log("query: " + query);
+
+  connection.query(query, function(error, rows, fields) {
+    if (error) {
+      console.log("Error: " + error.message);
+      return;
+    }
+    console.log("response: " + JSON.stringify(rows));
+  });
+
+  query = "SELECT * FROM User WHERE User.email = '" + user.email + "' and User.password = '" + user.password + "'";
 
   connection.query(query, function(error, rows, fields) {
     if (error) {
