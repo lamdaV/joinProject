@@ -47,10 +47,11 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 
 ## Milestone 02:
 ### David Lam:
-- [ ] Connect account creation page to backend
-- [ ] Start games page
+- [x] Connect account creation page to backend
+- [ ] Start games page (in progress)
 - [ ] Peer review stored procedures
 - [x] Have users retype password of front end validation
+- [x] Token-based authentication
 
 ### Kennan French:
   - [ ] Learn React
