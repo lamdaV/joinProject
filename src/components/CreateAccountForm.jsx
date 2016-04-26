@@ -19,11 +19,12 @@ var CreateAccountForm = React.createClass({
 
   createUser: function(event, data) {
     console.log("userValidation data: " + JSON.stringify(data));
-    console.log("userID: " + data[0].UserID);
+    console.log("userID: " + data[2][0].UserID);
+
     // TODO: change where this is routed.
     if (data) {
       console.log("Routing...");
-      this.context.router.push("/profile/" + data[0].UserID);
+      this.context.router.push("/profile/" + data[2][0].UserID);
     } else {
       // TODO: UI response.
       console.log("failed to create");

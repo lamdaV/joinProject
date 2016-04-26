@@ -26317,6 +26317,7 @@ var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 var CreateHistory = require("history").createHashHistory;
 var useRouterHistory = ReactRouter.useRouterHistory;
+var UserActions = require("./reflux/userActions.jsx");
 
 var Base = require("./components/Base.jsx");
 var HomePage = require("./components/HomePage.jsx");
@@ -26346,7 +26347,7 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":251,"./components/HomePage.jsx":252,"./components/Page1.jsx":253,"./components/UserProfilePage.jsx":257,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":251,"./components/HomePage.jsx":252,"./components/Page1.jsx":253,"./components/UserProfilePage.jsx":257,"./reflux/userActions.jsx":261,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 
@@ -26417,11 +26418,12 @@ var CreateAccountForm = React.createClass({
 
   createUser: function (event, data) {
     console.log("userValidation data: " + JSON.stringify(data));
-    console.log("userID: " + data[0].UserID);
+    console.log("userID: " + data[2][0].UserID);
+
     // TODO: change where this is routed.
     if (data) {
       console.log("Routing...");
-      this.context.router.push("/profile/" + data[0].UserID);
+      this.context.router.push("/profile/" + data[2][0].UserID);
     } else {
       // TODO: UI response.
       console.log("failed to create");
@@ -26676,9 +26678,23 @@ module.exports = GamePage;
 var React = require("react");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
+var UserActions = require("../reflux/userActions.jsx");
 
 var HomePage = React.createClass({
   displayName: "HomePage",
+
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  componentWillMount: function () {
+    // If the user is authenticated skip the signup page.
+    if (localStorage.getItem("jwt")) {
+      if (UserActions.postIsAuthenticated()) {
+        this.context.router.push("/testpage");
+      }
+    }
+  },
 
   render: function () {
     return React.createElement(
@@ -26696,7 +26712,7 @@ var HomePage = React.createClass({
 
 module.exports = HomePage;
 
-},{"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":255,"react":224}],253:[function(require,module,exports){
+},{"../reflux/userActions.jsx":261,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":255,"react":224}],253:[function(require,module,exports){
 var React = require("react");
 
 var Page1 = React.createClass({
@@ -26812,14 +26828,13 @@ var SignInPanel = React.createClass({
   },
 
   userValidation: function (event, data) {
-    console.log("userValidation data: " + JSON.stringify(data));
-    console.log("userID: " + data[0].UserID);
+    // Variable for stringification.
+    // TODO: clean up logging.
+    var dataCopy = data;
+    console.log("userValidation data: " + JSON.stringify(dataCopy));
+    console.log("userID: " + data.userID);
     if (data) {
-      // localStorage.setItem({
-      //   "userID",
-      //   "isLoggedIn", true}
-      // );
-      this.context.router.push("/profile/" + data[0].UserID);
+      this.context.router.push("/profile/" + data.userID);
     }
   },
 
@@ -27159,7 +27174,7 @@ module.exports = NavItem;
 },{"react":224,"react-router":88}],261:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser"]);
+var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postIsAuthenticated"]);
 
 module.exports = UserActions;
 
@@ -27171,6 +27186,11 @@ var UserActions = require("./userActions.jsx");
 var UserStore = Reflux.createStore({
   listenables: [UserActions],
 
+  init: function () {
+    this.jwt = localStorage.getItem("jwt");
+    console.log("jwt init: " + JSON.stringify(this.jwt));
+  },
+
   postValidateUser: function (email, password) {
     var user = {
       "email": email,
@@ -27179,6 +27199,7 @@ var UserStore = Reflux.createStore({
 
     http.post("/signin", user).then(function (dataJSON) {
       this.user = dataJSON;
+      this.saveToken();
       this.returnStatus();
     }.bind(this));
   },
@@ -27194,6 +27215,24 @@ var UserStore = Reflux.createStore({
       this.user = dataJSON;
       this.returnStatus();
     }.bind(this));
+  },
+
+  postIsAuthenticated: function () {
+    if (this.jwt) {
+      var jwtJSON = {
+        "jwt": this.jwt
+      };
+
+      http.post("/authenticate", jwtJSON).then(function (dataJSON) {
+        this.user = dataJSON;
+        this.saveToken();
+        this.returnStatus();
+      }.bind(this));
+    }
+  },
+
+  saveToken: function () {
+    localStorage.setItem("jwt", this.user.data);
   },
 
   returnStatus: function () {

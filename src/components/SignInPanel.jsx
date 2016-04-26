@@ -13,14 +13,13 @@ var SignInPanel = React.createClass({
   },
 
   userValidation: function(event, data) {
-    console.log("userValidation data: " + JSON.stringify(data));
-    console.log("userID: " + data[0].UserID);
+    // Variable for stringification.
+    // TODO: clean up logging.
+    var dataCopy = data;
+    console.log("userValidation data: " + JSON.stringify(dataCopy));
+    console.log("userID: " + data.userID);
     if (data) {
-      // localStorage.setItem({
-      //   "userID",
-      //   "isLoggedIn", true}
-      // );
-      this.context.router.push("/profile/" + data[0].UserID);
+      this.context.router.push("/profile/" + data.userID);
     }
   },
 

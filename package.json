@@ -23,6 +23,7 @@
     "body-parser": "^1.15.0",
     "email-validator": "^1.0.4",
     "express": "^4.13.4",
+    "jsonwebtoken": "^5.7.0",
     "node-mysql": "^0.4.2",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",

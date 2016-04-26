@@ -5,6 +5,7 @@ var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 var CreateHistory = require("history").createHashHistory;
 var useRouterHistory = ReactRouter.useRouterHistory;
+var UserActions = require("./reflux/userActions.jsx");
 
 var Base = require("./components/Base.jsx");
 var HomePage = require("./components/HomePage.jsx");
