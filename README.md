@@ -36,6 +36,13 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [x] Account creation page
 - [x] Set up nav bar
 
+#### Extras:
+- [x] Email Validation
+- [x] Password Validation
+- [x] Account Validation
+- [x] Basic Routing
+- [x] Set up Express Server
+
 ### Kennan French:
 - [x] Create preference selection form
 - [x] Create message/chat UI
@@ -50,8 +57,11 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [x] Connect account creation page to backend
 - [ ] Start games page (in progress)
 - [ ] Peer review stored procedures
+
+#### Extras: 
 - [x] Have users retype password of front end validation
 - [x] Token-based authentication
+- [x] Begin implementing stored procedures
 
 ### Kennan French:
   - [ ] Learn React
