@@ -1,6 +1,6 @@
 var React = require("react");
 
-var MIN_PASSWORD_LENGTH = 5;
+var MIN_PASSWORD_LENGTH = 8;
 
 var PasswordField = React.createClass({
   getDefaultProps: function() {

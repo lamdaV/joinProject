@@ -18,8 +18,8 @@ var secret = "SupremeOverlord";
 var pool = mysql.createPool({
   connectionLimit: 50,
   host: "127.0.0.1",
-  user: "root",
-  password: "eu4ahJu4",
+  user: "JoinCSSE",
+  password: "joinMe",
   port: "3306",
   database: "JoinSchema",
   multipleStatements: true
@@ -80,11 +80,11 @@ app.post("/authenticate", function(request, response) {
       };
 
       // Error if one lined.
-      if (rows[2][0].UserID != null) {
-        authentication.isValid = true;
-      } else {
-        authentication.isValid = false;
-      }
+      // if (rows[2][0].UserID != null) {
+      //   authentication.isValid = true;
+      // } else {
+      //   authentication.isValid = false;
+      // }
 
       response.send(authentication);
     });
@@ -138,27 +138,6 @@ app.post("/signin", function(request, response) {
     });
   });
 });
-
-  // TODO: replace with database call functions.
-  // var query = "SELECT * FROM User WHERE User.email = '" + user.email + "' and User.password = '" + user.password + "'";
-  //
-  // console.log("query: " + query);
-  //
-  // connection.query(query, function(error, rows, fields) {
-  //   if (error) {
-  //     console.log("Error: " + error.message);
-  //     return;
-  //   }
-  //   console.log("response: " + JSON.stringify(rows));
-    // var token = jwt.sign(rows, secret);
-    // var userData = {
-    //   "userID": rows[0].UserID,
-    //   "token": token
-    // };
-    // console.log("userData: " + JSON.stringify(userData));
-    // response.send(userData);
-//   });
-// });
 
 // Create User.
 app.post("/create", function(request, response) {

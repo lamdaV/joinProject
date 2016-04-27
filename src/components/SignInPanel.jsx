@@ -12,14 +12,21 @@ var SignInPanel = React.createClass({
     router: React.PropTypes.object
   },
 
+  getInitialState: function() {
+    return ({error: false});
+  },
+
   userValidation: function(event, data) {
     // Variable for stringification.
     // TODO: clean up logging.
     var dataCopy = data;
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.userID);
-    if (data) {
+    if (data.userID != null) {
       this.context.router.push("/profile/" + data.userID);
+    } else {
+      // TODO: figure out how to handle failed logins
+      alert("Invalid Email or Password");
     }
   },
 
@@ -73,6 +80,7 @@ var SignInPanel = React.createClass({
                   <button className = "btn btn-primary"> Sign in </button>
                 </div>
               </div>
+
             </form>
 
           </div>

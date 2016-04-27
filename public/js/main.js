@@ -26350,9 +26350,12 @@ module.exports = Routes;
 },{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":251,"./components/HomePage.jsx":252,"./components/Page1.jsx":253,"./components/UserProfilePage.jsx":257,"./reflux/userActions.jsx":261,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var UserStore = require("../reflux/userStore.jsx");
 
 // TODO: Set this correctly.
-var navLinks = [{
+var initialNavLinks = [{
   title: "Sign In",
   href: "/"
 }, {
@@ -26366,6 +26369,22 @@ var navLinks = [{
 var Base = React.createClass({
   displayName: "Base",
 
+  mixins: [Reflux.listenTo(UserStore, "updateNavBar")],
+
+  getInitialState: function () {
+    return { navLinks: initialNavLinks };
+  },
+
+  updateNavBar: function (event, data) {
+    if (data.userID != null) {
+      var nextLinks = [{
+        title: "Profile",
+        href: "/profile/" + data.userID
+      }];
+      this.setState({ navLinks: nextLinks });
+    }
+  },
+
   render: function () {
     var childrenStyle = {
       marginTop: 80
@@ -26376,7 +26395,7 @@ var Base = React.createClass({
       React.createElement(
         "div",
         { className: "row" },
-        React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: navLinks, brandName: "Join" })
+        React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: this.state.navLinks, brandName: "Join" })
       ),
       React.createElement(
         "div",
@@ -26394,7 +26413,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":259,"react":224}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":259,"../reflux/userActions.jsx":261,"../reflux/userStore.jsx":262,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -26689,10 +26708,9 @@ var HomePage = React.createClass({
 
   componentWillMount: function () {
     // If the user is authenticated skip the signup page.
-    if (localStorage.getItem("jwt")) {
-      if (UserActions.postIsAuthenticated()) {
-        this.context.router.push("/testpage");
-      }
+    if (localStorage.getItem("jwt") && UserActions.postIsAuthenticated()) {
+      console.log("authenticated");
+      this.context.router.push("/testpage");
     }
   },
 
@@ -26732,7 +26750,7 @@ module.exports = Page1;
 },{"react":224}],254:[function(require,module,exports){
 var React = require("react");
 
-var MIN_PASSWORD_LENGTH = 5;
+var MIN_PASSWORD_LENGTH = 8;
 
 var PasswordField = React.createClass({
   displayName: "PasswordField",
@@ -26827,14 +26845,21 @@ var SignInPanel = React.createClass({
     router: React.PropTypes.object
   },
 
+  getInitialState: function () {
+    return { error: false };
+  },
+
   userValidation: function (event, data) {
     // Variable for stringification.
     // TODO: clean up logging.
     var dataCopy = data;
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.userID);
-    if (data) {
+    if (data.userID != null) {
       this.context.router.push("/profile/" + data.userID);
+    } else {
+      // TODO: figure out how to handle failed logins
+      alert("Invalid Email or Password");
     }
   },
 
@@ -27189,6 +27214,9 @@ var UserStore = Reflux.createStore({
   init: function () {
     this.jwt = localStorage.getItem("jwt");
     console.log("jwt init: " + JSON.stringify(this.jwt));
+    if (this.jwt) {
+      this.postIsAuthenticated();
+    }
   },
 
   postValidateUser: function (email, password) {

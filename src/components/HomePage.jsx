@@ -10,10 +10,9 @@ var HomePage = React.createClass({
 
   componentWillMount: function() {
     // If the user is authenticated skip the signup page.
-    if (localStorage.getItem("jwt")) {
-      if (UserActions.postIsAuthenticated()) {
-        this.context.router.push("/testpage");
-      }
+    if (localStorage.getItem("jwt") && UserActions.postIsAuthenticated()) {
+      console.log("authenticated");
+      this.context.router.push("/testpage");
     }
   },
 

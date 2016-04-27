@@ -69,6 +69,7 @@ var NavBar = React.createClass({
                 <button type="submit" className ="btn btn-default">Submit</button>
               </form>
             </div>
+
           </div>
 
         </nav>
