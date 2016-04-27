@@ -8,7 +8,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 # Requirements:
   - Node.js
   - http-server
-  - Putty
+  - Putty or SSH client
 
 # How to use:
 1. Download the repository.
@@ -17,7 +17,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 4. Run `npm install http-server --g` to install required test package.
 5. Run `npm start` to build main.js. This will build the main.js upon any detected changes.
 6. Run `http-server -p <port>` to start the server.
-7. Open Putty.
+7. Open Putty or SSH client.
 8. Go to `Connection -> SSH -> Tunnels`.
 9. Set port to `3306` and destination to `localhost`.
 10. Go back to `Session` and enter the hostname given in the email.
@@ -59,7 +59,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [ ] Peer review stored procedures
 
 #### Extras: 
-- [x] Have users retype password of front end validation
+- [x] Have users retype password for front end validation
 - [x] Token-based authentication
 - [x] Begin implementing stored procedures
 
