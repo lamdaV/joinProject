@@ -69,11 +69,11 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] Write js to do the stuff I said js would do on previous pages
   - [ ] Unify/standardize css, custom div classes
   - [ ] At least registration front-end validation
-  - [ ] Create dummy user
+  - [x] Create dummy user for VM (David Lam)
 
 ### Christopher Knight:
   - [ ] Stored procedures for user creation + account info updates
   - [ ] Stored procedures for creating + updating available hours
   - [ ] Stored procedures for user rating
   - [ ] Help get mysql talk to front end
-  - [ ] Figure out dummy user permissions
+  - [x] Figure out dummy user permissions 
