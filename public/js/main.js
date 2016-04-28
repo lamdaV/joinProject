@@ -26325,6 +26325,8 @@ var Page1 = require("./components/Page1.jsx");
 var CreateAccountForm = require("./components/CreateAccountForm.jsx");
 var UserProfile = require("./components/UserProfilePage.jsx");
 var GamePage = require("./components/GamePage.jsx");
+var PageNotFound = require("./components/PageNotFound.jsx");
+var SearchResults = require("./components/SearchResults.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -26341,13 +26343,15 @@ var Routes = React.createElement(
     React.createElement(Route, { path: "/create", component: CreateAccountForm }),
     React.createElement(Route, { path: "/testpage", component: Page1 }),
     React.createElement(Route, { path: "/profile/:userID", component: UserProfile }),
-    React.createElement(Route, { path: "/game/:gameID", component: GamePage })
+    React.createElement(Route, { path: "/game/:gameID", component: GamePage }),
+    React.createElement(Route, { path: "/search/:searchQuery", component: SearchResults }),
+    React.createElement(Route, { path: "*", component: PageNotFound })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":251,"./components/HomePage.jsx":252,"./components/Page1.jsx":253,"./components/UserProfilePage.jsx":257,"./reflux/userActions.jsx":261,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":252,"./components/HomePage.jsx":253,"./components/Page1.jsx":254,"./components/PageNotFound.jsx":255,"./components/SearchResults.jsx":257,"./components/UserProfilePage.jsx":260,"./reflux/userActions.jsx":267,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
@@ -26380,6 +26384,12 @@ var Base = React.createClass({
       var nextLinks = [{
         title: "Profile",
         href: "/profile/" + data.userID
+      }, {
+        title: "Other User",
+        href: "/profile/99"
+      }, {
+        title: "Dark Souls 3",
+        href: "/game/1"
       }];
       this.setState({ navLinks: nextLinks });
     }
@@ -26413,7 +26423,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":259,"../reflux/userActions.jsx":261,"../reflux/userStore.jsx":262,"react":224,"reflux":240}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":262,"../reflux/userActions.jsx":267,"../reflux/userStore.jsx":268,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -26558,7 +26568,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"../reflux/userActions.jsx":261,"../reflux/userStore.jsx":262,"./EmailField.jsx":250,"./PasswordField.jsx":254,"./TimezoneRadioGroup.jsx":256,"react":224,"reflux":240}],249:[function(require,module,exports){
+},{"../reflux/userActions.jsx":267,"../reflux/userStore.jsx":268,"./EmailField.jsx":250,"./PasswordField.jsx":256,"./TimezoneRadioGroup.jsx":259,"react":224,"reflux":240}],249:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -26679,21 +26689,148 @@ module.exports = EmailField;
 },{"email-validator":4,"react":224}],251:[function(require,module,exports){
 var React = require("react");
 
+var GameContentPanel = React.createClass({
+  displayName: "GameContentPanel",
+
+  getInitialState: function () {
+    return { title: "", rating: "", price: "" };
+  },
+
+  componentWillMount: function () {
+    // TODO: rely on database data. probably props from above.
+    this.setState({ title: "Dark Souls 3", rating: "M", price: "59.99" });
+  },
+
+  render: function () {
+    var divStyle = {
+      marginTop: 10
+    };
+
+    var detailPanelStyle = {
+      minHeight: 240
+    };
+
+    var pricePanelStyle = {
+      minHeight: 240
+    };
+
+    var priceFontStyle = {
+      marginTop: 80,
+      color: "white",
+      fontStyle: "Calibri",
+      fontSize: 36
+    };
+
+    var panelHeaderStyle = {};
+
+    if (this.props.headerColor) {
+      panelHeaderStyle.background = this.props.headerColor;
+      pricePanelStyle.background = this.props.headerColor;
+    };
+
+    return React.createElement(
+      "div",
+      { style: divStyle },
+      React.createElement(
+        "div",
+        { className: "col-xs-9 col-sm-9" },
+        React.createElement(
+          "div",
+          { style: detailPanelStyle, className: "panel panel-primary" },
+          React.createElement(
+            "div",
+            { style: panelHeaderStyle, className: "panel-heading" },
+            React.createElement(
+              "h1",
+              { className: "text-center" },
+              " ",
+              this.state.title,
+              " "
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "panel-body" },
+            React.createElement(
+              "h3",
+              null,
+              " Rating: ",
+              this.state.rating,
+              " "
+            ),
+            React.createElement(
+              "h3",
+              null,
+              " Tags: "
+            )
+          )
+        )
+      ),
+      React.createElement(
+        "div",
+        { className: "col-xs-3 col-sm-3" },
+        React.createElement(
+          "div",
+          { className: "panel panel-default" },
+          React.createElement(
+            "div",
+            { style: pricePanelStyle, className: "panel-heading" },
+            React.createElement(
+              "div",
+              { style: priceFontStyle, className: "row text-center" },
+              "$",
+              this.state.price
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = GameContentPanel;
+
+},{"react":224}],252:[function(require,module,exports){
+var React = require("react");
+var GameContentPanel = require("./GameContentPanel.jsx");
+
 var GamePage = React.createClass({
   displayName: "GamePage",
 
+  getInitialState: function () {
+    return { gameID: "" };
+  },
+
+  componentDidMount: function () {
+    this.setState({ gameID: this.props.params.gameID });
+  },
+
+  componentWillReceiveProps: function () {
+    this.setState({ gameID: nextProps.params.gameID });
+  },
+
   render: function () {
     return React.createElement(
-      "h1",
+      "div",
       null,
-      "Game Page"
+      React.createElement(
+        "h1",
+        null,
+        "Game ID: ",
+        this.state.gameID
+      ),
+      React.createElement(
+        "div",
+        { className: "row panel-group" },
+        React.createElement(GameContentPanel, { headerColor: "#563d7c" })
+      )
     );
   }
 });
 
 module.exports = GamePage;
 
-},{"react":224}],252:[function(require,module,exports){
+},{"./GameContentPanel.jsx":251,"react":224}],253:[function(require,module,exports){
 var React = require("react");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
@@ -26730,7 +26867,7 @@ var HomePage = React.createClass({
 
 module.exports = HomePage;
 
-},{"../reflux/userActions.jsx":261,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":255,"react":224}],253:[function(require,module,exports){
+},{"../reflux/userActions.jsx":267,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":258,"react":224}],254:[function(require,module,exports){
 var React = require("react");
 
 var Page1 = React.createClass({
@@ -26747,7 +26884,24 @@ var Page1 = React.createClass({
 
 module.exports = Page1;
 
-},{"react":224}],254:[function(require,module,exports){
+},{"react":224}],255:[function(require,module,exports){
+var React = require("react");
+
+var PageNotFound = React.createClass({
+  displayName: "PageNotFound",
+
+  render: function () {
+    return React.createElement(
+      "h1",
+      null,
+      "404 Page Not Found"
+    );
+  }
+});
+
+module.exports = PageNotFound;
+
+},{"react":224}],256:[function(require,module,exports){
 var React = require("react");
 
 var MIN_PASSWORD_LENGTH = 8;
@@ -26828,7 +26982,58 @@ var PasswordField = React.createClass({
 
 module.exports = PasswordField;
 
-},{"react":224}],255:[function(require,module,exports){
+},{"react":224}],257:[function(require,module,exports){
+var React = require("react");
+// var Link = ReactRouter.Link;
+var Reflux = require("reflux");
+var GameActions = require("../reflux/gameActions.jsx");
+var GameStore = require("../reflux/gameStore.jsx");
+
+var SearchResults = React.createClass({
+  displayName: "SearchResults",
+
+  mixins: [Reflux.listenTo(GameStore, "displayResults")],
+
+  getInitialState: function () {
+    return { searchQuery: "", results: {} };
+  },
+
+  displayResults: function (event, data) {
+    console.log("DATA: " + JSON.stringify(data));
+    // this.setState({})
+  },
+
+  componentDidMount: function () {
+    this.setState({ searchQuery: this.props.params.searchQuery });
+  },
+
+  componentWillReceiveProps: function () {
+    this.setState({ searchQuery: nextProps.params.searchQuery });
+  },
+
+  render: function () {
+    // var createSearchItem = function(item, index) {
+    //   return (
+    //     <SearchItem linkStyle = {linkStyle} key = {item.title + index} href = {item.href} title = {item.title} />
+    //   );
+    // };
+    // <div className = "collapse navbar-collapse" id = "nav-collapse">
+    //   <ul className = "nav navbar-nav nav-pills">
+    //     {this.state.results.map(createSearchItem)}
+    //   </ul>
+    // </div>
+
+    return React.createElement(
+      "h1",
+      null,
+      " search page "
+    );
+  }
+});
+
+module.exports = SearchResults;
+
+},{"../reflux/gameActions.jsx":265,"../reflux/gameStore.jsx":266,"react":224,"reflux":240}],258:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -26941,7 +27146,7 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"../reflux/userActions.jsx":261,"../reflux/userStore.jsx":262,"./EmailField.jsx":250,"./PasswordField.jsx":254,"react":224,"reflux":240}],256:[function(require,module,exports){
+},{"../reflux/userActions.jsx":267,"../reflux/userStore.jsx":268,"./EmailField.jsx":250,"./PasswordField.jsx":256,"react":224,"reflux":240}],259:[function(require,module,exports){
 var React = require("react");
 var RadioGroup = require("react-radio-group");
 
@@ -27026,7 +27231,7 @@ var TimezoneRadioGroup = React.createClass({
 
 module.exports = TimezoneRadioGroup;
 
-},{"react":224,"react-radio-group":57}],257:[function(require,module,exports){
+},{"react":224,"react-radio-group":57}],260:[function(require,module,exports){
 var React = require("react");
 
 var UserProfilePage = React.createClass({
@@ -27036,12 +27241,24 @@ var UserProfilePage = React.createClass({
     return { userID: "" };
   },
 
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   componentDidMount: function () {
     this.setState({ userID: this.props.params.userID });
   },
 
   componentWillReceiveProps: function () {
-    this.setState({ userID: nextProps.params.userID });
+    // TODO: Route from profile to profile properly.
+    if (typeof nextProps !== "undefined") {
+      this.setState({ userID: nextProps.params.userID });
+    } else {
+      console.log("params: " + JSON.stringify(this.props.params));
+      console.log("pathname: " + this.props.location.pathname);
+      // this.context.router.push(this.props.location.pathname);
+      this.setState({ userID: this.props.params.userID });
+    }
   },
 
   render: function () {
@@ -27056,21 +27273,48 @@ var UserProfilePage = React.createClass({
 
 module.exports = UserProfilePage;
 
-},{"react":224}],258:[function(require,module,exports){
+},{"react":224}],261:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
 
 ReactDOM.render(Routes, document.getElementById("Base"));
 
-},{"./Routes.jsx":246,"react":224,"react-dom":56}],259:[function(require,module,exports){
+},{"./Routes.jsx":246,"react":224,"react-dom":56}],262:[function(require,module,exports){
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
 var ReactRouter = require("react-router");
+var Reflux = require("reflux");
+
+var UserActions = require("../reflux/userActions.jsx");
 var Link = ReactRouter.Link;
 
 var NavBar = React.createClass({
   displayName: "NavBar",
+
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  getInitialState: function () {
+    return { searchQuery: "" };
+  },
+
+  handleSignOut: function () {
+    UserActions.logout();
+    this.context.router.push("/home");
+  },
+
+  handleSearchSubmit: function (event) {
+    event.preventDefault();
+    console.log("submitting: " + this.state.searchQuery);
+    this.context.router.push("/search/" + this.state.searchQuery);
+  },
+
+  handleSearchChange: function (event) {
+    console.log("searchQuery: " + event.target.value);
+    this.setState({ searchQuery: event.target.value });
+  },
 
   render: function () {
     var navStyle = {
@@ -27120,7 +27364,7 @@ var NavBar = React.createClass({
           ),
           React.createElement(
             Link,
-            { style: titleStyle, className: "navbar-brand", to: "/" },
+            { style: titleStyle, className: "navbar-brand", to: "/home" },
             " ",
             this.props.brandName,
             " "
@@ -27132,8 +27376,16 @@ var NavBar = React.createClass({
           React.createElement(
             "ul",
             { className: "nav navbar-nav nav-pills" },
-            this.props.navData.map(createLinkItem),
-            ";"
+            this.props.navData.map(createLinkItem)
+          ),
+          React.createElement(
+            "div",
+            { onSubmit: this.handleSignOut, onClick: this.handleSignOut, className: "navbar-nav nav-pills" },
+            React.createElement(
+              "button",
+              { type: "submit", className: "btn btn-default" },
+              "Sign Out"
+            )
           ),
           React.createElement(
             "div",
@@ -27144,11 +27396,11 @@ var NavBar = React.createClass({
               React.createElement(
                 "div",
                 { className: "form-group" },
-                React.createElement("input", { type: "text", className: "form-control", placeholder: "Search" })
+                React.createElement("input", { onChange: this.handleSearchChange, type: "text", className: "form-control", placeholder: "Search", value: this.state.searchQuery })
               ),
               React.createElement(
                 "button",
-                { type: "submit", className: "btn btn-default" },
+                { onClick: this.handleSearchSubmit, type: "submit", className: "btn btn-default" },
                 "Submit"
               )
             )
@@ -27161,14 +27413,16 @@ var NavBar = React.createClass({
 
 module.exports = NavBar;
 
-},{"./NavItem.jsx":260,"react":224,"react-router":88}],260:[function(require,module,exports){
+},{"../reflux/userActions.jsx":267,"./NavItem.jsx":263,"react":224,"react-router":88,"reflux":240}],263:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
+var NavItemMixIn = require("./NavItemMixIn.jsx");
 
 var NavItem = React.createClass({
   displayName: "NavItem",
 
+  // mixins: [NavItemMixIn],
   getInitialState: function () {
     return { hover: false };
   },
@@ -27196,14 +27450,84 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"react":224,"react-router":88}],261:[function(require,module,exports){
+},{"./NavItemMixIn.jsx":264,"react":224,"react-router":88}],264:[function(require,module,exports){
+var NavItemMixIn = {
+  getInitialState: function () {
+    return { hover: false };
+  },
+
+  mouseOver: function (event) {
+    this.setState({ hover: true });
+  },
+
+  mouseOut: function (event) {
+    this.setState({ hover: false });
+  }
+};
+
+module.exports = NavItemMixIn;
+
+},{}],265:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postIsAuthenticated"]);
+var UserActions = Reflux.createActions(["postGameData"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],262:[function(require,module,exports){
+},{"reflux":240}],266:[function(require,module,exports){
+var http = require("../services/httpService.js");
+var Reflux = require("reflux");
+var GameActions = require("./gameActions.jsx");
+
+var UserStore = Reflux.createStore({
+  listenables: [GameActions],
+
+  init: function () {
+    this.jwt = localStorage.getItem("jwt");
+    if (this.jwt) {
+      console.log("jwt init: " + JSON.stringify(this.jwt));
+      this.postIsAuthenticated();
+    }
+  },
+
+  postGameData: function () {
+    // http.post("/gameData", )
+  },
+
+  postIsAuthenticated: function () {
+    if (this.jwt) {
+      var jwtJSON = {
+        "jwt": this.jwt
+      };
+
+      http.post("/authenticate", jwtJSON).then(function (dataJSON) {
+        this.user = dataJSON;
+        this.saveToken();
+        this.returnStatus();
+      }.bind(this));
+    }
+  },
+
+  // TODO: Consider caching large data.
+  saveToken: function () {
+    localStorage.setItem("jwt", this.user.jwt);
+  },
+
+  returnStatus: function () {
+    this.trigger("change", this.user);
+  }
+});
+
+module.exports = UserStore;
+
+},{"../services/httpService.js":269,"./gameActions.jsx":265,"reflux":240}],267:[function(require,module,exports){
+var Reflux = require("reflux");
+
+var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postIsAuthenticated", "logout"]);
+
+module.exports = UserActions;
+
+},{"reflux":240}],268:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
@@ -27213,8 +27537,8 @@ var UserStore = Reflux.createStore({
 
   init: function () {
     this.jwt = localStorage.getItem("jwt");
-    console.log("jwt init: " + JSON.stringify(this.jwt));
     if (this.jwt) {
+      console.log("jwt init: " + JSON.stringify(this.jwt));
       this.postIsAuthenticated();
     }
   },
@@ -27241,6 +27565,7 @@ var UserStore = Reflux.createStore({
 
     http.post("/create", user).then(function (dataJSON) {
       this.user = dataJSON;
+      this.saveToken();
       this.returnStatus();
     }.bind(this));
   },
@@ -27253,16 +27578,33 @@ var UserStore = Reflux.createStore({
 
       http.post("/authenticate", jwtJSON).then(function (dataJSON) {
         this.user = dataJSON;
+        console.log("authenticate user: " + JSON.stringify(this.user));
         this.saveToken();
         this.returnStatus();
+        return this.user.isValid;
       }.bind(this));
     }
   },
 
-  saveToken: function () {
-    localStorage.setItem("jwt", this.user.data);
+  logout: function () {
+    console.log("logging out...");
+    localStorage.removeItem("jwt");
+    console.log("localStorage: " + localStorage.getItem("jwt"));
+    this.jwt = "";
+    this.user = this.jwt;
+    this.returnStatus();
   },
 
+  /*
+    Saves the jwt data to localStorage.
+  */
+  saveToken: function () {
+    localStorage.setItem("jwt", this.user.jwt);
+  },
+
+  /*
+    Send data to those listening to the Store.
+  */
   returnStatus: function () {
     this.trigger("change", this.user);
   }
@@ -27270,7 +27612,7 @@ var UserStore = Reflux.createStore({
 
 module.exports = UserStore;
 
-},{"../services/httpService.js":263,"./userActions.jsx":261,"reflux":240}],263:[function(require,module,exports){
+},{"../services/httpService.js":269,"./userActions.jsx":267,"reflux":240}],269:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
 var baseUrl = "http://localhost:3333";
 
@@ -27296,4 +27638,4 @@ var Service = {
 
 module.exports = Service;
 
-},{"whatwg-fetch":245}]},{},[258]);
+},{"whatwg-fetch":245}]},{},[261]);

@@ -1,8 +1,10 @@
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
+var NavItemMixIn = require("./NavItemMixIn.jsx");
 
 var NavItem = React.createClass({
+  // mixins: [NavItemMixIn],
   getInitialState: function() {
     return ({hover: false});
   },

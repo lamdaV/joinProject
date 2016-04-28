@@ -17,7 +17,7 @@ var initialNavLinks = [
   {
     title: "Games",
     href: "/game/1"
-  }
+  },
 ];
 
 var Base = React.createClass({
@@ -29,10 +29,20 @@ var Base = React.createClass({
 
   updateNavBar: function(event, data) {
     if (data.userID != null) {
-      var nextLinks = [{
-        title: "Profile",
-        href: "/profile/" + data.userID
-      }]
+      var nextLinks = [
+        {
+          title: "Profile",
+          href: "/profile/" + data.userID
+        },
+        {
+          title: "Other User",
+          href: "/profile/99"
+        },
+        {
+          title: "Dark Souls 3",
+          href: "/game/1"
+        }
+      ];
       this.setState({navLinks: nextLinks});
     }
   },

@@ -5,12 +5,24 @@ var UserProfilePage = React.createClass({
     return ({userID: ""});
   },
 
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   componentDidMount: function() {
     this.setState({userID: this.props.params.userID});
   },
 
   componentWillReceiveProps: function() {
-    this.setState({userID: nextProps.params.userID});
+    // TODO: Route from profile to profile properly.
+    if (typeof nextProps !== "undefined") {
+      this.setState({userID: nextProps.params.userID});
+    } else {
+      console.log("params: " + JSON.stringify(this.props.params));
+      console.log("pathname: " + this.props.location.pathname);
+      // this.context.router.push(this.props.location.pathname);
+      this.setState({userID: this.props.params.userID});
+    }
   },
 
   render: function() {

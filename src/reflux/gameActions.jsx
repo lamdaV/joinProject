@@ -1,10 +1,7 @@
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions([
-  "postValidateUser",
-  "postCreateUser",
-  "postIsAuthenticated",
-  "logout"
+  "postGameData",
 ]);
 
 module.exports = UserActions;
