@@ -50,15 +50,16 @@ var Base = React.createClass({
   render: function() {
     var childrenStyle = {
       marginTop: 80
-    }
+    };
+
     return (
       <div>
-        <div className = "row">
-          <NavBar bgColor = "#563d7c" titleColor = "#fff" linkColor = "cyan" navData = {this.state.navLinks} brandName = "Join" />
-        </div>
+        <NavBar bgColor = "#563d7c" titleColor = "#fff" linkColor = "cyan" navData = {this.state.navLinks} brandName = "Join" />
 
-        <div style = {childrenStyle}>
-          {this.props.children}
+        <div className = "container">
+          <div style = {childrenStyle} className = "row">
+            {this.props.children}
+          </div>
         </div>
 
         <h1>Generic Footer</h1>

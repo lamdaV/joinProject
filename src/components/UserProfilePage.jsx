@@ -15,14 +15,15 @@ var UserProfilePage = React.createClass({
 
   componentWillReceiveProps: function() {
     // TODO: Route from profile to profile properly.
-    if (typeof nextProps !== "undefined") {
-      this.setState({userID: nextProps.params.userID});
-    } else {
-      console.log("params: " + JSON.stringify(this.props.params));
-      console.log("pathname: " + this.props.location.pathname);
-      // this.context.router.push(this.props.location.pathname);
-      this.setState({userID: this.props.params.userID});
-    }
+    // if (typeof nextProps !== "undefined") {
+    //   this.setState({userID: nextProps.params.userID});
+    // } else {
+    //   console.log("params: " + JSON.stringify(this.props.params));
+    //   console.log("pathname: " + this.props.location.pathname);
+    //   // this.context.router.push(this.props.location.pathname);
+    //   this.setState({userID: this.props.params.userID});
+    // }
+    this.setState({userID: nextProps.params.productID});
   },
 
   render: function() {

@@ -26399,18 +26399,19 @@ var Base = React.createClass({
     var childrenStyle = {
       marginTop: 80
     };
+
     return React.createElement(
       "div",
       null,
+      React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: this.state.navLinks, brandName: "Join" }),
       React.createElement(
         "div",
-        { className: "row" },
-        React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: this.state.navLinks, brandName: "Join" })
-      ),
-      React.createElement(
-        "div",
-        { style: childrenStyle },
-        this.props.children
+        { className: "container" },
+        React.createElement(
+          "div",
+          { style: childrenStyle, className: "row" },
+          this.props.children
+        )
       ),
       React.createElement(
         "h1",
@@ -26821,7 +26822,7 @@ var GamePage = React.createClass({
       ),
       React.createElement(
         "div",
-        { className: "row panel-group" },
+        { className: "panel-group" },
         React.createElement(GameContentPanel, { headerColor: "#563d7c" })
       )
     );
@@ -26854,7 +26855,7 @@ var HomePage = React.createClass({
   render: function () {
     return React.createElement(
       "div",
-      { className: "row" },
+      null,
       React.createElement(
         "div",
         { className: "panel-group" },
@@ -27251,14 +27252,15 @@ var UserProfilePage = React.createClass({
 
   componentWillReceiveProps: function () {
     // TODO: Route from profile to profile properly.
-    if (typeof nextProps !== "undefined") {
-      this.setState({ userID: nextProps.params.userID });
-    } else {
-      console.log("params: " + JSON.stringify(this.props.params));
-      console.log("pathname: " + this.props.location.pathname);
-      // this.context.router.push(this.props.location.pathname);
-      this.setState({ userID: this.props.params.userID });
-    }
+    // if (typeof nextProps !== "undefined") {
+    //   this.setState({userID: nextProps.params.userID});
+    // } else {
+    //   console.log("params: " + JSON.stringify(this.props.params));
+    //   console.log("pathname: " + this.props.location.pathname);
+    //   // this.context.router.push(this.props.location.pathname);
+    //   this.setState({userID: this.props.params.userID});
+    // }
+    this.setState({ userID: nextProps.params.productID });
   },
 
   render: function () {
@@ -27357,7 +27359,12 @@ var NavBar = React.createClass({
           { className: "navbar-header" },
           React.createElement(
             "button",
-            { type: "button", className: "navbar-toggle", "data-toggle": "collapse", "data-target": "#nav-collapse" },
+            { type: "button", className: "navbar-toggle collapsed", "data-toggle": "collapse", "data-target": "#nav-collapse" },
+            React.createElement(
+              "span",
+              { className: "sr-only" },
+              "Toggle Navigation"
+            ),
             React.createElement("span", { className: "icon-bar" }),
             React.createElement("span", { className: "icon-bar" }),
             React.createElement("span", { className: "icon-bar" })
@@ -27416,6 +27423,7 @@ module.exports = NavBar;
 },{"../reflux/userActions.jsx":267,"./NavItem.jsx":263,"react":224,"react-router":88,"reflux":240}],263:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
+var PropTypes = React.PropTypes;
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("./NavItemMixIn.jsx");
 
@@ -27423,6 +27431,12 @@ var NavItem = React.createClass({
   displayName: "NavItem",
 
   // mixins: [NavItemMixIn],
+  propTypes: {
+    href: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    style: PropTypes.object
+  },
+
   getInitialState: function () {
     return { hover: false };
   },

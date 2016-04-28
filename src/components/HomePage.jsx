@@ -18,7 +18,7 @@ var HomePage = React.createClass({
 
   render: function() {
     return (
-      <div className = "row">
+      <div>
         <div className = "panel-group">
           <SignInPanel headerColor = "#563d7c"></SignInPanel>
           <CreateAccountPanel headerColor = "#563d7c"></CreateAccountPanel>

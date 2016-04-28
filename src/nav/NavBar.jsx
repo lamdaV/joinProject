@@ -69,7 +69,8 @@ var NavBar = React.createClass({
           <div className = "navbar-header">
 
             {/*Navbar collapsable button*/}
-            <button type = "button" className = "navbar-toggle" data-toggle = "collapse" data-target = "#nav-collapse">
+            <button type = "button" className = "navbar-toggle collapsed" data-toggle = "collapse" data-target = "#nav-collapse">
+              <span className = "sr-only">Toggle Navigation</span>
               <span className = "icon-bar"></span>
               <span className = "icon-bar"></span>
               <span className = "icon-bar"></span>

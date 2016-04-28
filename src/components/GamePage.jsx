@@ -20,7 +20,7 @@ var GamePage = React.createClass({
         {/* TODO: remove header after testing.*/}
         <h1>Game ID: {this.state.gameID}</h1>
 
-        <div className = "row panel-group">
+        <div className = "panel-group">
           <GameContentPanel headerColor = "#563d7c" />
         </div>
       </div>
