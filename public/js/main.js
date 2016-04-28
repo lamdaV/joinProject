@@ -27251,7 +27251,6 @@ var UserProfilePage = React.createClass({
   },
 
   componentWillReceiveProps: function (nextProps) {
-    // TODO: Route from profile to profile properly.
     this.setState({ userID: nextProps.params.userID });
   },
 
