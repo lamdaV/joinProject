@@ -10,7 +10,7 @@ var GamePage = React.createClass({
     this.setState({gameID: this.props.params.gameID});
   },
 
-  componentWillReceiveProps: function() {
+  componentWillReceiveProps: function(nextProps) {
     this.setState({gameID: nextProps.params.gameID});
   },
 
