@@ -26381,17 +26381,19 @@ var Base = React.createClass({
 
   getInitialState: function () {
     console.log("base init: " + UserActions.postIsAuthenticated());
-    return { navLinks: initialNavLinks, canSignOut: false };
+    return { navLinks: initialNavLinks, canSignOut: false, brandLink: "/home" };
   },
 
   updateNavBar: function (event, data) {
     console.log("base data: " + JSON.stringify(data));
     var nextLinks = initialNavLinks;
     var canSignOut = false;
+    var brandLink = "/home";
     if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
+      var userProfileLink = "/profile/" + data.UserID;
       var nextLinks = [{
         title: "Profile",
-        href: "/profile/" + data.UserID
+        href: userProfileLink
       }, {
         title: "Other User",
         href: "/profile/99"
@@ -26405,7 +26407,11 @@ var Base = React.createClass({
       this.context.router.push("/#");
     }
 
-    this.setState({ navLinks: nextLinks, canSignOut: canSignOut });
+    if (userProfileLink) {
+      brandLink = userProfileLink;
+    }
+
+    this.setState({ navLinks: nextLinks, canSignOut: canSignOut, brandLink: brandLink });
   },
 
   render: function () {
@@ -26417,7 +26423,7 @@ var Base = React.createClass({
     return React.createElement(
       "div",
       null,
-      React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: this.state.navLinks, brandName: "Join", enableSignOut: this.state.canSignOut }),
+      React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: this.state.navLinks, brandName: "Join", brandLink: this.state.brandLink, enableSignOut: this.state.canSignOut }),
       React.createElement(
         "div",
         { className: "container" },
@@ -27403,7 +27409,7 @@ var NavBar = React.createClass({
           ),
           React.createElement(
             Link,
-            { style: titleStyle, className: "navbar-brand", to: "/home" },
+            { style: titleStyle, className: "navbar-brand", to: this.props.brandLink },
             " ",
             this.props.brandName,
             " "

@@ -29,18 +29,20 @@ var Base = React.createClass({
 
   getInitialState: function() {
     console.log("base init: " + UserActions.postIsAuthenticated());
-    return ({navLinks: initialNavLinks, canSignOut: false});
+    return ({navLinks: initialNavLinks, canSignOut: false, brandLink: "/home"});
   },
 
   updateNavBar: function(event, data) {
     console.log("base data: " + JSON.stringify(data));
     var nextLinks = initialNavLinks;
     var canSignOut = false;
+    var brandLink = "/home";
     if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
+      var userProfileLink = "/profile/" + data.UserID;
       var nextLinks = [
         {
           title: "Profile",
-          href: "/profile/" + data.UserID
+          href: userProfileLink
         },
         {
           title: "Other User",
@@ -57,7 +59,11 @@ var Base = React.createClass({
       this.context.router.push("/#");
     }
 
-    this.setState({navLinks: nextLinks, canSignOut: canSignOut});
+    if (userProfileLink) {
+      brandLink = userProfileLink;
+    }
+
+    this.setState({navLinks: nextLinks, canSignOut: canSignOut, brandLink: brandLink});
   },
 
   render: function() {
@@ -68,7 +74,7 @@ var Base = React.createClass({
     // TODO: why does it need this childrenStyle?!?!
     return (
       <div>
-        <NavBar bgColor = "#563d7c" titleColor = "#fff" linkColor = "cyan" navData = {this.state.navLinks} brandName = "Join" enableSignOut = {this.state.canSignOut}/>
+        <NavBar bgColor = "#563d7c" titleColor = "#fff" linkColor = "cyan" navData = {this.state.navLinks} brandName = "Join" brandLink = {this.state.brandLink} enableSignOut = {this.state.canSignOut}/>
 
         <div className = "container">
           <div style = {childrenStyle} className = "row">
