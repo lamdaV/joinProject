@@ -1,4 +1,4 @@
-# Join Project 
+# Join Project
 
 Authors: David Lam, Kennan French, and Christopher Knight
 
@@ -15,19 +15,19 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 2. Navigate to the root of the repository folder via terminal.
 3. Run `npm install` to update/retrieve required npm packages.
 4. Run `npm install http-server --g` to install required test package.
-5. Run `npm start` to build main.js. This will build the main.js upon any detected changes.
+5. Run `npm start` to build main.js located in `public\js`. This will build the main.js upon any detected changes. Note: the terminal will be inactive.
 6. Run `http-server -p <port>` to start the server.
 7. Open Putty or SSH client.
 8. Go to `Connection -> SSH -> Tunnels`.
-9. Set port to `3306` and destination to `localhost`.
+9. Set port to `3306` and destination to `localhost:3306`. Then click the add button.
 10. Go back to `Session` and enter the hostname given in the email.
 11. Optional: Save Session with a session name below.
 12. Click open and login with emailed credentials.
 13. Now open a new terminal window and navigate to the repository.
 14. Optional: Run `npm install nodemon -g` to install nodemon.
-15. Run `nodemon server.js` or `node server.js` and run on port `3333`
-16. Open your prefered browser and go to `localhost:<port>`.
-17. You should now see the generated HTML.
+15. Run `nodemon server.js` or `node server.js`. This will run a server on port `3333`.
+16. Open your prefered browser and go to `localhost:<port>` where `<port>` is the port used in `http-server`.
+17. You should now see the react webpage.
 
 # Milestones:
 ## Milestone 01:
@@ -55,20 +55,24 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ## Milestone 02:
 ### David Lam:
 - [x] Connect account creation page to backend
-- [ ] Start games page (in progress)
-- [ ] Peer review stored procedures
+- [x] Start games page 
+- [x] Peer review stored procedures
 
-#### Extras: 
+#### Extras:
 - [x] Have users retype password for front end validation
 - [x] Token-based authentication
 - [x] Begin implementing stored procedures
+- [x] Sign out procedures
+- [x] Modified Create stored procedure
+- [x] Modified Login stored procedure
+- [x] Made GetGameByTitle stored procedure
 
 ### Kennan French:
   - [ ] Learn React
   - [ ] Hook stuff up with David's stuff (related to above)
   - [ ] Write js to do the stuff I said js would do on previous pages
   - [ ] Unify/standardize css, custom div classes
-  - [ ] At least registration front-end validation
+  - [x] At least registration front-end validation (David Lam)
   - [x] Create dummy user for VM (David Lam)
 
 ### Christopher Knight:
@@ -76,4 +80,4 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] Stored procedures for creating + updating available hours
   - [ ] Stored procedures for user rating
   - [ ] Help get mysql talk to front end
-  - [x] Figure out dummy user permissions 
+  - [x] Figure out dummy user permissions
