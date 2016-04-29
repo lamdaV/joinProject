@@ -23,7 +23,12 @@ var initialNavLinks = [
 var Base = React.createClass({
   mixins: [Reflux.listenTo(UserStore, "updateNavBar")],
 
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   getInitialState: function() {
+    console.log("base init: " + UserActions.postIsAuthenticated());
     return ({navLinks: initialNavLinks, canSignOut: false});
   },
 
@@ -48,6 +53,8 @@ var Base = React.createClass({
       ];
 
       canSignOut = true;
+    } else {
+      this.context.router.push("/#");
     }
 
     this.setState({navLinks: nextLinks, canSignOut: canSignOut});

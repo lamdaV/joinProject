@@ -56,9 +56,21 @@ app.post("/authenticate", function(request, response) {
     // Get encrypted data.
     token = jwtJSON.jwt;
 
+    var authentication = {
+      "jwt" : "",
+      "UserID" : ""
+    };
+
     // Decode the data.
     // Note: decoded does not need to be escaped as jwt can only hold data already escaped when the user initally logged in.
-    var decoded = jwt.verify(token, secret);
+    try {
+      var decoded = jwt.verify(token, secret)
+    } catch(err) {
+      console.log("error: " + err.message);
+      authentication.error = -1;
+      response.send(authentication);
+      return;
+    }
 
     console.log("DECODED: " + JSON.stringify(decoded));
 
@@ -68,10 +80,8 @@ app.post("/authenticate", function(request, response) {
       "password" : decoded.password
     };
 
-    userData = jwt.sign(userData, secret);
-    var authentication = {
-      "jwt" : userData
-    };
+    authentication.jwt = jwt.sign(userData, secret, {expiresIn: "10h"});
+
 
     // Create login_function query.
     var query = format("SET @UserID = -1; CALL login_function({0}, {1}, @UserID); SELECT @UserID AS UserID;", decoded.email, decoded.password);
@@ -144,7 +154,7 @@ app.post("/signin", function(request, response) {
       };
 
       // Encrypt.
-      userData = jwt.sign(userData, secret);
+      userData = jwt.sign(userData, secret, {expiresIn: "10h"});
       authentication = {
         "UserID" : rows[2][0].UserID,
         "jwt" : userData
@@ -195,7 +205,7 @@ app.post("/create", function(request, response) {
         "password" : password
       };
 
-      userData = jwt.sign(userData, secret);
+      userData = jwt.sign(userData, secret, {expiresIn: "10h"});
 
       var authentication = {
         "status" : status,

@@ -56,11 +56,13 @@ var UserStore = Reflux.createStore({
       http.post("/authenticate", jwtJSON).then(function(dataJSON) {
         this.user = dataJSON;
         console.log("authenticate user: " + JSON.stringify(this.user));
-
         var isAuthenticated = localStorage.getItem("UserID") == this.user.UserID
-        this.user.isValid = isAuthenticated;
 
-        console.log("isAuthenticated: " + isAuthenticated);
+        if (this.user.error == -1) {
+          localStorage.clear();
+          this.returnStatus();
+        }
+
         if (isAuthenticated) {
           this.saveToken();
           this.returnStatus();

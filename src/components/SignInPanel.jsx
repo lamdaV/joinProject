@@ -22,8 +22,15 @@ var SignInPanel = React.createClass({
     var dataCopy = data;
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.UserID);
+
+    if (data.error == -1) {
+      return;
+    }
+
     if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
       this.context.router.push("/profile/" + data.UserID);
+    } else if (data.length == 0){
+      console.log("Do not alert!");
     } else {
       // TODO: figure out how to handle failed logins
       this.refs.passwordField.clear();

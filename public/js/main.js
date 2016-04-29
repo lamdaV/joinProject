@@ -26375,7 +26375,12 @@ var Base = React.createClass({
 
   mixins: [Reflux.listenTo(UserStore, "updateNavBar")],
 
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   getInitialState: function () {
+    console.log("base init: " + UserActions.postIsAuthenticated());
     return { navLinks: initialNavLinks, canSignOut: false };
   },
 
@@ -26396,6 +26401,8 @@ var Base = React.createClass({
       }];
 
       canSignOut = true;
+    } else {
+      this.context.router.push("/#");
     }
 
     this.setState({ navLinks: nextLinks, canSignOut: canSignOut });
@@ -27091,8 +27098,15 @@ var SignInPanel = React.createClass({
     var dataCopy = data;
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.UserID);
+
+    if (data.error == -1) {
+      return;
+    }
+
     if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
       this.context.router.push("/profile/" + data.UserID);
+    } else if (data.length == 0) {
+      console.log("Do not alert!");
     } else {
       // TODO: figure out how to handle failed logins
       this.refs.passwordField.clear();
@@ -27621,11 +27635,13 @@ var UserStore = Reflux.createStore({
       http.post("/authenticate", jwtJSON).then(function (dataJSON) {
         this.user = dataJSON;
         console.log("authenticate user: " + JSON.stringify(this.user));
-
         var isAuthenticated = localStorage.getItem("UserID") == this.user.UserID;
-        this.user.isValid = isAuthenticated;
 
-        console.log("isAuthenticated: " + isAuthenticated);
+        if (this.user.error == -1) {
+          localStorage.clear();
+          this.returnStatus();
+        }
+
         if (isAuthenticated) {
           this.saveToken();
           this.returnStatus();
