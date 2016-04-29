@@ -26351,7 +26351,7 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":252,"./components/HomePage.jsx":253,"./components/Page1.jsx":254,"./components/PageNotFound.jsx":255,"./components/SearchResultsPage.jsx":257,"./components/UserProfilePage.jsx":260,"./reflux/userActions.jsx":267,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":252,"./components/HomePage.jsx":253,"./components/Page1.jsx":254,"./components/PageNotFound.jsx":255,"./components/SearchResultsPage.jsx":257,"./components/UserProfilePage.jsx":260,"./reflux/userActions.jsx":268,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
@@ -26438,7 +26438,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":262,"../reflux/userActions.jsx":267,"../reflux/userStore.jsx":268,"react":224,"reflux":240}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":262,"../reflux/userActions.jsx":268,"../reflux/userStore.jsx":269,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -26605,7 +26605,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"../reflux/userActions.jsx":267,"../reflux/userStore.jsx":268,"./EmailField.jsx":250,"./PasswordField.jsx":256,"./TimezoneRadioGroup.jsx":259,"react":224,"reflux":240}],249:[function(require,module,exports){
+},{"../reflux/userActions.jsx":268,"../reflux/userStore.jsx":269,"./EmailField.jsx":250,"./PasswordField.jsx":256,"./TimezoneRadioGroup.jsx":259,"react":224,"reflux":240}],249:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -26906,7 +26906,7 @@ var HomePage = React.createClass({
 
 module.exports = HomePage;
 
-},{"../reflux/userActions.jsx":267,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":258,"react":224}],254:[function(require,module,exports){
+},{"../reflux/userActions.jsx":268,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":258,"react":224}],254:[function(require,module,exports){
 var React = require("react");
 
 var Page1 = React.createClass({
@@ -27071,7 +27071,7 @@ var SearchResults = React.createClass({
 
 module.exports = SearchResults;
 
-},{"../reflux/gameActions.jsx":265,"../reflux/gameStore.jsx":266,"react":224,"reflux":240}],258:[function(require,module,exports){
+},{"../reflux/gameActions.jsx":266,"../reflux/gameStore.jsx":267,"react":224,"reflux":240}],258:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -27192,7 +27192,7 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"../reflux/userActions.jsx":267,"../reflux/userStore.jsx":268,"./EmailField.jsx":250,"./PasswordField.jsx":256,"react":224,"reflux":240}],259:[function(require,module,exports){
+},{"../reflux/userActions.jsx":268,"../reflux/userStore.jsx":269,"./EmailField.jsx":250,"./PasswordField.jsx":256,"react":224,"reflux":240}],259:[function(require,module,exports){
 var React = require("react");
 var RadioGroup = require("react-radio-group");
 
@@ -27321,6 +27321,7 @@ ReactDOM.render(Routes, document.getElementById("Base"));
 },{"./Routes.jsx":246,"react":224,"react-dom":56}],262:[function(require,module,exports){
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
+var NavSignOut = require("./NavSignOut.jsx");
 var ReactRouter = require("react-router");
 var Reflux = require("reflux");
 
@@ -27336,11 +27337,6 @@ var NavBar = React.createClass({
 
   getInitialState: function () {
     return { searchQuery: "" };
-  },
-
-  handleSignOut: function () {
-    UserActions.logout();
-    this.context.router.push("/home");
   },
 
   handleSearchSubmit: function (event) {
@@ -27419,17 +27415,10 @@ var NavBar = React.createClass({
           React.createElement(
             "ul",
             { className: "nav navbar-nav nav-pills" },
-            this.props.navData.map(createLinkItem)
+            this.props.navData.map(createLinkItem),
+            this.props.enableSignOut ? React.createElement(NavSignOut, { linkStyle: linkStyle }) : null
           ),
-          this.props.enableSignOut ? React.createElement(
-            "div",
-            { onSubmit: this.handleSignOut, onClick: this.handleSignOut, className: "navbar-nav nav-pills" },
-            React.createElement(
-              "button",
-              { type: "submit", className: "btn btn-default" },
-              "Sign Out"
-            )
-          ) : null,
+          this.props.enableSignOut ? React.createElement("div", { onSubmit: this.handleSignOut, onClick: this.handleSignOut, className: "navbar-nav nav-pills" }) : null,
           React.createElement(
             "div",
             null,
@@ -27456,7 +27445,7 @@ var NavBar = React.createClass({
 
 module.exports = NavBar;
 
-},{"../reflux/userActions.jsx":267,"./NavItem.jsx":263,"react":224,"react-router":88,"reflux":240}],263:[function(require,module,exports){
+},{"../reflux/userActions.jsx":268,"./NavItem.jsx":263,"./NavSignOut.jsx":265,"react":224,"react-router":88,"reflux":240}],263:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var PropTypes = React.PropTypes;
@@ -27466,23 +27455,12 @@ var NavItemMixIn = require("./NavItemMixIn.jsx");
 var NavItem = React.createClass({
   displayName: "NavItem",
 
-  // mixins: [NavItemMixIn],
+  mixins: [NavItemMixIn],
+
   propTypes: {
     href: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     style: PropTypes.object
-  },
-
-  getInitialState: function () {
-    return { hover: false };
-  },
-
-  mouseOver: function (event) {
-    this.setState({ hover: true });
-  },
-
-  mouseOut: function (event) {
-    this.setState({ hover: false });
   },
 
   render: function () {
@@ -27518,13 +27496,50 @@ var NavItemMixIn = {
 module.exports = NavItemMixIn;
 
 },{}],265:[function(require,module,exports){
+var React = require("react");
+var ReactRouter = require("react-router");
+var PropTypes = React.PropTypes;
+var Link = ReactRouter.Link;
+var NavItemMixIn = require("./NavItemMixIn.jsx");
+var UserActions = require("../reflux/userActions.jsx");
+
+var NavItem = React.createClass({
+  displayName: "NavItem",
+
+  mixins: [NavItemMixIn],
+  propTypes: {
+    style: PropTypes.object
+  },
+
+  handleSignOut: function (event) {
+    event.preventDefault();
+    UserActions.logout();
+    // this.context.router.push("/home");
+  },
+
+  render: function () {
+    return React.createElement(
+      "li",
+      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseOut: this.mouseOut },
+      React.createElement(
+        Link,
+        { onClick: this.handleSignOut, style: this.props.linkStyle, to: "#" },
+        "Sign Out"
+      )
+    );
+  }
+});
+
+module.exports = NavItem;
+
+},{"../reflux/userActions.jsx":268,"./NavItemMixIn.jsx":264,"react":224,"react-router":88}],266:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions(["postGameData"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],266:[function(require,module,exports){
+},{"reflux":240}],267:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var GameActions = require("./gameActions.jsx");
@@ -27570,14 +27585,14 @@ var UserStore = Reflux.createStore({
 
 module.exports = UserStore;
 
-},{"../services/httpService.js":269,"./gameActions.jsx":265,"reflux":240}],267:[function(require,module,exports){
+},{"../services/httpService.js":270,"./gameActions.jsx":266,"reflux":240}],268:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postIsAuthenticated", "logout"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],268:[function(require,module,exports){
+},{"reflux":240}],269:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
@@ -27677,7 +27692,7 @@ var UserStore = Reflux.createStore({
 
 module.exports = UserStore;
 
-},{"../services/httpService.js":269,"./userActions.jsx":267,"reflux":240}],269:[function(require,module,exports){
+},{"../services/httpService.js":270,"./userActions.jsx":268,"reflux":240}],270:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
 var baseUrl = "http://localhost:3333";
 

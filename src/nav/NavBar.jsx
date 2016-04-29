@@ -1,5 +1,6 @@
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
+var NavSignOut = require("./NavSignOut.jsx");
 var ReactRouter = require("react-router");
 var Reflux = require("reflux");
 
@@ -13,11 +14,6 @@ var NavBar = React.createClass({
 
   getInitialState: function() {
     return ({searchQuery: ""});
-  },
-
-  handleSignOut: function() {
-    UserActions.logout();
-    this.context.router.push("/home");
   },
 
   handleSearchSubmit: function(event) {
@@ -84,15 +80,13 @@ var NavBar = React.createClass({
           <div className = "collapse navbar-collapse" id = "nav-collapse">
             <ul className = "nav navbar-nav nav-pills">
               {this.props.navData.map(createLinkItem)}
+              {this.props.enableSignOut ? <NavSignOut linkStyle = {linkStyle}/> : null}
             </ul>
 
             {/*signout*/}
             {/*TODO: Get Pill to work*/}
             {this.props.enableSignOut ? <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
-              {/*<ul className = "nav navbar-nav nav-pills">
-                  <NavItem linkStyle = {linkStyle} href = "/" key = "signoutPill" id = "121" title = "Sign Out"></NavItem>
-              </ul>*/}
-              <button type="submit" className ="btn btn-default">Sign Out</button>
+              {/*<button type="submit" className ="btn btn-default">Sign Out</button>*/}
             </div> : null}
 
             {/*Search*/}
