@@ -88,12 +88,12 @@ var NavBar = React.createClass({
 
             {/*signout*/}
             {/*TODO: Get Pill to work*/}
-            <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
+            {this.props.enableSignOut ? <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
               {/*<ul className = "nav navbar-nav nav-pills">
                   <NavItem linkStyle = {linkStyle} href = "/" key = "signoutPill" id = "121" title = "Sign Out"></NavItem>
               </ul>*/}
               <button type="submit" className ="btn btn-default">Sign Out</button>
-            </div>
+            </div> : null}
 
             {/*Search*/}
             {/*TODO: Make search components*/}

@@ -20,7 +20,7 @@ var SearchResults = React.createClass({
     this.setState({searchQuery: this.props.params.searchQuery});
   },
 
-  componentWillReceiveProps: function() {
+  componentWillReceiveProps: function(nextProps) {
     this.setState({searchQuery: nextProps.params.searchQuery});
   },
 

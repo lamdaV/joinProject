@@ -28,7 +28,6 @@ var PasswordField = React.createClass({
   },
 
   onChange: function(event) {
-    console.log("in passwordfield on change");
     this.setState({hasChanged: true, password: event.target.value});
   },
 

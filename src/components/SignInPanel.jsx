@@ -21,11 +21,12 @@ var SignInPanel = React.createClass({
     // TODO: clean up logging.
     var dataCopy = data;
     console.log("userValidation data: " + JSON.stringify(dataCopy));
-    console.log("userID: " + data.userID);
-    if (data.userID != null) {
-      this.context.router.push("/profile/" + data.userID);
+    console.log("userID: " + data.UserID);
+    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
+      this.context.router.push("/profile/" + data.UserID);
     } else {
       // TODO: figure out how to handle failed logins
+      this.refs.passwordField.clear();
       alert("Invalid Email or Password");
     }
   },

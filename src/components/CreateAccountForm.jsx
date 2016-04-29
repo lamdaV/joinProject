@@ -7,6 +7,7 @@ var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
 
 var CreateAccountForm = React.createClass({
+  // Listen to the UserStore.
   mixins: [Reflux.listenTo(UserStore, "createUser")],
 
   contextTypes: {
@@ -14,19 +15,23 @@ var CreateAccountForm = React.createClass({
   },
 
   getInitialState: function() {
-    return ({matchError: false});
+    return ({matchError: false, errorUserNotUnique: false});
   },
 
   createUser: function(event, data) {
     console.log("userValidation data: " + JSON.stringify(data));
-    console.log("userID: " + data[2][0].UserID);
+    console.log("userID: " + data.UserID);
+    console.log("status: " + data.status);
 
-    // TODO: change where this is routed.
-    if (data) {
+    // TODO: change where this is routed. (possibly preference page)
+    if (data.UserID || data.status === 0) {
       console.log("Routing...");
-      this.context.router.push("/profile/" + data[2][0].UserID);
-    } else {
+      this.context.router.push("/profile/" + data.UserID);
+    } else if (data.status === 2) {
       // TODO: UI response.
+      console.log("User already exists...");
+      this.setState({errorUserNotUnique: true});
+    } else {
       console.log("failed to create");
     }
   },
@@ -34,7 +39,6 @@ var CreateAccountForm = React.createClass({
   handleSubmit: function(event) {
     event.preventDefault();
     var isValid = this.checkValidity();
-    console.log("Valid: " + isValid);
 
     var email = this.refs.emailField.state.email;
     var password = this.refs.passwordField.state.password;
@@ -46,7 +50,6 @@ var CreateAccountForm = React.createClass({
 
     // TODO: Transition to the correct page.
     if (isValid) {
-      // this.context.router.push("/testpage");
       UserActions.postCreateUser(email, password, timezone);
     } else {
       console.log("Not all fields are valid");
@@ -82,6 +85,16 @@ var CreateAccountForm = React.createClass({
     }
   },
 
+  componentWillMount: function() {
+    // If the user is authenticated skip the signin page.
+    if (localStorage.getItem("jwt") && UserActions.postIsAuthenticated()) {
+      console.log("authenticated");
+      this.context.router.push("/profile/" + localStorage.getItem("UserID"));
+    } else {
+      console.log("create form mounting...");
+    }
+  },
+
   render: function() {
     var panelBodyStyle = {
       minHeight: 150
@@ -92,27 +105,41 @@ var CreateAccountForm = React.createClass({
         <div className = "panel panel-primary">
           <div style = {panelBodyStyle} className = "panel panel-body">
             <form onSubmit = {this.handleSubmit}>
+              {/*Email Field*/}
               <div className = "row">
                 <EmailField ref = "emailField"/>
               </div>
 
+              {/*Password Field*/}
               <div className = "row" >
                 <PasswordField ref = "passwordField"/>
               </div>
 
+              {/*Re:Password field*/}
               <div className = "row" onBlur = {this.checkPassword}>
                 <PasswordField ref = "passwordFieldCheck" labelText = "Re-enter Password" validityAlert = {false} matchError = {this.state.matchError}/>
               </div>
 
+              {/*Timezone radios*/}
               <div className = "row">
               <TimezoneRadioGroup ref = "timezoneRadio"/>
               </div>
 
+              {/*Next Button*/}
               <div className = "row">
                 <div className = "col-sm-12 col-lg-12">
                   <button className = "btn btn-primary"> Next </button>
                 </div>
               </div>
+
+              {/*Dynamic Error*/}
+              {this.state.errorUserNotUnique ?
+              <div className = "row">
+                <div className = "col-sm-12 alert alert-danger">
+                  Error: User already exists.
+                </div>
+              </div> : null}
+
             </form>
           </div>
         </div>

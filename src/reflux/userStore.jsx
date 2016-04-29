@@ -21,7 +21,9 @@ var UserStore = Reflux.createStore({
 
     http.post("/signin", user).then(function(dataJSON) {
       this.user = dataJSON;
-      this.saveToken();
+      if (this.user.UserID !== null) {
+        this.saveToken();
+      }
       this.returnStatus();
     }.bind(this));
   },
@@ -35,8 +37,13 @@ var UserStore = Reflux.createStore({
 
     http.post("/create", user).then(function(dataJSON) {
       this.user = dataJSON;
-      this.saveToken();
+      console.log("user create: " + JSON.stringify(this.user))
+      // Do not save is a status is returned.
+      if (this.user.status === 0) {
+        this.saveToken();
+      }
       this.returnStatus();
+
     }.bind(this));
   },
 
@@ -49,17 +56,23 @@ var UserStore = Reflux.createStore({
       http.post("/authenticate", jwtJSON).then(function(dataJSON) {
         this.user = dataJSON;
         console.log("authenticate user: " + JSON.stringify(this.user));
-        this.saveToken();
-        this.returnStatus();
-        return this.user.isValid;
+
+        var isAuthenticated = localStorage.getItem("UserID") == this.user.UserID
+        this.user.isValid = isAuthenticated;
+
+        console.log("isAuthenticated: " + isAuthenticated);
+        if (isAuthenticated) {
+          this.saveToken();
+          this.returnStatus();
+        }
+        return isAuthenticated;
       }.bind(this));
     }
   },
 
   logout: function() {
     console.log("logging out...")
-    localStorage.removeItem("jwt");
-    console.log("localStorage: " + localStorage.getItem("jwt"));
+    localStorage.clear();
     this.jwt = "";
     this.user = this.jwt;
     this.returnStatus();
@@ -70,6 +83,7 @@ var UserStore = Reflux.createStore({
   */
   saveToken: function() {
     localStorage.setItem("jwt", this.user.jwt);
+    localStorage.setItem("UserID", this.user.UserID);
   },
 
   /*

@@ -26326,7 +26326,7 @@ var CreateAccountForm = require("./components/CreateAccountForm.jsx");
 var UserProfile = require("./components/UserProfilePage.jsx");
 var GamePage = require("./components/GamePage.jsx");
 var PageNotFound = require("./components/PageNotFound.jsx");
-var SearchResults = require("./components/SearchResults.jsx");
+var SearchResultsPage = require("./components/SearchResultsPage.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -26344,14 +26344,14 @@ var Routes = React.createElement(
     React.createElement(Route, { path: "/testpage", component: Page1 }),
     React.createElement(Route, { path: "/profile/:userID", component: UserProfile }),
     React.createElement(Route, { path: "/game/:gameID", component: GamePage }),
-    React.createElement(Route, { path: "/search/:searchQuery", component: SearchResults }),
+    React.createElement(Route, { path: "/search/:searchQuery", component: SearchResultsPage }),
     React.createElement(Route, { path: "*", component: PageNotFound })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":252,"./components/HomePage.jsx":253,"./components/Page1.jsx":254,"./components/PageNotFound.jsx":255,"./components/SearchResults.jsx":257,"./components/UserProfilePage.jsx":260,"./reflux/userActions.jsx":267,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":252,"./components/HomePage.jsx":253,"./components/Page1.jsx":254,"./components/PageNotFound.jsx":255,"./components/SearchResultsPage.jsx":257,"./components/UserProfilePage.jsx":260,"./reflux/userActions.jsx":267,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
@@ -26376,14 +26376,17 @@ var Base = React.createClass({
   mixins: [Reflux.listenTo(UserStore, "updateNavBar")],
 
   getInitialState: function () {
-    return { navLinks: initialNavLinks };
+    return { navLinks: initialNavLinks, canSignOut: false };
   },
 
   updateNavBar: function (event, data) {
-    if (data.userID != null) {
+    console.log("base data: " + JSON.stringify(data));
+    var nextLinks = initialNavLinks;
+    var canSignOut = false;
+    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
       var nextLinks = [{
         title: "Profile",
-        href: "/profile/" + data.userID
+        href: "/profile/" + data.UserID
       }, {
         title: "Other User",
         href: "/profile/99"
@@ -26391,8 +26394,11 @@ var Base = React.createClass({
         title: "Dark Souls 3",
         href: "/game/1"
       }];
-      this.setState({ navLinks: nextLinks });
+
+      canSignOut = true;
     }
+
+    this.setState({ navLinks: nextLinks, canSignOut: canSignOut });
   },
 
   render: function () {
@@ -26400,10 +26406,11 @@ var Base = React.createClass({
       marginTop: 80
     };
 
+    // TODO: why does it need this childrenStyle?!?!
     return React.createElement(
       "div",
       null,
-      React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: this.state.navLinks, brandName: "Join" }),
+      React.createElement(NavBar, { bgColor: "#563d7c", titleColor: "#fff", linkColor: "cyan", navData: this.state.navLinks, brandName: "Join", enableSignOut: this.state.canSignOut }),
       React.createElement(
         "div",
         { className: "container" },
@@ -26436,6 +26443,7 @@ var UserStore = require("../reflux/userStore.jsx");
 var CreateAccountForm = React.createClass({
   displayName: "CreateAccountForm",
 
+  // Listen to the UserStore.
   mixins: [Reflux.listenTo(UserStore, "createUser")],
 
   contextTypes: {
@@ -26443,19 +26451,23 @@ var CreateAccountForm = React.createClass({
   },
 
   getInitialState: function () {
-    return { matchError: false };
+    return { matchError: false, errorUserNotUnique: false };
   },
 
   createUser: function (event, data) {
     console.log("userValidation data: " + JSON.stringify(data));
-    console.log("userID: " + data[2][0].UserID);
+    console.log("userID: " + data.UserID);
+    console.log("status: " + data.status);
 
-    // TODO: change where this is routed.
-    if (data) {
+    // TODO: change where this is routed. (possibly preference page)
+    if (data.UserID || data.status === 0) {
       console.log("Routing...");
-      this.context.router.push("/profile/" + data[2][0].UserID);
-    } else {
+      this.context.router.push("/profile/" + data.UserID);
+    } else if (data.status === 2) {
       // TODO: UI response.
+      console.log("User already exists...");
+      this.setState({ errorUserNotUnique: true });
+    } else {
       console.log("failed to create");
     }
   },
@@ -26463,7 +26475,6 @@ var CreateAccountForm = React.createClass({
   handleSubmit: function (event) {
     event.preventDefault();
     var isValid = this.checkValidity();
-    console.log("Valid: " + isValid);
 
     var email = this.refs.emailField.state.email;
     var password = this.refs.passwordField.state.password;
@@ -26475,7 +26486,6 @@ var CreateAccountForm = React.createClass({
 
     // TODO: Transition to the correct page.
     if (isValid) {
-      // this.context.router.push("/testpage");
       UserActions.postCreateUser(email, password, timezone);
     } else {
       console.log("Not all fields are valid");
@@ -26507,6 +26517,16 @@ var CreateAccountForm = React.createClass({
       this.setState({ matchError: false });
     } else {
       this.setState({ matchError: true });
+    }
+  },
+
+  componentWillMount: function () {
+    // If the user is authenticated skip the signin page.
+    if (localStorage.getItem("jwt") && UserActions.postIsAuthenticated()) {
+      console.log("authenticated");
+      this.context.router.push("/profile/" + localStorage.getItem("UserID"));
+    } else {
+      console.log("create form mounting...");
     }
   },
 
@@ -26559,7 +26579,16 @@ var CreateAccountForm = React.createClass({
                   " Next "
                 )
               )
-            )
+            ),
+            this.state.errorUserNotUnique ? React.createElement(
+              "div",
+              { className: "row" },
+              React.createElement(
+                "div",
+                { className: "col-sm-12 alert alert-danger" },
+                "Error: User already exists."
+              )
+            ) : null
           )
         )
       )
@@ -26844,11 +26873,13 @@ var HomePage = React.createClass({
     router: React.PropTypes.object
   },
 
-  componentWillMount: function (nextProps) {
-    // If the user is authenticated skip the signup page.
+  componentWillMount: function () {
+    // If the user is authenticated skip the signin page.
     if (localStorage.getItem("jwt") && UserActions.postIsAuthenticated()) {
       console.log("authenticated");
-      this.context.router.push("/testpage");
+      this.context.router.push("/profile/" + localStorage.getItem("UserID"));
+    } else {
+      console.log("home mounting...");
     }
   },
 
@@ -26935,7 +26966,6 @@ var PasswordField = React.createClass({
   },
 
   onChange: function (event) {
-    console.log("in passwordfield on change");
     this.setState({ hasChanged: true, password: event.target.value });
   },
 
@@ -27008,7 +27038,7 @@ var SearchResults = React.createClass({
     this.setState({ searchQuery: this.props.params.searchQuery });
   },
 
-  componentWillReceiveProps: function () {
+  componentWillReceiveProps: function (nextProps) {
     this.setState({ searchQuery: nextProps.params.searchQuery });
   },
 
@@ -27060,11 +27090,12 @@ var SignInPanel = React.createClass({
     // TODO: clean up logging.
     var dataCopy = data;
     console.log("userValidation data: " + JSON.stringify(dataCopy));
-    console.log("userID: " + data.userID);
-    if (data.userID != null) {
-      this.context.router.push("/profile/" + data.userID);
+    console.log("userID: " + data.UserID);
+    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
+      this.context.router.push("/profile/" + data.UserID);
     } else {
       // TODO: figure out how to handle failed logins
+      this.refs.passwordField.clear();
       alert("Invalid Email or Password");
     }
   },
@@ -27376,7 +27407,7 @@ var NavBar = React.createClass({
             { className: "nav navbar-nav nav-pills" },
             this.props.navData.map(createLinkItem)
           ),
-          React.createElement(
+          this.props.enableSignOut ? React.createElement(
             "div",
             { onSubmit: this.handleSignOut, onClick: this.handleSignOut, className: "navbar-nav nav-pills" },
             React.createElement(
@@ -27384,7 +27415,7 @@ var NavBar = React.createClass({
               { type: "submit", className: "btn btn-default" },
               "Sign Out"
             )
-          ),
+          ) : null,
           React.createElement(
             "div",
             null,
@@ -27556,7 +27587,9 @@ var UserStore = Reflux.createStore({
 
     http.post("/signin", user).then(function (dataJSON) {
       this.user = dataJSON;
-      this.saveToken();
+      if (this.user.UserID !== null) {
+        this.saveToken();
+      }
       this.returnStatus();
     }.bind(this));
   },
@@ -27570,7 +27603,11 @@ var UserStore = Reflux.createStore({
 
     http.post("/create", user).then(function (dataJSON) {
       this.user = dataJSON;
-      this.saveToken();
+      console.log("user create: " + JSON.stringify(this.user));
+      // Do not save is a status is returned.
+      if (this.user.status === 0) {
+        this.saveToken();
+      }
       this.returnStatus();
     }.bind(this));
   },
@@ -27584,17 +27621,23 @@ var UserStore = Reflux.createStore({
       http.post("/authenticate", jwtJSON).then(function (dataJSON) {
         this.user = dataJSON;
         console.log("authenticate user: " + JSON.stringify(this.user));
-        this.saveToken();
-        this.returnStatus();
-        return this.user.isValid;
+
+        var isAuthenticated = localStorage.getItem("UserID") == this.user.UserID;
+        this.user.isValid = isAuthenticated;
+
+        console.log("isAuthenticated: " + isAuthenticated);
+        if (isAuthenticated) {
+          this.saveToken();
+          this.returnStatus();
+        }
+        return isAuthenticated;
       }.bind(this));
     }
   },
 
   logout: function () {
     console.log("logging out...");
-    localStorage.removeItem("jwt");
-    console.log("localStorage: " + localStorage.getItem("jwt"));
+    localStorage.clear();
     this.jwt = "";
     this.user = this.jwt;
     this.returnStatus();
@@ -27605,6 +27648,7 @@ var UserStore = Reflux.createStore({
   */
   saveToken: function () {
     localStorage.setItem("jwt", this.user.jwt);
+    localStorage.setItem("UserID", this.user.UserID);
   },
 
   /*

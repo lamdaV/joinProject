@@ -24,15 +24,18 @@ var Base = React.createClass({
   mixins: [Reflux.listenTo(UserStore, "updateNavBar")],
 
   getInitialState: function() {
-    return ({navLinks: initialNavLinks});
+    return ({navLinks: initialNavLinks, canSignOut: false});
   },
 
   updateNavBar: function(event, data) {
-    if (data.userID != null) {
+    console.log("base data: " + JSON.stringify(data));
+    var nextLinks = initialNavLinks;
+    var canSignOut = false;
+    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
       var nextLinks = [
         {
           title: "Profile",
-          href: "/profile/" + data.userID
+          href: "/profile/" + data.UserID
         },
         {
           title: "Other User",
@@ -43,8 +46,11 @@ var Base = React.createClass({
           href: "/game/1"
         }
       ];
-      this.setState({navLinks: nextLinks});
+
+      canSignOut = true;
     }
+
+    this.setState({navLinks: nextLinks, canSignOut: canSignOut});
   },
 
   render: function() {
@@ -52,9 +58,10 @@ var Base = React.createClass({
       marginTop: 80
     };
 
+    // TODO: why does it need this childrenStyle?!?!
     return (
       <div>
-        <NavBar bgColor = "#563d7c" titleColor = "#fff" linkColor = "cyan" navData = {this.state.navLinks} brandName = "Join" />
+        <NavBar bgColor = "#563d7c" titleColor = "#fff" linkColor = "cyan" navData = {this.state.navLinks} brandName = "Join" enableSignOut = {this.state.canSignOut}/>
 
         <div className = "container">
           <div style = {childrenStyle} className = "row">

@@ -2,19 +2,12 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mysql = require("mysql");
 var jwt = require("jsonwebtoken");
+var format = require("string-format");
 
+// TODO: Generate Secret randomly for each user.
 var secret = "SupremeOverlord";
 
 // TODO: Update this with limited user.
-// var connection = mysql.createConnection({
-//   host                  :   "127.0.0.1",
-//   user                  :   "root",
-//   port                  :   "3306",
-//   password              :   "eu4ahJu4",
-//   database              :   "JoinSchema",
-//   multipleStatements    :   true
-// });
-
 var pool = mysql.createPool({
   connectionLimit: 50,
   host: "127.0.0.1",
@@ -58,7 +51,7 @@ app.post("/authenticate", function(request, response) {
       }
     */
     var jwtJSON = request.body;
-    console.log("jwt server: " + JSON.stringify(jwtJSON.jwt));
+    console.log("JWT server: " + JSON.stringify(jwtJSON.jwt));
 
     // Get encrypted data.
     token = jwtJSON.jwt;
@@ -67,43 +60,40 @@ app.post("/authenticate", function(request, response) {
     // Note: decoded does not need to be escaped as jwt can only hold data already escaped when the user initally logged in.
     var decoded = jwt.verify(token, secret);
 
-    console.log("decoded: " + JSON.stringify(decoded));
+    console.log("DECODED: " + JSON.stringify(decoded));
+
+    // Resign jwt.
+    var userData = {
+      "email" : decoded.email,
+      "password" : decoded.password
+    };
+
+    userData = jwt.sign(userData, secret);
+    var authentication = {
+      "jwt" : userData
+    };
 
     // Create login_function query.
-    var query = "SET @UserID = -1; CALL login_function(" + decoded.email +  ", " + decoded.password + ", @UserID); SELECT @UserID AS UserID;";
-    console.log("query: " + query);
+    var query = format("SET @UserID = -1; CALL login_function({0}, {1}, @UserID); SELECT @UserID AS UserID;", decoded.email, decoded.password);
+
+    console.log("QUERY: " + query);
 
     pool.query(query, function(error, rows, fields) {
-      connection.release();
       if (error) {
         console.log("Error: " + error.message);
         response.send(false);
         return;
       }
+      console.log("RESPONSE: " + JSON.stringify(rows));
 
-      console.log("userID: " + JSON.stringify(rows[2][0].UserID));
+      authentication.UserID = rows[2][0].UserID;
 
-      var userData = {
-        "email" : decoded.email,
-        "password" : decoded.password
-      };
-
-      // Resign the secret.
-      userData = jwt.sign(userData, secret);
-      authentication = {
-        "userID" : rows[2][0].UserID,
-        "jwt" : userData
-      };
-
-      // Error if one lined.
-      if (rows[2][0].UserID != null) {
-        authentication.isValid = true;
-      } else {
-        authentication.isValid = false;
-      }
-
+      console.log("authentication data: " + JSON.stringify(authentication));
       response.send(authentication);
     });
+
+    // Release connection.
+    connection.release();
   });
 });
 
@@ -156,7 +146,7 @@ app.post("/signin", function(request, response) {
       // Encrypt.
       userData = jwt.sign(userData, secret);
       authentication = {
-        "userID" : rows[2][0].UserID,
+        "UserID" : rows[2][0].UserID,
         "jwt" : userData
       };
 
@@ -181,40 +171,48 @@ app.post("/create", function(request, response) {
     var user = request.body;
 
     // Escape bad characters.
-    user.email = mysql.escape(user.email);
-    user.password = mysql.escape(user.password);
-    user.timezone = mysql.escape(user.timezone);
+    email = mysql.escape(user.email);
+    password = mysql.escape(user.password);
+    timezone = mysql.escape(user.timezone);
 
     // Create create_user query.
-    var query = "CALL create_user(" + user.email + ", " + user.password + ", " + user.timezone + ");";
+    var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, password, timezone);
 
     console.log("QUERY: " + query);
 
     // Insert the user.
     pool.query(query, function(error, rows, fields) {
       if (error) {
-        console.log("Error: " + error.message);
+        console.log("ERROR: " + error.message);
         return;
       }
+
       console.log("RESPONSE: " + JSON.stringify(rows));
-    });
+      var status = rows[3][0].status
 
-    // Create login_function query.
-    query = "SET @UserID = -1; CALL login_function(" + user.email +  ", " + user.password + ", @UserID); SELECT @UserID AS UserID;";
+      var userData = {
+        "email" : email,
+        "password" : password
+      };
 
-    console.log("QUERY: " + query);
+      userData = jwt.sign(userData, secret);
 
-    // Check if created User is in User table.
-    pool.query(query, function(error, rows, fields) {
-      // Releases the connection back to the pool.
-      connection.release();
-      if (error) {
-        console.log("Error: " + error.message);
-        return;
+      var authentication = {
+        "status" : status,
+        "UserID" : -1,
+        "jwt" : userData
       }
-      console.log("\nRESPONSE: " + JSON.stringify(rows));
-      response.send(rows);
+
+      // Encrypt.
+      if (status === 0) {
+        authentication.UserID = rows[1][0].UserID
+      }
+
+      response.send(authentication);
     });
+
+    // Release connection.
+    connection.release();
   });
 });
 
