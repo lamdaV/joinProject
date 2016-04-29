@@ -26858,7 +26858,8 @@ var GamePage = React.createClass({
   },
 
   componentDidMount: function () {
-    GameActions.this.setState({ gameID: this.props.params.gameID });
+    // GameActions.
+    this.setState({ gameID: this.props.params.gameID });
   },
 
   componentWillReceiveProps: function (nextProps) {

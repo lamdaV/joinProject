@@ -12,7 +12,7 @@ var GamePage = React.createClass({
   },
 
   componentDidMount: function() {
-    GameActions.
+    // GameActions.
     this.setState({gameID: this.props.params.gameID});
   },
 
