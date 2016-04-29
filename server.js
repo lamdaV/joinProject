@@ -131,7 +131,7 @@ app.post("/signin", function(request, response) {
     console.log("password: " + password);
 
     // Create login_function query.
-    var query = "SET @UserID = -1; CALL login_function(" + email +  ", " + password + ", @UserID); SELECT @UserID AS UserID;";
+    var query = format("SET @UserID = -1; CALL login_function({0}, {1}, @UserID); SELECT @UserID AS UserID;", email, password);
 
     console.log("QUERY: " + query);
 
