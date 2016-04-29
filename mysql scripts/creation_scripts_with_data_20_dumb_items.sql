@@ -46,13 +46,13 @@ INSERT INTO `JoinSchema`.`User`
 `Password`,
 `Email`)
 VALUES
-('1','Alaska Time','password!!','emailjunk1@spam.com'),
+('1','Mountain Time','password!!','emailjunk1@spam.com'),
 ('2','Pacific Time','pass123123','emailjunk2@spam.com'),
-('3','Alaska Time','dbpassword','emailjunk3@spam.com'),
+('3','Mountain Time','dbpassword','emailjunk3@spam.com'),
 ('4','Central Time','supersecure','emailjunk4@spam.com'),
-('5','Alaska Time','12345678','emailjunk5@spam.com'),
+('5','Mountain Time','12345678','emailjunk5@spam.com'),
 ('6','Eastern Time','qwerty123','emailjunk6@spam.com'),
-('7','Alaska Time','password','emailjunk7@spam.com'),
+('7','Mountain Time','password','emailjunk7@spam.com'),
 ('8','Pacific Time','password12','emailjunk8@spam.com'),
 ('9','Eastern Time','password9909','emailjunk9@spam.com'),
 ('10','Eastern Time','passhello','emailjunk10@spam.com'),
@@ -60,12 +60,13 @@ VALUES
 ('12','Eastern Time','iamagoodpass','emailjunk12@spam.com'),
 ('13','Central Time','lastpasssucks','emailjunk13@spam.com'),
 ('14','Pacific Time','mustmemorize','emailjunk14@spam.com'),
-('15','Alaska Time','happiness','emailjunk15@spam.com'),
+('15','Mountain Time','happiness','emailjunk15@spam.com'),
 ('16','Central Time','musicwins','emailjunk16@spam.com'),
-('17','Alaska Time','DaveWillPlayLeague','emailjunk17@spam.com'),
+('17','Mountain Time','DaveWillPlayLeague','emailjunk17@spam.com'),
 ('18','Central Time','tryndamere','emailjunk18@spam.com'),
-('19','Alaska Time','password!123123','emailjunk19@spam.com'),
-('20', 'Alaska Time', 'safepassword123', 'leagueoflegends@lamd.com');
+('19','Mountain Time','password!123123','emailjunk19@spam.com'),
+('20', 'Mountain Time', 'safepassword123', 'leagueoflegends@lamd.com'),
+('21', 'mountain', 'dummy', 'dummy@dummy.com');
 
 
 
@@ -335,7 +336,8 @@ VALUES
 ('17','user17', 'Steam'),
 ('18','user18', 'Steam'),
 ('19','user19', 'Steam'),
-('20', 'user20', 'Steam');
+('20', 'user20', 'Steam'),
+('21', 'dummy', 'Steam');
 
 -- -----------------------------------------------------
 -- Table `JoinSchema`.`Goes_To`
@@ -725,27 +727,438 @@ VALUES
 ('19','20', '9'),
 ('20', '1', '10');
 
-USE `JoinSchema`;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_available_hour`(in hour_id int(11), in day_of_week varchar(45))
+BEGIN
+START transaction;
+CALL valid_HourID(hour_id, day_of_week, @out_value);
+IF((SELECT @out_value) = 1)
+THEN
+	SELECT 'HourID is invalid';
+    ROLLBACK;
+END IF;
+IF(@out_value = 0)
+THEN
+INSERT INTO `Available Hour`(HourID, Day)
+VALUES(hour_id, day_of_week);
+END IF;
+END$$
+DELIMITER ;
 
 DELIMITER $$
-
-USE `JoinSchema`$$
-DROP TRIGGER IF EXISTS `JoinSchema`.`password_check` $$
-USE `JoinSchema`$$
-CREATE
-DEFINER=`root`@`localhost`
-TRIGGER `JoinSchema`.`password_check`
-BEFORE INSERT ON `JoinSchema`.`User`
-FOR EACH ROW
+CREATE DEFINER=`root`@`localhost` PROCEDURE `change_password`(IN userEmail varchar(45), in olduserPassword varchar(45), in newUserPassword varchar(45))
 BEGIN
-	IF CHAR_LENGTH(New.Password) < 8 THEN 
-    SIGNAL SQLSTATE '12345'
-		SET MESSAGE_TEXT = 'A password must be at least 8 characters long';
+START transaction;
+CALL email_seems_legit(userEmail, @out_value1);
+IF((SELECT @out_value1) = 1)
+THEN
+	SELECT 'Email not Legit';
+    ROLLBACK;
+END IF;
+CALL email_already_used(userEmail, @out_value2);
+IF((SELECT @out_value2) = 0)
+THEN
+	SELECT 'Email is not already in use';
+    ROLLBACK;
+END IF;
+CALL check_password(newUserPassword, @out_value3);
+IF((SELECT @out_value3) = 1)
+THEN
+	SELECT 'Password not up to standards';
+    ROLLBACK;
+END IF;
+IF(@out_value1 = 0 AND @out_value2 = 1 AND @out_value3 = 0)
+THEN
+UPDATE JoinSchema.User
+SET User.Password = newUserPassword
+WHERE User.Password = oldUserPassword AND User.Email = userEmail;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `change_TimeZone`(IN userEmail varchar(45), in userPassword varchar(45), in newTimeZone varchar(45))
+BEGIN
+START transaction;
+CALL email_seems_legit(userEmail, @out_value1);
+IF((SELECT @out_value1) = 1)
+THEN
+	SELECT 'Email not Legit';
+    ROLLBACK;
+END IF;
+CALL email_already_used(userEmail, @out_value2);
+IF((SELECT @out_value2) = 0)
+THEN
+	SELECT 'Email is not already in use';
+    ROLLBACK;
+END IF;
+CALL check_password(userPassword, @out_value3);
+IF((SELECT @out_value3) = 1)
+THEN
+	SELECT 'Password not up to standards';
+    ROLLBACK;
+END IF;
+SELECT @out_value1, @out_value2, @out_value3;
+IF(@out_value1 = 0 AND @out_value2 = 1 AND @out_value3 = 0)
+THEN
+UPDATE User
+SET User.TimeZone = newTimeZone
+WHERE User.Password = userPassword AND User.Email = userEmail;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `check_password`(IN password_input varchar(45), OUT outvalue3 int(11))
+BEGIN
+START transaction;
+IF(CHAR_LENGTH(password_input) < 8)
+THEN
+    set outvalue3 = 1;
+ELSE
+    set outvalue3 = 0;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_user`(IN userEmail varchar(45), in userPassword varchar(45), in userTimeZone varchar(45))
+BEGIN
+START transaction;
+CALL email_seems_legit(userEmail, @out_value1);
+IF((SELECT @out_value1) = 1)
+THEN
+	SELECT 'Email not Legit';
+    ROLLBACK;
+END IF;
+CALL email_already_used(userEmail, @out_value2);
+IF((SELECT @out_value2) = 1)
+THEN
+	SELECT 'Email already in use';
+    ROLLBACK;
+END IF;
+CALL check_password(userPassword, @out_value3);
+IF((SELECT @out_value3) = 1)
+THEN
+	SELECT 'Password not up to standards';
+    ROLLBACK;
+END IF;
+IF(@out_value1 = 0 AND @out_value2 = 0 AND @out_value3 = 0)
+THEN
+INSERT INTO User(Email, User.Password, TimeZone)
+VALUES(userEmail, userPassword, userTimeZone);
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `email_already_used`(IN userEmail varchar(45), OUT outvalue2 int(11))
+BEGIN
+START transaction;
+IF NOT EXISTS(
+SELECT *
+FROM User
+WHERE User.email = userEmail
+)
+THEN
+    set outvalue2 = 0;
+ELSE
+    set outvalue2 = 1;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `email_seems_legit`(IN userEmail varchar(45), OUT outvalue1 int(11))
+BEGIN
+START Transaction;
+IF (userEmail LIKE '%@%.com')
+THEN
+    set outvalue1 = 0;
+ELSE
+    set outvalue1 = 1;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `hourID_valid`(IN HourID_input int(11), OUT outvalue int(11), OUT day_inserted varchar(45))
+BEGIN
+START Transaction;
+IF (HourID_input > -1 AND HourID_input < 168 AND NOT EXISTS (
+SELECT *
+FROM `Available Hour`
+WHERE `Available Hour`.HourID = HourID_input
+))
+THEN
+IF (hour_id > -1 AND hour_id < 23)
+THEN 
+SET day_inserted = 'Sunday';
+End IF; 
+IF (hour_id > 23 AND hour_id < 48)
+THEN 
+SET day_inserted = 'monday';
+End IF;
+IF (hour_id > 47 AND hour_id < 72)
+THEN 
+SET day_inserted = 'tuesday';
+End IF; 
+IF (hour_id > 71 AND hour_id < 96)
+THEN 
+SET day_inserted = 'wednesday';
+End IF; 
+IF (hour_id > 95 AND hour_id < 120)
+THEN 
+SET day_inserted = 'thursday';
+End IF; 
+IF (hour_id > 119 AND hour_id < 148)
+THEN 
+SET day_inserted = 'friday';
+End IF;
+IF (hour_id > 147 AND hour_id < 168)
+THEN 
+SET day_inserted = 'saturday';
+End IF;
+INSERT INTO `Available Hour`(HourID_input, day_inserted)
+VALUES(hour_id, day_of_week);
+END IF;
+IF EXISTS (
+SELECT *
+FROM `Available Hour`
+WHERE `Available Hour`.HourID = HourID_input
+)
+THEN
+    set outvalue = 0;
+ELSE
+    set outvalue = 1;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `hourID_valid_and_insert`(IN HourID_input int(11), OUT outvalue int(11), OUT day_inserted varchar(45))
+BEGIN
+START Transaction;
+IF (HourID_input > -1 AND HourID_input < 168 AND NOT EXISTS (
+SELECT *
+FROM `Available Hour`
+WHERE `Available Hour`.HourID = HourID_input
+))
+THEN
+IF (HourID_input > -1 AND HourID_input < 23)
+THEN 
+SET day_inserted = 'Sunday';
+End IF; 
+IF (HourID_input > 23 AND HourID_input < 48)
+THEN 
+SET day_inserted = 'monday';
+End IF;
+IF (HourID_input > 47 AND HourID_input < 72)
+THEN 
+SET day_inserted = 'tuesday';
+End IF; 
+IF (HourID_input > 71 AND HourID_input < 96)
+THEN 
+SET day_inserted = 'wednesday';
+End IF; 
+IF (HourID_input > 95 AND HourID_input < 120)
+THEN 
+SET day_inserted = 'thursday';
+End IF; 
+IF (HourID_input > 119 AND HourID_input < 148)
+THEN 
+SET day_inserted = 'friday';
+End IF;
+IF (HourID_input > 147 AND HourID_input < 168)
+THEN 
+SET day_inserted = 'saturday';
+End IF;
+INSERT INTO `Available Hour`(HourID, Day)
+VALUES(HourID_input, day_inserted);
+END IF;
+IF EXISTS (
+SELECT *
+FROM `Available Hour`
+WHERE `Available Hour`.HourID = HourID_input
+)
+THEN
+    set outvalue = 0;
+ELSE
+    set outvalue = 1;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `login_function`(IN userEmail varchar(45), in userPassword varchar(45), OUT outvalue int(11))
+BEGIN
+	START transaction;
+	CALL email_seems_legit(userEmail, @out_value1);
+	IF((SELECT @out_value1) = 1) THEN
+		ROLLBACK;
+	END IF;
+	
+    CALL email_already_used(userEmail, @out_value2);
+	IF((SELECT @out_value2) = 0) THEN
+		ROLLBACK;
+	END IF;
+
+	CALL check_password(userPassword, @out_value3);
+	IF((SELECT @out_value3) = 1) THEN
+		ROLLBACK;
+	END IF;
+	
+    IF(@out_value1 = 0 AND @out_value2 = 1 AND @out_value3 = 0) THEN
+		SELECT User.UserID
+		INTO outvalue
+		FROM User
+		WHERE User.Email = userEmail AND User.Password = userPassword;
 	END IF;
 END$$
-
-
 DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `rating_valid`(IN rating int(11), OUT outvalue int(11))
+BEGIN
+START Transaction;
+IF (rating > -1 AND rating < 11)
+THEN
+    set outvalue = 0;
+ELSE
+    set outvalue = 1;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_add_AH`(IN userID int(11), in hourID varchar(45))
+BEGIN
+START transaction;
+CALL userID_valid(userID, @out_value1);
+IF((SELECT @out_value1) = 1)
+THEN
+	SELECT 'UserID is invalid';
+    ROLLBACK;
+END IF;
+CALL hourID_valid_and_insert(hourID, @out_value2, @out_value3);
+IF((SELECT @out_value2) = 1)
+THEN
+	SELECT 'HourID is invalid';
+    ROLLBACK;
+END IF;
+IF(@out_value1 = 0 AND @out_value2 = 0)
+THEN
+INSERT INTO Available(UserID, HourID)
+VALUES(userID, hourID);
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_delete_AH`(IN userID int(11), in hourID varchar(45))
+BEGIN
+START transaction;
+CALL userID_valid(userID, @out_value1);
+IF((SELECT @out_value1) = 1)
+THEN
+	SELECT 'UserID is invalid';
+    ROLLBACK;
+END IF;
+CALL hourID_valid(hourID, @out_value2);
+IF((SELECT @out_value2) = 1)
+THEN
+	SELECT 'HourID is invalid';
+    ROLLBACK;
+END IF;
+IF(@out_value1 = 0 AND @out_value2 = 0)
+THEN
+DELETE FROM Available
+WHERE Available.UserID = userID AND Available.HourID = hourID;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_rates_user`(IN userID1 varchar(45), in userID2 varchar(45), in rating int(11))
+BEGIN
+START transaction;
+CALL userID_valid(userID1, @out_value1);
+IF((SELECT @out_value1) = 1)
+THEN
+	SELECT 'User1 ID not Legit';
+    ROLLBACK;
+END IF;
+CALL userID_valid(userID2, @out_value1);
+IF((SELECT @out_value2) = 1)
+THEN
+	SELECT 'User2 ID not Legit';
+    ROLLBACK;
+END IF;
+CALL rating_valid(rating, @out_value3);
+IF((SELECT @out_value3) = 1)
+THEN
+	SELECT 'rating not 0-10';
+    ROLLBACK;
+END IF;
+IF(@out_value1 = 0 AND @out_value2 = 0 AND @out_value3 = 0 AND userID1 != userID2 AND
+NOT EXISTS(
+SELECT *
+FROM Rates
+WHERE Rates.UserRateID = userID1 AND Rates.UserRatedID = userID2
+))
+THEN
+INSERT INTO JoinSchema.Rates(UserRateID, UserRatedID, SCORE)
+VALUES(userID1, userID2, rating);
+END IF;
+IF(@out_value1 = 0 AND @out_value2 = 0 AND @out_value3 = 0 AND userID1 != userID2 AND EXISTS(
+SELECT *
+FROM Rates
+WHERE Rates.UserRateID = userID1 AND Rates.UserRatedID = userID2
+))
+THEN
+UPDATE JoinSchema.Rates
+SET Rates.SCORE = rating
+WHERE Rates.UserRateID = userID1 AND Rates.UserRatedID = userID2;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `userID_valid`(IN userID int(11), OUT outvalue int(11))
+BEGIN
+START Transaction;
+IF EXISTS (
+SELECT *
+FROM User
+WHERE UserID = userID
+)
+THEN
+    set outvalue = 0;
+ELSE
+    set outvalue = 1;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `valid_HourID`(in hour_id int(11), in day_of_week varchar(45), OUT outvalue int(11))
+BEGIN
+IF ((hour_id > -1 AND hour_id < 23 AND day_of_week = 'sunday') OR
+(hour_id > 23 AND hour_id < 48 AND day_of_week = 'monday') OR
+(hour_id > 47 AND hour_id < 72 AND day_of_week = 'tuesday') OR
+(hour_id > 71 AND hour_id < 96 AND day_of_week = 'wednesday') OR
+(hour_id > 95 AND hour_id < 120 AND day_of_week = 'thursday') OR
+(hour_id > 119 AND hour_id < 148 AND day_of_week = 'friday') OR
+(hour_id > 147 AND hour_id < 168 AND day_of_week = 'saturday')
+)
+THEN
+	SET outvalue = 0;
+ELSE 
+	SET outvalue = 1;
+END IF;
+END$$
+DELIMITER ;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
