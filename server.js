@@ -32,6 +32,46 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
+  Search the Game table for all games similar to the search text.
+*/
+app.post("/searchGame", function(request, response) {
+  console.log("POST search game request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("Error: connection failed");
+      return;
+    }
+    console.log("connection established");
+
+    // Get data sent.
+    var searchQueryJSON = request.body;
+    var searchQuery = searchQueryJSON.query;
+
+    // Escape the searchQuery.
+    searchQuery = mysql.escape(searchQuery);
+
+    console.log("search: " + searchQuery);
+
+    var query = format("CALL get_game_by_title({0});", searchQuery);
+
+    console.log("QUERY: " + query);
+    pool.query(query, function(error, rows, fields) {
+      if (error) {
+        console.log("Error: " + error.message);
+        return;
+      }
+
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      console.log("ROW 0: " + JSON.stringify(rows[0]));
+      response.send(rows[0]);
+    });
+
+    // Release connection.
+    connection.release();
+  });
+});
+
+/*
   Authenticate the user by evaluating the sent JWT.
 */
 app.post("/authenticate", function(request, response) {
@@ -163,6 +203,9 @@ app.post("/signin", function(request, response) {
       // Send response.
       response.send(authentication);
     });
+
+    // Release connection.
+    connection.release();
   });
 });
 

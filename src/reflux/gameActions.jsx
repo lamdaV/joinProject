@@ -1,7 +1,7 @@
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions([
-  "postGameData",
+  "postSearchGame",
 ]);
 
 module.exports = UserActions;

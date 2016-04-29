@@ -13,32 +13,20 @@ var UserStore = Reflux.createStore({
     }
   },
 
-  postGameData: function() {
-    // http.post("/gameData", )
-  },
-
-  postIsAuthenticated: function() {
-    if (this.jwt) {
-      var jwtJSON = {
-        "jwt": this.jwt
-      };
-
-      http.post("/authenticate", jwtJSON).then(function(dataJSON) {
-        this.user = dataJSON;
-        this.saveToken();
-        this.returnStatus();
-      }.bind(this));
+  postSearchGame: function(searchText) {
+    console.log("searchText: " + searchText);
+    var searchQuery = {
+      "query": searchText
     }
-  },
-
-
-  // TODO: Consider caching large data.
-  saveToken: function() {
-    localStorage.setItem("jwt", this.user.jwt);
+    http.post("/searchGame", searchQuery).then(function(dataJSON) {
+      this.search = dataJSON;
+      console.log("search data: " + JSON.stringify(this.search));
+      this.returnStatus();
+    }.bind(this));
   },
 
   returnStatus: function() {
-    this.trigger("change", this.user);
+    this.trigger("change", this.search);
   }
 });
 

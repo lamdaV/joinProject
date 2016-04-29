@@ -1,45 +1,57 @@
 var React = require("react");
-// var Link = ReactRouter.Link;
+var SearchItem = require("./SearchItem.jsx");
 var Reflux = require("reflux");
 var GameActions = require("../reflux/gameActions.jsx");
 var GameStore = require("../reflux/gameStore.jsx");
 
-var SearchResults = React.createClass({
+var SearchResultsPage = React.createClass({
   mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
   getInitialState: function() {
-    return ({searchQuery: "", results: {}});
+    return ({searchQuery: ""});
   },
 
   displayResults: function(event, data) {
-    console.log("DATA: " + JSON.stringify(data));
-    // this.setState({})
+    console.log("display data: " + JSON.stringify(data));
+    this.setState({results: data});
   },
 
   componentDidMount: function() {
+    console.log("searchquery mount: " + this.props.params.searchQuery);
+    GameStore.postSearchGame(this.props.params.searchQuery);
     this.setState({searchQuery: this.props.params.searchQuery});
   },
 
   componentWillReceiveProps: function(nextProps) {
+    GameStore.postSearchGame(this.props.params.searchQuery);
     this.setState({searchQuery: nextProps.params.searchQuery});
   },
 
   render: function() {
-    // var createSearchItem = function(item, index) {
-    //   return (
-    //     <SearchItem linkStyle = {linkStyle} key = {item.title + index} href = {item.href} title = {item.title} />
-    //   );
-    // };
-    // <div className = "collapse navbar-collapse" id = "nav-collapse">
-    //   <ul className = "nav navbar-nav nav-pills">
-    //     {this.state.results.map(createSearchItem)}
-    //   </ul>
-    // </div>
+    console.log("results: " + JSON.stringify(this.state.results));
+    var linkStyle = {
+      color: "cyan"
+    };
+
+    var createSearchItem = function(item, index) {
+      console.log("key: " + item.Title + item.GameID + index);
+      return (
+        <SearchItem linkStyle = {linkStyle} key = {item.Title + item.GameID + index} item = {item} />
+      );
+    };
 
     return (
-      <h1> search page </h1>
+      <div>
+        <h1> Searching for: {this.state.searchQuery}</h1>
+        {/*<div className = "collapse navbar-collapse" id = "nav-collapse">*/}
+        <div className = "col-sm-12">
+          <ul>
+            {this.state.results ? this.state.results.map(createSearchItem) : null}
+          </ul>
+        </div>
+      </div>
     );
   }
 });
 
-module.exports = SearchResults;
+module.exports = SearchResultsPage;
