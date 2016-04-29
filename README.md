@@ -69,16 +69,33 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [x] Start Game searching
 
 ### Kennan French:
-  - [ ] Learn React
+  - [x] Learn React
   - [ ] Hook stuff up with David's stuff (related to above)
-  - [ ] Write js to do the stuff I said js would do on previous pages
+  - [x] Write js to do the stuff I said js would do on previous pages
   - [ ] Unify/standardize css, custom div classes
   - [x] At least registration front-end validation (David Lam)
   - [x] Create dummy user for VM (David Lam)
 
 ### Christopher Knight:
-  - [ ] Stored procedures for user creation + account info updates
-  - [ ] Stored procedures for creating + updating available hours
-  - [ ] Stored procedures for user rating
-  - [ ] Help get mysql talk to front end
+  - [x] Stored procedures for user creation + account info updates
+  - [x] Stored procedures for creating + updating available hours
+  - [x] Stored procedures for user rating
+  - [x] Help get mysql talk to front end
   - [x] Figure out dummy user permissions
+
+## Milestone 03:
+### David Lam:
+- [ ] Matching page
+- [ ] Add tags to game page
+
+### Kennan French:
+  - [ ] Make schedule widget
+  - [ ] Make rest of widgets needed for user profile page
+  - [ ] Profile page should be done
+  - [ ] More integration
+  - [ ] User preferences/settings page
+
+### Christopher Knight:
+  - [ ] Continue writing stored procedures as needed
+  - [ ] Figure out mysql data dump
+  - [ ] Add lots of data to tables
