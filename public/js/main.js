@@ -26843,17 +26843,22 @@ module.exports = GameContentPanel;
 
 },{"react":224}],252:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
 var GameContentPanel = require("./GameContentPanel.jsx");
+var GameStore = require("../reflux/gameStore.jsx");
+var GameActions = require("../reflux/gameActions.jsx");
 
 var GamePage = React.createClass({
   displayName: "GamePage",
+
+  mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
   getInitialState: function () {
     return { gameID: "" };
   },
 
   componentDidMount: function () {
-    this.setState({ gameID: this.props.params.gameID });
+    GameActions.this.setState({ gameID: this.props.params.gameID });
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -26881,7 +26886,7 @@ var GamePage = React.createClass({
 
 module.exports = GamePage;
 
-},{"./GameContentPanel.jsx":251,"react":224}],253:[function(require,module,exports){
+},{"../reflux/gameActions.jsx":267,"../reflux/gameStore.jsx":268,"./GameContentPanel.jsx":251,"react":224,"reflux":240}],253:[function(require,module,exports){
 var React = require("react");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
@@ -27055,7 +27060,20 @@ var SearchItem = React.createClass({
       React.createElement(
         Link,
         { style: this.props.linkStyle, to: href },
-        displayTitle
+        React.createElement(
+          "div",
+          { className: "row" },
+          React.createElement(
+            "div",
+            { className: "col-sm-4" },
+            this.props.item.Title
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-offset-4 col-sm-4" },
+            this.props.item.Price
+          )
+        )
       )
     );
   }
@@ -27076,7 +27094,7 @@ var SearchResultsPage = React.createClass({
   mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
   getInitialState: function () {
-    return { searchQuery: "" };
+    return { searchQuery: "", results: {} };
   },
 
   displayResults: function (event, data) {
@@ -27085,24 +27103,24 @@ var SearchResultsPage = React.createClass({
   },
 
   componentDidMount: function () {
-    console.log("searchquery mount: " + this.props.params.searchQuery);
+    console.log("searchquery did mount: " + this.props.params.searchQuery);
     GameStore.postSearchGame(this.props.params.searchQuery);
     this.setState({ searchQuery: this.props.params.searchQuery });
   },
 
   componentWillReceiveProps: function (nextProps) {
-    GameStore.postSearchGame(this.props.params.searchQuery);
+    console.log("search receiveProps: " + nextProps.params.searchQuery);
+    GameStore.postSearchGame(nextProps.params.searchQuery);
     this.setState({ searchQuery: nextProps.params.searchQuery });
   },
 
   render: function () {
     console.log("results: " + JSON.stringify(this.state.results));
     var linkStyle = {
-      color: "cyan"
+      color: "magenta"
     };
 
     var createSearchItem = function (item, index) {
-      console.log("key: " + item.Title + item.GameID + index);
       return React.createElement(SearchItem, { linkStyle: linkStyle, key: item.Title + item.GameID + index, item: item });
     };
 
@@ -27120,8 +27138,8 @@ var SearchResultsPage = React.createClass({
         { className: "col-sm-12" },
         React.createElement(
           "ul",
-          null,
-          this.state.results ? this.state.results.map(createSearchItem) : null
+          { className: "nav nav-pills nav-stacked" },
+          Object.keys(this.state.results).length !== 0 ? this.state.results.map(createSearchItem) : null
         )
       )
     );
@@ -27594,7 +27612,7 @@ module.exports = NavItem;
 },{"../reflux/userActions.jsx":269,"./NavItemMixIn.jsx":265,"react":224,"react-router":88}],267:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var UserActions = Reflux.createActions(["postSearchGame"]);
+var UserActions = Reflux.createActions(["postSearchGame", "postGetGame"]);
 
 module.exports = UserActions;
 
@@ -27603,14 +27621,13 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var GameActions = require("./gameActions.jsx");
 
-var UserStore = Reflux.createStore({
+var GameStore = Reflux.createStore({
   listenables: [GameActions],
 
   init: function () {
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
       console.log("jwt init: " + JSON.stringify(this.jwt));
-      this.postIsAuthenticated();
     }
   },
 
@@ -27619,9 +27636,24 @@ var UserStore = Reflux.createStore({
     var searchQuery = {
       "query": searchText
     };
+
     http.post("/searchGame", searchQuery).then(function (dataJSON) {
       this.search = dataJSON;
       console.log("search data: " + JSON.stringify(this.search));
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  postGetGame: function (gameID) {
+    console.log("getting gameID: " + gameID);
+
+    var gameIDJSON = {
+      "gameID": gameID
+    };
+
+    http.post("/getGame", gameIDJSON).then(function (dataJSON) {
+      this.search = dataJSON;
+      console.log("getGame data: " + JSON.stringify(this.search));
       this.returnStatus();
     }.bind(this));
   },
@@ -27631,7 +27663,7 @@ var UserStore = Reflux.createStore({
   }
 });
 
-module.exports = UserStore;
+module.exports = GameStore;
 
 },{"../services/httpService.js":271,"./gameActions.jsx":267,"reflux":240}],269:[function(require,module,exports){
 var Reflux = require("reflux");
@@ -27652,7 +27684,6 @@ var UserStore = Reflux.createStore({
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
       console.log("jwt init: " + JSON.stringify(this.jwt));
-      this.postIsAuthenticated();
     }
   },
 

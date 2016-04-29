@@ -32,6 +32,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
+  Get Game given a gameID.
+*/
+app.post("/getGame", function(request, response) {
+  console.log("POST getGame request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("Error: connection failed");
+      return;
+    }
+    console.log("connection established");
+
+    var gameIDJSON = request.body;
+    var gameID = gameIDJSON.gameID;
+
+    gameID = mysql.escape(gameID);
+
+    // TODO: Insert CAll procedure.
+    var query = format()
+  })
+});
+
+/*
   Search the Game table for all games similar to the search text.
 */
 app.post("/searchGame", function(request, response) {
@@ -177,7 +199,6 @@ app.post("/signin", function(request, response) {
 
     // Check if user is in User table.
     pool.query(query, function(error, rows, fields) {
-      connection.release();
       if(error) {
         console.log("Error: " + error.message);
         return;

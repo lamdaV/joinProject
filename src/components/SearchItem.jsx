@@ -10,11 +10,21 @@ var SearchItem = React.createClass({
     var href = "/game/" + this.props.item.GameID;
     var displayTitle = this.props.item.Title + " " + this.props.item.Price
 
-
     return (
       <li className = {this.state.hover ? "active": ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
         <Link style = {this.props.linkStyle} to = {href}>
-          {displayTitle}
+          {/*Text alignment using bootstrap grid system*/}
+          <div className = "row">
+            {/*Title*/}
+            <div className = "col-sm-4">
+              {this.props.item.Title}
+            </div>
+
+            {/*Price*/}
+            <div className = "col-sm-offset-4 col-sm-4">
+              {this.props.item.Price}
+            </div>
+          </div>
         </Link>
       </li>
     );

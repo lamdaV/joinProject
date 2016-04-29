@@ -9,7 +9,6 @@ var UserStore = Reflux.createStore({
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
       console.log("jwt init: " + JSON.stringify(this.jwt));
-      this.postIsAuthenticated();
     }
   },
 
