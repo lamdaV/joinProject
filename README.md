@@ -55,7 +55,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ## Milestone 02:
 ### David Lam:
 - [x] Connect account creation page to backend
-- [x] Start games page 
+- [x] Start games page
 - [x] Peer review stored procedures
 
 #### Extras:
@@ -66,6 +66,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 - [x] Modified Create stored procedure
 - [x] Modified Login stored procedure
 - [x] Made GetGameByTitle stored procedure
+- [x] Start Game searching
 
 ### Kennan French:
   - [ ] Learn React
