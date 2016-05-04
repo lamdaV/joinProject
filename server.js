@@ -38,7 +38,7 @@ app.post("/getGame", function(request, response) {
   console.log("POST getGame request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: connection failed");
+      console.log("Error: Failed to Connect");
       return;
     }
     console.log("connection established");
@@ -46,11 +46,25 @@ app.post("/getGame", function(request, response) {
     var gameIDJSON = request.body;
     var gameID = gameIDJSON.gameID;
 
+    console.log("GameID Received: " + gameID);
+
     gameID = mysql.escape(gameID);
 
     // TODO: Insert CAll procedure.
-    var query = format()
-  })
+    var query = format("CALL get_game_by_id({0})", gameID);
+
+    pool.query(query, function(error, rows, fields) {
+      if (error) {
+        console.log("Error: " + error.message);
+        return;
+      }
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      console.log("ROW 0: " + JSON.stringify(rows[0][0]));
+      console.log("ROW 1: " + JSON.stringify(rows[1]));
+      response.send(rows);
+    });
+    connection.release();
+  });
 });
 
 /*
@@ -60,7 +74,7 @@ app.post("/searchGame", function(request, response) {
   console.log("POST search game request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: connection failed");
+      console.log("Error: Failed to Connect");
       return;
     }
     console.log("connection established");
@@ -100,7 +114,7 @@ app.post("/authenticate", function(request, response) {
   console.log("POST authenticate request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: connection failed");
+      console.log("Error: Failed to Connect");
       return;
     }
     console.log("connection established");

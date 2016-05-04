@@ -26744,7 +26744,7 @@ var GameContentPanel = React.createClass({
   displayName: "GameContentPanel",
 
   getInitialState: function () {
-    return { title: "", rating: "", price: "" };
+    return { title: "", rating: "", price: "", tags: null };
   },
 
   componentWillMount: function () {
@@ -26752,7 +26752,23 @@ var GameContentPanel = React.createClass({
     this.setState({ title: "Dark Souls 3", rating: "M", price: "59.99" });
   },
 
+  componentWillReceiveProps: function (nextProps) {
+    console.log("GameContentPanel receiving props...");
+    console.log("props data: " + JSON.stringify(nextProps.gameData));
+    console.log("props tag: " + JSON.stringify(nextProps.gameTag));
+
+    if (nextProps.gameData) {
+      this.setState({ title: nextProps.gameData.Title, rating: nextProps.gameData.Rating, price: nextProps.gameData.Price });
+    }
+
+    if (nextProps.gameTag) {
+      this.setState({ tags: nextProps.gameTag });
+    }
+  },
+
   render: function () {
+    console.log("tag: " + this.state.tags);
+    console.log("tag boolean: " + this.state.tags != "");
     var divStyle = {
       marginTop: 10
     };
@@ -26777,6 +26793,16 @@ var GameContentPanel = React.createClass({
     if (this.props.headerColor) {
       panelHeaderStyle.background = this.props.headerColor;
       pricePanelStyle.background = this.props.headerColor;
+    };
+
+    var createTagLabel = function (item, index) {
+      return React.createElement(
+        "span",
+        { className: "label label-info", key: item.TagName + index },
+        " ",
+        item.TagName,
+        " "
+      );
     };
 
     return React.createElement(
@@ -26813,7 +26839,8 @@ var GameContentPanel = React.createClass({
               "h3",
               null,
               " Tags: "
-            )
+            ),
+            this.state.tags ? this.state.tags.map(createTagLabel) : null
           )
         )
       ),
@@ -26851,22 +26878,32 @@ var GameActions = require("../reflux/gameActions.jsx");
 var GamePage = React.createClass({
   displayName: "GamePage",
 
-  mixins: [Reflux.listenTo(GameStore, "displayResults")],
+  mixins: [Reflux.listenTo(GameStore, "setGameData")],
 
   getInitialState: function () {
-    return { gameID: "" };
+    return { gameID: "", gameData: "", gameTag: "" };
+  },
+
+  setGameData: function (event, data) {
+    var gameData = data.game;
+    var gameTag = data.tag;
+    console.log("setGameData game: " + JSON.stringify(gameData));
+    console.log("setGameData tag: " + JSON.stringify(gameTag));
+    this.setState({ gameData: gameData, gameTag: gameTag });
   },
 
   componentDidMount: function () {
-    // GameActions.
+    GameActions.postGetGame(this.props.params.gameID);
     this.setState({ gameID: this.props.params.gameID });
   },
 
   componentWillReceiveProps: function (nextProps) {
+    GameActions.postGetGame(nextProps.params.gameID);
     this.setState({ gameID: nextProps.params.gameID });
   },
 
   render: function () {
+    console.log("state gameData: " + JSON.stringify(this.state.gameData));
     return React.createElement(
       "div",
       null,
@@ -26879,7 +26916,7 @@ var GamePage = React.createClass({
       React.createElement(
         "div",
         { className: "panel-group" },
-        React.createElement(GameContentPanel, { headerColor: "#563d7c" })
+        React.createElement(GameContentPanel, { gameData: this.state.gameData, gameTag: this.state.gameTag, headerColor: "#563d7c" })
       )
     );
   }
@@ -27095,7 +27132,7 @@ var SearchResultsPage = React.createClass({
   mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
   getInitialState: function () {
-    return { searchQuery: "", results: {} };
+    return { searchQuery: "", results: null };
   },
 
   displayResults: function (event, data) {
@@ -27140,7 +27177,7 @@ var SearchResultsPage = React.createClass({
         React.createElement(
           "ul",
           { className: "nav nav-pills nav-stacked" },
-          Object.keys(this.state.results).length !== 0 ? this.state.results.map(createSearchItem) : null
+          this.state.results ? this.state.results.map(createSearchItem) : null
         )
       )
     );
@@ -27653,7 +27690,12 @@ var GameStore = Reflux.createStore({
     };
 
     http.post("/getGame", gameIDJSON).then(function (dataJSON) {
-      this.search = dataJSON;
+      var dataJSONSimplified = {
+        "game": dataJSON[0][0],
+        "tag": dataJSON[1]
+      };
+
+      this.search = dataJSONSimplified;
       console.log("getGame data: " + JSON.stringify(this.search));
       this.returnStatus();
     }.bind(this));
@@ -27685,6 +27727,7 @@ var UserStore = Reflux.createStore({
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
       console.log("jwt init: " + JSON.stringify(this.jwt));
+      this.postIsAuthenticated();
     }
   },
 

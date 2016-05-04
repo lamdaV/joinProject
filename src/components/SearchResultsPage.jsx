@@ -8,7 +8,7 @@ var SearchResultsPage = React.createClass({
   mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
   getInitialState: function() {
-    return ({searchQuery: "", results: {}});
+    return ({searchQuery: "", results: null});
   },
 
   displayResults: function(event, data) {
@@ -46,7 +46,7 @@ var SearchResultsPage = React.createClass({
         {/*<div className = "collapse navbar-collapse" id = "nav-collapse">*/}
         <div className = "col-sm-12">
           <ul className = "nav nav-pills nav-stacked">
-            {Object.keys(this.state.results).length !== 0 ? this.state.results.map(createSearchItem) : null}
+            {this.state.results ? this.state.results.map(createSearchItem) : null}
           </ul>
         </div>
       </div>
