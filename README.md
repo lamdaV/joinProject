@@ -54,19 +54,19 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 
 ## Milestone 02:
 ### David Lam:
-- [x] Connect account creation page to backend
-- [x] Start games page
-- [x] Peer review stored procedures
+  - [x] Connect account creation page to backend
+  - [x] Start games page
+  - [x] Peer review stored procedures
 
 #### Extras:
-- [x] Have users retype password for front end validation
-- [x] Token-based authentication
-- [x] Begin implementing stored procedures
-- [x] Sign out procedures
-- [x] Modified Create stored procedure
-- [x] Modified Login stored procedure
-- [x] Made GetGameByTitle stored procedure
-- [x] Start Game searching
+  - [x] Have users retype password for front end validation
+  - [x] Token-based authentication
+  - [x] Begin implementing stored procedures
+  - [x] Sign out procedures
+  - [x] Modified Create stored procedure
+  - [x] Modified Login stored procedure
+  - [x] Made GetGameByTitle stored procedure
+  - [x] Start Game searching
 
 ### Kennan French:
   - [x] Learn React
@@ -85,8 +85,12 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 
 ## Milestone 03:
 ### David Lam:
-- [ ] Matching page
-- [ ] Add tags to game page
+  - [ ] Matching page
+  - [x] Add tags to game page
+
+### Extras:
+  - [x] Complete Game searching
+  - [x] Made games page database dependent.
 
 ### Kennan French:
   - [ ] Make schedule widget
@@ -99,3 +103,4 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] Continue writing stored procedures as needed
   - [ ] Figure out mysql data dump
   - [ ] Add lots of data to tables
+
