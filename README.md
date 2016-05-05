@@ -85,12 +85,13 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 
 ## Milestone 03:
 ### David Lam:
-  - [ ] Matching page
+  - [x] Matching page
   - [x] Add tags to game page
 
 ### Extras:
   - [x] Complete Game searching
-  - [x] Made games page database dependent.
+  - [x] Made games page database dependent
+  - [x] Added more security checks on authentication-required pages
 
 ### Kennan French:
   - [ ] Make schedule widget
