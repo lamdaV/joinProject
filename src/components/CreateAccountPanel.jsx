@@ -22,6 +22,10 @@ var CreateAccountPanel = React.createClass({
 
     var panelHeaderStyle = {};
 
+    var buttonStyle = {
+      background: "#563d7c"
+    };
+
     if (this.props.headerColor) {
       panelHeaderStyle.background = this.props.headerColor;
     };
@@ -34,7 +38,7 @@ var CreateAccountPanel = React.createClass({
           </div>
 
           <div style = {panelBodyStyle} onSubmit = {this.handleSignUp} className = "row panel-body text-center">
-            <button onClick = {this.handleSignUp} className = "btn btn-primary center-block"> Sign Up </button>
+            <button style = {buttonStyle} onClick = {this.handleSignUp} className = "btn btn-primary center-block"> Sign Up </button>
           </div>
         </div>
       </div>

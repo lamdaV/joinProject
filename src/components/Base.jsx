@@ -13,11 +13,7 @@ var initialNavLinks = [
   {
     title: "Create An Account",
     href: "/create"
-  },
-  {
-    title: "Games",
-    href: "/game/1"
-  },
+  }
 ];
 
 var Base = React.createClass({

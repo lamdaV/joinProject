@@ -19,6 +19,7 @@ var NavBar = React.createClass({
   handleSearchSubmit: function(event) {
     event.preventDefault();
     console.log("submitting: " + this.state.searchQuery);
+    this.setState({searchQuery: ""});
     this.context.router.push("/search/" + this.state.searchQuery);
   },
 
@@ -84,20 +85,19 @@ var NavBar = React.createClass({
             </ul>
 
             {/*signout*/}
-            {/*TODO: Get Pill to work*/}
             {this.props.enableSignOut ? <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
-              {/*<button type="submit" className ="btn btn-default">Sign Out</button>*/}
             </div> : null}
 
             {/*Search*/}
-            {/*TODO: Make search components*/}
             <div>
               <form className = "navbar-form navbar-right">
                 <div className = "form-group">
                   <input onChange = {this.handleSearchChange} type="text" className ="form-control" placeholder="Search" value = {this.state.searchQuery} />
                 </div>
 
-                <button onClick = {this.handleSearchSubmit} type="submit" className ="btn btn-default">Submit</button>
+                <button onClick = {this.handleSearchSubmit} type="submit" className ="btn btn-default">
+                  <span className = "glyphicon glyphicon-search"></span>
+                </button>
               </form>
             </div>
 

@@ -26367,9 +26367,6 @@ var initialNavLinks = [{
 }, {
   title: "Create An Account",
   href: "/create"
-}, {
-  title: "Games",
-  href: "/game/1"
 }];
 
 var Base = React.createClass({
@@ -26653,6 +26650,10 @@ var CreateAccountPanel = React.createClass({
 
     var panelHeaderStyle = {};
 
+    var buttonStyle = {
+      background: "#563d7c"
+    };
+
     if (this.props.headerColor) {
       panelHeaderStyle.background = this.props.headerColor;
     };
@@ -26677,7 +26678,7 @@ var CreateAccountPanel = React.createClass({
           { style: panelBodyStyle, onSubmit: this.handleSignUp, className: "row panel-body text-center" },
           React.createElement(
             "button",
-            { onClick: this.handleSignUp, className: "btn btn-primary center-block" },
+            { style: buttonStyle, onClick: this.handleSignUp, className: "btn btn-primary center-block" },
             " Sign Up "
           )
         )
@@ -27387,6 +27388,10 @@ var SignInPanel = React.createClass({
       marginTop: 10
     };
 
+    var buttonStyle = {
+      background: "#563d7c"
+    };
+
     var panelHeaderStyle = {};
 
     if (this.props.headerColor) {
@@ -27432,7 +27437,7 @@ var SignInPanel = React.createClass({
                 { className: "col-xs-12 col-sm-12 col-lg-12" },
                 React.createElement(
                   "button",
-                  { className: "btn btn-primary" },
+                  { style: buttonStyle, className: "btn btn-primary" },
                   " Sign in "
                 )
               )
@@ -27605,6 +27610,7 @@ var NavBar = React.createClass({
   handleSearchSubmit: function (event) {
     event.preventDefault();
     console.log("submitting: " + this.state.searchQuery);
+    this.setState({ searchQuery: "" });
     this.context.router.push("/search/" + this.state.searchQuery);
   },
 
@@ -27696,7 +27702,7 @@ var NavBar = React.createClass({
               React.createElement(
                 "button",
                 { onClick: this.handleSearchSubmit, type: "submit", className: "btn btn-default" },
-                "Submit"
+                React.createElement("span", { className: "glyphicon glyphicon-search" })
               )
             )
           )

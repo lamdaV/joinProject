@@ -57,6 +57,10 @@ var SignInPanel = React.createClass({
       marginTop: 10
     };
 
+    var buttonStyle = {
+      background: "#563d7c"
+    };
+
     var panelHeaderStyle = {};
 
     if (this.props.headerColor) {
@@ -85,7 +89,7 @@ var SignInPanel = React.createClass({
               {/* Sign in button */}
               <div style = {divStyle} className = "row">
                 <div className = "col-xs-12 col-sm-12 col-lg-12">
-                  <button className = "btn btn-primary"> Sign in </button>
+                  <button style = {buttonStyle} className = "btn btn-primary"> Sign in </button>
                 </div>
               </div>
 
