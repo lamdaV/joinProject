@@ -103,6 +103,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Complete Game searching
   - [x] Made games page database dependent
   - [x] Added more security checks on authentication-required pages
+  - [x] Set up pages for User Profile, Preference, and Messages.
 
 ### Kennan French:
   - [ ] Make schedule widget
