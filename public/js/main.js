@@ -27039,6 +27039,7 @@ var MatchResults = React.createClass({
 
   render: function () {
     var panelHeadingStyle = {
+      background: "#563d7c",
       minHeight: 60
     };
 
