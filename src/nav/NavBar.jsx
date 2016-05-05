@@ -85,8 +85,8 @@ var NavBar = React.createClass({
             </ul>
 
             {/*signout*/}
-            {this.props.enableSignOut ? <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
-            </div> : null}
+            {/*{this.props.enableSignOut ? <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
+            </div> : null}*/}
 
             {/*Search*/}
             <div>

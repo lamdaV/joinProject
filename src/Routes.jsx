@@ -16,6 +16,7 @@ var GamePage = require("./components/GamePage.jsx");
 var PageNotFound = require("./components/PageNotFound.jsx");
 var SearchResultsPage = require("./components/SearchResultsPage.jsx");
 var MatchPage = require("./components/MatchPage.jsx");
+var InboxPage = require("./components/InboxPage.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -32,6 +33,7 @@ var Routes = (
       <Route path = "/game/:gameID" component = {GamePage}></Route>
       <Route path = "/search/:searchQuery" component = {SearchResultsPage}></Route>
       <Route path = "/match/:matchID" component = {MatchPage}></Route>
+      <Route path = "/inbox/:inboxID" component = {InboxPage}></Route>
       <Route path = "*" component = {PageNotFound}></Route>
     </Route>
   </Router>

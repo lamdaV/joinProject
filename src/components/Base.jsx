@@ -52,6 +52,10 @@ var Base = React.createClass({
         {
           title: "MatchMe",
           href: "/match/" + data.UserID
+        },
+        {
+          title: "Inbox",
+          href: "/inbox/" + data.UserID
         }
       ];
 
