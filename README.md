@@ -30,14 +30,15 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 17. You should now see the react webpage.
 
 # List of Pages:
-- [ ] User profile page (K)
-- [ ] User account settings page (K)
-- [x] Game info page (D)
-- [x] Search results page (D)
-- [ ] Prefence selection page (K)
-- [x] Matching page (D)
-- [ ] Conversation page (K)
-
+|         Page          |    Assigned   |    Status    |
+|:---------------------:|:-------------:|:------------:|
+| User Profile          | Kennan French | In Progress  |
+| User Account Setting  | Kennan French | In Progress  |
+| Game Info             | David Lam     | Completed    |
+| Search Result         | David Lam     | Completed    |
+| Preference Selection  | Kennan French | In Progress  |
+| Matching Page         | David Lam     | In Progress  |
+| Conversation          | Kennan French | In Progress  |
 
 # Milestones:
 ## Milestone 01:
