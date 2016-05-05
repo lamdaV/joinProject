@@ -29,6 +29,16 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 16. Open your prefered browser and go to `localhost:<port>` where `<port>` is the port used in `http-server`.
 17. You should now see the react webpage.
 
+# List of Pages:
+- [ ] User profile page (K)
+- [ ] User account settings page (K)
+- [x] Game info page (D)
+- [x] Search results page (D)
+- [ ] Prefence selection page (K)
+- [x] Matching page (D)
+- [ ] Conversation page (K)
+
+
 # Milestones:
 ## Milestone 01:
 ### David Lam:
