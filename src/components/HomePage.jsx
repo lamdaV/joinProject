@@ -10,8 +10,9 @@ var HomePage = React.createClass({
 
   componentWillMount: function() {
     // If the user is authenticated skip the signin page.
-    if (localStorage.getItem("jwt") && UserActions.postIsAuthenticated()) {
-      console.log("authenticated");
+    UserActions.postIsAuthenticated();
+    if (localStorage.getItem("UserID") !== "" && localStorage.getItem("UserID") !== null) {
+      console.log("homepage authenticated");
       this.context.router.push("/profile/" + localStorage.getItem("UserID"));
     } else {
       console.log("home mounting...");
