@@ -44,13 +44,18 @@ var Base = React.createClass({
           title: "Profile",
           href: userProfileLink
         },
+        // TODO: Remove when done testing
         {
           title: "Other User",
           href: "/profile/99"
         },
         {
-          title: "Dark Souls 3",
+          title: "Game Test",
           href: "/game/1"
+        },
+        {
+          title: "MatchMe",
+          href: "/match/" + data.UserID
         }
       ];
 
