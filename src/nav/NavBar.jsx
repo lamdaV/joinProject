@@ -1,6 +1,7 @@
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
 var NavSignOut = require("./NavSignOut.jsx");
+var NavDropdownItem = require("./NavDropdownItem.jsx");
 var ReactRouter = require("react-router");
 var Reflux = require("reflux");
 
@@ -51,7 +52,7 @@ var NavBar = React.createClass({
     };
 
     if (this.props.linkColor) {
-      linkStyle.color = this.props.linkColor;
+      linkStyle.color = this.props.linkColor + "!important";
     };
 
     var createLinkItem = function(item, index) {
@@ -80,6 +81,7 @@ var NavBar = React.createClass({
           {/*Collapsed Items*/}
           <div className = "collapse navbar-collapse" id = "nav-collapse">
             <ul className = "nav navbar-nav nav-pills">
+              {this.props.enableSignOut ? <NavDropdownItem linkStyle = {linkStyle} /> : null}
               {this.props.navData.map(createLinkItem)}
               {this.props.enableSignOut ? <NavSignOut linkStyle = {linkStyle}/> : null}
             </ul>

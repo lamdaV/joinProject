@@ -8,7 +8,7 @@ var UserStore = Reflux.createStore({
   init: function() {
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
-      console.log("jwt init: " + JSON.stringify(this.jwt));
+      console.log("userStore jwt init: " + JSON.stringify(this.jwt));
       this.postIsAuthenticated();
     }
   },
@@ -57,7 +57,6 @@ var UserStore = Reflux.createStore({
         this.user = dataJSON;
         console.log("authenticate user: " + JSON.stringify(this.user));
         var isAuthenticated = localStorage.getItem("UserID") == this.user.UserID
-
         if (this.user.error == -1) {
           localStorage.clear();
           this.returnStatus();

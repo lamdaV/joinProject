@@ -17,6 +17,8 @@ var PageNotFound = require("./components/PageNotFound.jsx");
 var SearchResultsPage = require("./components/SearchResultsPage.jsx");
 var MatchPage = require("./components/MatchPage.jsx");
 var InboxPage = require("./components/InboxPage.jsx");
+var SettingsPage = require("./components/SettingsPage.jsx");
+var PreferencePage = require("./components/PreferencePage.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -34,6 +36,8 @@ var Routes = (
       <Route path = "/search/:searchQuery" component = {SearchResultsPage}></Route>
       <Route path = "/match/:matchID" component = {MatchPage}></Route>
       <Route path = "/inbox/:inboxID" component = {InboxPage}></Route>
+      <Route path = "/settings/:settingID" component = {SettingsPage}></Route>
+      <Route path = "/preference/:preferenceID" component = {PreferencePage}></Route>
       <Route path = "*" component = {PageNotFound}></Route>
     </Route>
   </Router>

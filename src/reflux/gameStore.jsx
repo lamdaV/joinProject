@@ -8,7 +8,7 @@ var GameStore = Reflux.createStore({
   init: function() {
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
-      console.log("jwt init: " + JSON.stringify(this.jwt));
+      console.log("gameStore jwt init: " + JSON.stringify(this.jwt));
     }
   },
 

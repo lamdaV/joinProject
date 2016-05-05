@@ -26329,6 +26329,8 @@ var PageNotFound = require("./components/PageNotFound.jsx");
 var SearchResultsPage = require("./components/SearchResultsPage.jsx");
 var MatchPage = require("./components/MatchPage.jsx");
 var InboxPage = require("./components/InboxPage.jsx");
+var SettingsPage = require("./components/SettingsPage.jsx");
+var PreferencePage = require("./components/PreferencePage.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -26349,13 +26351,15 @@ var Routes = React.createElement(
     React.createElement(Route, { path: "/search/:searchQuery", component: SearchResultsPage }),
     React.createElement(Route, { path: "/match/:matchID", component: MatchPage }),
     React.createElement(Route, { path: "/inbox/:inboxID", component: InboxPage }),
+    React.createElement(Route, { path: "/settings/:settingID", component: SettingsPage }),
+    React.createElement(Route, { path: "/preference/:preferenceID", component: PreferencePage }),
     React.createElement(Route, { path: "*", component: PageNotFound })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":252,"./components/HomePage.jsx":253,"./components/InboxPage.jsx":254,"./components/MatchPage.jsx":255,"./components/Page1.jsx":257,"./components/PageNotFound.jsx":258,"./components/SearchResultsPage.jsx":261,"./components/UserProfilePage.jsx":264,"./reflux/userActions.jsx":272,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":248,"./components/GamePage.jsx":252,"./components/HomePage.jsx":253,"./components/InboxPage.jsx":254,"./components/MatchPage.jsx":255,"./components/Page1.jsx":257,"./components/PageNotFound.jsx":258,"./components/PreferencePage.jsx":260,"./components/SearchResultsPage.jsx":262,"./components/SettingsPage.jsx":263,"./components/UserProfilePage.jsx":266,"./reflux/userActions.jsx":275,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
@@ -26461,7 +26465,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":266,"../reflux/userActions.jsx":272,"../reflux/userStore.jsx":273,"react":224,"reflux":240}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":268,"../reflux/userActions.jsx":275,"../reflux/userStore.jsx":276,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -26628,7 +26632,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"../reflux/userActions.jsx":272,"../reflux/userStore.jsx":273,"./EmailField.jsx":250,"./PasswordField.jsx":259,"./TimezoneRadioGroup.jsx":263,"react":224,"reflux":240}],249:[function(require,module,exports){
+},{"../reflux/userActions.jsx":275,"../reflux/userStore.jsx":276,"./EmailField.jsx":250,"./PasswordField.jsx":259,"./TimezoneRadioGroup.jsx":265,"react":224,"reflux":240}],249:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -26937,7 +26941,7 @@ var GamePage = React.createClass({
 
 module.exports = GamePage;
 
-},{"../reflux/gameActions.jsx":270,"../reflux/gameStore.jsx":271,"./GameContentPanel.jsx":251,"react":224,"reflux":240}],253:[function(require,module,exports){
+},{"../reflux/gameActions.jsx":273,"../reflux/gameStore.jsx":274,"./GameContentPanel.jsx":251,"react":224,"reflux":240}],253:[function(require,module,exports){
 var React = require("react");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
@@ -26977,7 +26981,7 @@ var HomePage = React.createClass({
 
 module.exports = HomePage;
 
-},{"../reflux/userActions.jsx":272,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":262,"react":224}],254:[function(require,module,exports){
+},{"../reflux/userActions.jsx":275,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":264,"react":224}],254:[function(require,module,exports){
 var React = require("react");
 
 var InboxPage = React.createClass({
@@ -26988,7 +26992,14 @@ var InboxPage = React.createClass({
   },
 
   componentWillMount: function () {
-    this.setState({ inboxID: this.props.params.inboxID });
+    UserActions.postIsAuthenticated();
+
+    if (localStorage.getItem("UserID") == this.props.params.inboxID) {
+      this.setState({ inboxID: this.props.params.inboxID });
+    } else {
+      UserActions.logout();
+      this.context.router.push("/home");
+    }
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -27057,7 +27068,7 @@ var Matchings = React.createClass({
 
 module.exports = Matchings;
 
-},{"../reflux/userActions.jsx":272,"./MatchResults.jsx":256,"react":224}],256:[function(require,module,exports){
+},{"../reflux/userActions.jsx":275,"./MatchResults.jsx":256,"react":224}],256:[function(require,module,exports){
 var React = require("react");
 
 var MatchResults = React.createClass({
@@ -27254,6 +27265,41 @@ module.exports = PasswordField;
 
 },{"react":224}],260:[function(require,module,exports){
 var React = require("react");
+
+var PreferencePage = React.createClass({
+  displayName: "PreferencePage",
+
+
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  getInitialState: function () {
+    return { preferenceID: "" };
+  },
+
+  componentWillMount: function () {
+    this.setState({ preferenceID: this.props.params.preferenceID });
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({ preferenceID: nextProps.params.preferenceID });
+  },
+
+  render: function () {
+    return React.createElement(
+      "h1",
+      null,
+      " Preference of User: ",
+      this.state.preferenceID
+    );
+  }
+});
+
+module.exports = PreferencePage;
+
+},{"react":224}],261:[function(require,module,exports){
+var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
@@ -27294,7 +27340,7 @@ var SearchItem = React.createClass({
 
 module.exports = SearchItem;
 
-},{"../nav/NavItemMixIn.jsx":268,"react":224,"react-router":88}],261:[function(require,module,exports){
+},{"../nav/NavItemMixIn.jsx":271,"react":224,"react-router":88}],262:[function(require,module,exports){
 var React = require("react");
 var SearchItem = require("./SearchItem.jsx");
 var Reflux = require("reflux");
@@ -27361,7 +27407,43 @@ var SearchResultsPage = React.createClass({
 
 module.exports = SearchResultsPage;
 
-},{"../reflux/gameActions.jsx":270,"../reflux/gameStore.jsx":271,"./SearchItem.jsx":260,"react":224,"reflux":240}],262:[function(require,module,exports){
+},{"../reflux/gameActions.jsx":273,"../reflux/gameStore.jsx":274,"./SearchItem.jsx":261,"react":224,"reflux":240}],263:[function(require,module,exports){
+var React = require("react");
+var UserActions = require("../reflux/userActions.jsx");
+
+var SettingsPage = React.createClass({
+  displayName: "SettingsPage",
+
+
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  getInitialState: function () {
+    return { settingID: "" };
+  },
+
+  componentWillMount: function () {
+    this.setState({ settingID: this.props.params.settingID });
+  },
+
+  componentWillReceiveProps: function (nextProps) {
+    this.setState({ nextProps: nextProps.params.settingID });
+  },
+
+  render: function () {
+    return React.createElement(
+      "h1",
+      null,
+      " Settings of User: ",
+      this.state.settingID
+    );
+  }
+});
+
+module.exports = SettingsPage;
+
+},{"../reflux/userActions.jsx":275,"react":224}],264:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -27486,7 +27568,7 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"../reflux/userActions.jsx":272,"../reflux/userStore.jsx":273,"./EmailField.jsx":250,"./PasswordField.jsx":259,"react":224,"reflux":240}],263:[function(require,module,exports){
+},{"../reflux/userActions.jsx":275,"../reflux/userStore.jsx":276,"./EmailField.jsx":250,"./PasswordField.jsx":259,"react":224,"reflux":240}],265:[function(require,module,exports){
 var React = require("react");
 var RadioGroup = require("react-radio-group");
 
@@ -27571,7 +27653,7 @@ var TimezoneRadioGroup = React.createClass({
 
 module.exports = TimezoneRadioGroup;
 
-},{"react":224,"react-radio-group":57}],264:[function(require,module,exports){
+},{"react":224,"react-radio-group":57}],266:[function(require,module,exports){
 var React = require("react");
 var UserActions = require("../reflux/userActions.jsx");
 
@@ -27614,17 +27696,18 @@ var UserProfilePage = React.createClass({
 
 module.exports = UserProfilePage;
 
-},{"../reflux/userActions.jsx":272,"react":224}],265:[function(require,module,exports){
+},{"../reflux/userActions.jsx":275,"react":224}],267:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
 
 ReactDOM.render(Routes, document.getElementById("Base"));
 
-},{"./Routes.jsx":246,"react":224,"react-dom":56}],266:[function(require,module,exports){
+},{"./Routes.jsx":246,"react":224,"react-dom":56}],268:[function(require,module,exports){
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
 var NavSignOut = require("./NavSignOut.jsx");
+var NavDropdownItem = require("./NavDropdownItem.jsx");
 var ReactRouter = require("react-router");
 var Reflux = require("reflux");
 
@@ -27677,7 +27760,7 @@ var NavBar = React.createClass({
     };
 
     if (this.props.linkColor) {
-      linkStyle.color = this.props.linkColor;
+      linkStyle.color = this.props.linkColor + "!important";
     };
 
     var createLinkItem = function (item, index) {
@@ -27719,6 +27802,7 @@ var NavBar = React.createClass({
           React.createElement(
             "ul",
             { className: "nav navbar-nav nav-pills" },
+            this.props.enableSignOut ? React.createElement(NavDropdownItem, { linkStyle: linkStyle }) : null,
             this.props.navData.map(createLinkItem),
             this.props.enableSignOut ? React.createElement(NavSignOut, { linkStyle: linkStyle }) : null
           ),
@@ -27748,7 +27832,73 @@ var NavBar = React.createClass({
 
 module.exports = NavBar;
 
-},{"../reflux/userActions.jsx":272,"./NavItem.jsx":267,"./NavSignOut.jsx":269,"react":224,"react-router":88,"reflux":240}],267:[function(require,module,exports){
+},{"../reflux/userActions.jsx":275,"./NavDropdownItem.jsx":269,"./NavItem.jsx":270,"./NavSignOut.jsx":272,"react":224,"react-router":88,"reflux":240}],269:[function(require,module,exports){
+var React = require('react');
+var ReactRouter = require('react-router');
+var UserActions = require("../reflux/userActions.jsx");
+var Link = ReactRouter.Link;
+var PropTypes = React.PropTypes;
+
+var NavDropdownItem = React.createClass({
+  displayName: 'NavDropdownItem',
+
+  getInitialState: function () {
+    return { accountSettingRef: "", preferenceRef: "" };
+  },
+
+  componentWillMount: function () {
+    UserActions.postIsAuthenticated();
+
+    var accountSettingRef = "/settings/" + localStorage.getItem("UserID");
+    var preferenceRef = "/preference/" + +localStorage.getItem("UserID");
+
+    this.setState({ accountSettingRef: accountSettingRef, preferenceRef: preferenceRef });
+  },
+
+  render: function () {
+    var linkStyle = {
+      color: this.props.linkStyle.color,
+      background: "#563d7c"
+    };
+
+    return React.createElement(
+      'li',
+      { className: 'dropdown', style: linkStyle },
+      React.createElement(
+        'a',
+        { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false', style: linkStyle },
+        'Settings',
+        React.createElement('span', { style: linkStyle, className: 'caret' })
+      ),
+      React.createElement(
+        'ul',
+        { style: linkStyle, className: 'dropdown-menu' },
+        React.createElement(
+          'li',
+          null,
+          React.createElement(
+            Link,
+            { style: linkStyle, to: this.state.accountSettingRef },
+            'Account Settings'
+          )
+        ),
+        React.createElement(
+          'li',
+          null,
+          React.createElement(
+            Link,
+            { style: linkStyle, to: this.state.preferenceRef },
+            'Preferences'
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = NavDropdownItem;
+
+},{"../reflux/userActions.jsx":275,"react":224,"react-router":88}],270:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var PropTypes = React.PropTypes;
@@ -27768,7 +27918,6 @@ var NavItem = React.createClass({
 
   render: function () {
     var isInbox = this.props.title == "Inbox";
-    console.log("isInbox: " + isInbox);
     return React.createElement(
       "li",
       { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseOut: this.mouseOut },
@@ -27788,7 +27937,7 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"./NavItemMixIn.jsx":268,"react":224,"react-router":88}],268:[function(require,module,exports){
+},{"./NavItemMixIn.jsx":271,"react":224,"react-router":88}],271:[function(require,module,exports){
 var NavItemMixIn = {
   getInitialState: function () {
     return { hover: false };
@@ -27805,7 +27954,7 @@ var NavItemMixIn = {
 
 module.exports = NavItemMixIn;
 
-},{}],269:[function(require,module,exports){
+},{}],272:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var PropTypes = React.PropTypes;
@@ -27842,14 +27991,14 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"../reflux/userActions.jsx":272,"./NavItemMixIn.jsx":268,"react":224,"react-router":88}],270:[function(require,module,exports){
+},{"../reflux/userActions.jsx":275,"./NavItemMixIn.jsx":271,"react":224,"react-router":88}],273:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions(["postSearchGame", "postGetGame"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],271:[function(require,module,exports){
+},{"reflux":240}],274:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var GameActions = require("./gameActions.jsx");
@@ -27860,7 +28009,7 @@ var GameStore = Reflux.createStore({
   init: function () {
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
-      console.log("jwt init: " + JSON.stringify(this.jwt));
+      console.log("gameStore jwt init: " + JSON.stringify(this.jwt));
     }
   },
 
@@ -27903,14 +28052,14 @@ var GameStore = Reflux.createStore({
 
 module.exports = GameStore;
 
-},{"../services/httpService.js":274,"./gameActions.jsx":270,"reflux":240}],272:[function(require,module,exports){
+},{"../services/httpService.js":277,"./gameActions.jsx":273,"reflux":240}],275:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postIsAuthenticated", "logout"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],273:[function(require,module,exports){
+},{"reflux":240}],276:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
@@ -27921,7 +28070,7 @@ var UserStore = Reflux.createStore({
   init: function () {
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
-      console.log("jwt init: " + JSON.stringify(this.jwt));
+      console.log("userStore jwt init: " + JSON.stringify(this.jwt));
       this.postIsAuthenticated();
     }
   },
@@ -27969,7 +28118,6 @@ var UserStore = Reflux.createStore({
         this.user = dataJSON;
         console.log("authenticate user: " + JSON.stringify(this.user));
         var isAuthenticated = localStorage.getItem("UserID") == this.user.UserID;
-
         if (this.user.error == -1) {
           localStorage.clear();
           this.returnStatus();
@@ -28010,7 +28158,7 @@ var UserStore = Reflux.createStore({
 
 module.exports = UserStore;
 
-},{"../services/httpService.js":274,"./userActions.jsx":272,"reflux":240}],274:[function(require,module,exports){
+},{"../services/httpService.js":277,"./userActions.jsx":275,"reflux":240}],277:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
 var baseUrl = "http://localhost:3333";
 
@@ -28036,4 +28184,4 @@ var Service = {
 
 module.exports = Service;
 
-},{"whatwg-fetch":245}]},{},[265]);
+},{"whatwg-fetch":245}]},{},[267]);
