@@ -28153,7 +28153,7 @@ var GameStore = Reflux.createStore({
   postSearchGame: function (searchText) {
     console.log("searchText: " + searchText);
     var searchQuery = {
-      "query": searchText
+      query: searchText
     };
 
     http.post("/searchGame", searchQuery).then(function (dataJSON) {

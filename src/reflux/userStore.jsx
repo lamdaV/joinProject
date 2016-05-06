@@ -33,7 +33,7 @@ var UserStore = Reflux.createStore({
 
     http.post("/create", user).then(function(dataJSON) {
       this.user = dataJSON;
-      console.log("user create: " + JSON.stringify(this.user))
+      console.log("user create: " + JSON.stringify(this.user));
       // Do not save if a status is returned.
       if (this.user.status === 0) {
         this.saveToken();
