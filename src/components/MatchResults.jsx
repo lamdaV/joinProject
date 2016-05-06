@@ -13,7 +13,7 @@ var MatchResults = React.createClass({
   /*
     Handle Accept button.
   */
-  handleAccept: function() {
+  handleAccept: function(event) {
     // TODO: Get this to work with Kennan's stuff.
     event.preventDefault();
     console.log("Accept button clicked");
