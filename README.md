@@ -128,10 +128,13 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ### Extras:
   - [x] Improved Linter with React.
   - [x] Commented Existing Code.
-  - 
+  
 ### Kennan French
   - [ ] Scroll box (class? widget?)
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
+  - [ ] Preference Page
+  - [ ] Account Settings Page
+  - [ ] Finish Profile Page
 
 ### Chris Knight
   - [ ] Match page back end/implement matching algorithm
