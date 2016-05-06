@@ -37,6 +37,8 @@ var CreateAccountForm = React.createClass({
   },
 
   handleSubmit: function(event) {
+    // TODO: BUG: If user failed to submit once and it was caught, the user must click next twice.
+
     event.preventDefault();
     var isValid = this.checkValidity();
 

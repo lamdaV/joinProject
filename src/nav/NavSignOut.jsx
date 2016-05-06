@@ -11,10 +11,14 @@ var NavItem = React.createClass({
     style: PropTypes.object
   },
 
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   handleSignOut: function(event) {
     event.preventDefault();
     UserActions.logout();
-    // this.context.router.push("/home");
+    this.context.router.push("/home");
   },
 
   render: function() {

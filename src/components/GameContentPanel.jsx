@@ -6,8 +6,8 @@ var GameContentPanel = React.createClass({
   },
 
   componentWillMount: function() {
-    // TODO: rely on database data. probably props from above.
-    this.setState({title: "Dark Souls 3", rating: "M", price: "59.99"});
+    // Set some temp values.
+    this.setState({title: "PlaceHolderTitle", rating: "A", price: "NaN"});
   },
 
   componentWillReceiveProps: function(nextProps) {

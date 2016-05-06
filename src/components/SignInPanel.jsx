@@ -23,18 +23,17 @@ var SignInPanel = React.createClass({
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.UserID);
 
-    if (data.error == -1) {
+    if (data.UserID === -1) {
+      // TODO: Improve UI.
+      this.refs.passwordField.clear();
+      alert("Invalid Email or Password");
       return;
     }
 
-    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
+    if (data.UserID > 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
       this.context.router.push("/profile/" + data.UserID);
     } else if (data.length == 0){
       console.log("Do not alert!");
-    } else {
-      // TODO: figure out how to handle failed logins
-      this.refs.passwordField.clear();
-      alert("Invalid Email or Password");
     }
   },
 

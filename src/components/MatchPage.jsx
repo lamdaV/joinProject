@@ -1,8 +1,13 @@
 var React = require("react");
+var Reflux = require("reflux");
 var MatchResults = require("./MatchResults.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
 var UserActions = require("../reflux/userActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
-var Matchings = React.createClass({
+var MatchPage = React.createClass({
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
+
   contextTypes: {
     router: React.PropTypes.object
   },
@@ -11,19 +16,24 @@ var Matchings = React.createClass({
     return ({matchID: ""});
   },
 
-  componentWillMount: function() {
-    UserActions.postIsAuthenticated();
-    console.log("matchID: " + this.props.params.matchID);
-    console.log("in match userID: " + localStorage.getItem("UserID"));
-    if (localStorage.getItem("UserID") === this.props.params.matchID) {
-      this.setState({matchID: this.props.params.matchID});
+  verify: function(event, status) {
+    if (status) {
+      console.log("match verify passed");
     } else {
+      console.log("match verify failed");
       UserActions.logout();
       this.context.router.push("/home");
     }
   },
 
+  componentWillMount: function() {
+    console.log("matchID: " + this.props.params.matchID);
+    AuthStore.postAuthenticate();
+    this.setState({matchID: this.props.params.matchID});
+  },
+
   componentWillReceiveProps: function(nextProps) {
+    AuthStore.postAuthenticate();
     this.setState({matchID: nextProps.params.matchID});
   },
 
@@ -37,4 +47,4 @@ var Matchings = React.createClass({
   }
 });
 
-module.exports = Matchings;
+module.exports = MatchPage;

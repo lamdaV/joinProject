@@ -274,7 +274,7 @@ app.post("/signin", function(request, response) {
     console.log("password: " + password);
 
     // Create login_function query.
-    var query = format("SET @Status = -1; CALL login_function({0}, {1}, @Status);", email, password);
+    var query = format("SET @Status = -1; CALL login_function({0}, {1}, @Status); SELECT @Status AS Status", email, password);
 
     console.log("QUERY: " + query);
 
@@ -287,7 +287,8 @@ app.post("/signin", function(request, response) {
 
       // Use to determine where data is located.
       console.log("ROWS: " + JSON.stringify(rows));
-      console.log("ROW 1: " + JSON.stringify(rows[1][0]))
+      console.log("ROW 1: " + JSON.stringify(rows[1][0]));
+      console.log("ROW 3: " + JSON.stringify(rows[3][0]));
 
       // Set up data to be encrypted.
       var userData = {
@@ -295,10 +296,15 @@ app.post("/signin", function(request, response) {
         "password" : password
       };
 
+      if (rows[3][0].Status !== 0) {
+        var userID = rows[3][0].Status;
+      } else {
+        var userID = rows[1][0].UserID;
+      }
       // Encrypt.
       userData = jwt.sign(userData, secret, {expiresIn: "10h"});
       authentication = {
-        "UserID" : rows[1][0].UserID,
+        "UserID" : userID,
         "jwt" : userData
       };
 

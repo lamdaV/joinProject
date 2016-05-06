@@ -1,5 +1,7 @@
 var React = require("react");
 var Reflux = require("reflux");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
@@ -15,18 +17,22 @@ var SettingsPage = React.createClass({
   },
 
   verify: function(event, status) {
-    console.log("verify status: " + status);
     if (status) {
-      this.setState({settingID: this.props.params.settingID});
+      console.log("setting verify passed");
+    } else {
+      console.log("setting verify failed");
+      UserActions.logout();
+      this.context.router.push("/home");
     }
   },
 
   componentWillMount: function() {
-    console.log("settings page mount...");
     AuthActions.postAuthenticate();
+    this.setState({settingID: this.props.params.settingID});
   },
 
   componentWillReceiveProps: function(nextProps) {
+    AuthActions.postAuthenticate();
     this.setState({nextProps: nextProps.params.settingID});
   },
 

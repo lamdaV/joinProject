@@ -2,7 +2,8 @@ var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
-var UserStore = require("../reflux/userStore.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 // TODO: Set this correctly.
 var initialNavLinks = [
@@ -17,24 +18,27 @@ var initialNavLinks = [
 ];
 
 var Base = React.createClass({
-  mixins: [Reflux.listenTo(UserStore, "updateNavBar")],
+  // Listen to the AuthStore.
+  mixins: [Reflux.listenTo(AuthStore, "updateNavBar")],
 
   contextTypes: {
     router: React.PropTypes.object
   },
 
   getInitialState: function() {
-    console.log("base init: " + UserActions.postIsAuthenticated());
+    AuthActions.postAuthenticate();
     return ({navLinks: initialNavLinks, canSignOut: false, brandLink: "/home"});
   },
 
-  updateNavBar: function(event, data) {
-    console.log("base data: " + JSON.stringify(data));
+  updateNavBar: function(event, status) {
+    console.log("base authStatus: " + status);
     var nextLinks = initialNavLinks;
     var canSignOut = false;
     var brandLink = "/home";
-    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
-      var userProfileLink = "/profile/" + data.UserID;
+
+    // If authenticated, update the navbar.
+    if (status) {
+      var userProfileLink = "/profile/" + localStorage.getItem("UserID");
       var nextLinks = [
         {
           title: "Profile",
@@ -47,27 +51,31 @@ var Base = React.createClass({
         },
         {
           title: "Game Test",
-          href: "/game/1"
+          href: "/game/1001"
         },
         {
           title: "MatchMe",
-          href: "/match/" + data.UserID
+          href: "/match/" + localStorage.getItem("UserID")
         },
         {
           title: "Inbox",
-          href: "/inbox/" + data.UserID
+          href: "/inbox/" + localStorage.getItem("UserID")
         }
       ];
-
       canSignOut = true;
+    // Otherwise, boot the user off.
     } else {
-      this.context.router.push("/#");
+      console.log("BASE: User not authenticated")
+      UserActions.logout();
+      this.context.router.push("/home");
     }
 
+    // Update brandLink when possible.
     if (userProfileLink) {
       brandLink = userProfileLink;
     }
 
+    // Set the state to re-render.
     this.setState({navLinks: nextLinks, canSignOut: canSignOut, brandLink: brandLink});
   },
 
@@ -76,7 +84,6 @@ var Base = React.createClass({
       marginTop: 80
     };
 
-    // TODO: why does it need this childrenStyle?!?!
     return (
       <div>
         <NavBar bgColor = "#563d7c" titleColor = "#fff" linkColor = "cyan" navData = {this.state.navLinks} brandName = "Join" brandLink = {this.state.brandLink} enableSignOut = {this.state.canSignOut}/>

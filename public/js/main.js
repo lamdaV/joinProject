@@ -26364,7 +26364,8 @@ var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
-var UserStore = require("../reflux/userStore.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 // TODO: Set this correctly.
 var initialNavLinks = [{
@@ -26378,24 +26379,27 @@ var initialNavLinks = [{
 var Base = React.createClass({
   displayName: "Base",
 
-  mixins: [Reflux.listenTo(UserStore, "updateNavBar")],
+  // Listen to the AuthStore.
+  mixins: [Reflux.listenTo(AuthStore, "updateNavBar")],
 
   contextTypes: {
     router: React.PropTypes.object
   },
 
   getInitialState: function () {
-    console.log("base init: " + UserActions.postIsAuthenticated());
+    AuthActions.postAuthenticate();
     return { navLinks: initialNavLinks, canSignOut: false, brandLink: "/home" };
   },
 
-  updateNavBar: function (event, data) {
-    console.log("base data: " + JSON.stringify(data));
+  updateNavBar: function (event, status) {
+    console.log("base authStatus: " + status);
     var nextLinks = initialNavLinks;
     var canSignOut = false;
     var brandLink = "/home";
-    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
-      var userProfileLink = "/profile/" + data.UserID;
+
+    // If authenticated, update the navbar.
+    if (status) {
+      var userProfileLink = "/profile/" + localStorage.getItem("UserID");
       var nextLinks = [{
         title: "Profile",
         href: userProfileLink
@@ -26406,24 +26410,28 @@ var Base = React.createClass({
         href: "/profile/99"
       }, {
         title: "Game Test",
-        href: "/game/1"
+        href: "/game/1001"
       }, {
         title: "MatchMe",
-        href: "/match/" + data.UserID
+        href: "/match/" + localStorage.getItem("UserID")
       }, {
         title: "Inbox",
-        href: "/inbox/" + data.UserID
+        href: "/inbox/" + localStorage.getItem("UserID")
       }];
-
       canSignOut = true;
+      // Otherwise, boot the user off.
     } else {
-      this.context.router.push("/#");
-    }
+        console.log("BASE: User not authenticated");
+        UserActions.logout();
+        this.context.router.push("/home");
+      }
 
+    // Update brandLink when possible.
     if (userProfileLink) {
       brandLink = userProfileLink;
     }
 
+    // Set the state to re-render.
     this.setState({ navLinks: nextLinks, canSignOut: canSignOut, brandLink: brandLink });
   },
 
@@ -26432,7 +26440,6 @@ var Base = React.createClass({
       marginTop: 80
     };
 
-    // TODO: why does it need this childrenStyle?!?!
     return React.createElement(
       "div",
       null,
@@ -26465,7 +26472,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":268,"../reflux/userActions.jsx":277,"../reflux/userStore.jsx":278,"react":224,"reflux":240}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":268,"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"../reflux/userActions.jsx":277,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -26507,6 +26514,8 @@ var CreateAccountForm = React.createClass({
   },
 
   handleSubmit: function (event) {
+    // TODO: BUG: If user failed to submit once and it was caught, the user must click next twice.
+
     event.preventDefault();
     var isValid = this.checkValidity();
 
@@ -26765,8 +26774,8 @@ var GameContentPanel = React.createClass({
   },
 
   componentWillMount: function () {
-    // TODO: rely on database data. probably props from above.
-    this.setState({ title: "Dark Souls 3", rating: "M", price: "59.99" });
+    // Set some temp values.
+    this.setState({ title: "PlaceHolderTitle", rating: "A", price: "NaN" });
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -26943,26 +26952,36 @@ module.exports = GamePage;
 
 },{"../reflux/gameActions.jsx":275,"../reflux/gameStore.jsx":276,"./GameContentPanel.jsx":251,"react":224,"reflux":240}],253:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
-var UserActions = require("../reflux/userActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 var HomePage = React.createClass({
   displayName: "HomePage",
+
+  // Listen to the AuthStore.
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
 
   contextTypes: {
     router: React.PropTypes.object
   },
 
-  componentWillMount: function () {
-    // If the user is authenticated skip the signin page.
-    UserActions.postIsAuthenticated();
-    if (localStorage.getItem("UserID") !== "" && localStorage.getItem("UserID") !== null) {
-      console.log("homepage authenticated");
+  verify: function (event, status) {
+    // If authenticated, do not show the sign in page.
+    if (status) {
+      console.log("home page verify passed...");
       this.context.router.push("/profile/" + localStorage.getItem("UserID"));
     } else {
-      console.log("home mounting...");
+      console.log("home page verify failed");
     }
+  },
+
+  componentWillMount: function () {
+    // If the user is authenticated skip the signin page.
+    console.log("home page mounting...");
+    AuthActions.postAuthenticate();
   },
 
   render: function () {
@@ -26981,21 +27000,49 @@ var HomePage = React.createClass({
 
 module.exports = HomePage;
 
-},{"../reflux/userActions.jsx":277,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":264,"react":224}],254:[function(require,module,exports){
+},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"./CreateAccountPanel.jsx":249,"./SignInPanel.jsx":264,"react":224,"reflux":240}],254:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 var InboxPage = React.createClass({
   displayName: "InboxPage",
+
+  // Listen to the AuthStore.
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
+
+  contextTypes: {
+    router: React.PropTypes.object
+  },
 
   getInitialState: function () {
     return { inboxID: "" };
   },
 
+  verify: function (event, status) {
+    if (status) {
+      console.log("inbox verify passed");
+      if (this.state.inboxID !== localStorage.getItem("UserID")) {
+        console.log("inbox illegal access");
+        UserActions.logout();
+        this.context.router.push("/home");
+      }
+    } else {
+      console.log("inbox verify failed");
+      UserActions.logout();
+      this.context.router.push("/home");
+    }
+  },
+
   componentWillMount: function () {
+    AuthStore.postAuthenticate();
     this.setState({ inboxID: this.props.params.inboxID });
   },
 
   componentWillReceiveProps: function (nextProps) {
+    AuthStore.postAuthenticate();
     this.setState({ inboxID: nextProps.params.inboxID });
   },
 
@@ -27011,13 +27058,18 @@ var InboxPage = React.createClass({
 
 module.exports = InboxPage;
 
-},{"react":224}],255:[function(require,module,exports){
+},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"../reflux/userActions.jsx":277,"react":224,"reflux":240}],255:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
 var MatchResults = require("./MatchResults.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
 var UserActions = require("../reflux/userActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
-var Matchings = React.createClass({
-  displayName: "Matchings",
+var MatchPage = React.createClass({
+  displayName: "MatchPage",
+
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
 
   contextTypes: {
     router: React.PropTypes.object
@@ -27027,19 +27079,24 @@ var Matchings = React.createClass({
     return { matchID: "" };
   },
 
-  componentWillMount: function () {
-    UserActions.postIsAuthenticated();
-    console.log("matchID: " + this.props.params.matchID);
-    console.log("in match userID: " + localStorage.getItem("UserID"));
-    if (localStorage.getItem("UserID") === this.props.params.matchID) {
-      this.setState({ matchID: this.props.params.matchID });
+  verify: function (event, status) {
+    if (status) {
+      console.log("match verify passed");
     } else {
+      console.log("match verify failed");
       UserActions.logout();
       this.context.router.push("/home");
     }
   },
 
+  componentWillMount: function () {
+    console.log("matchID: " + this.props.params.matchID);
+    AuthStore.postAuthenticate();
+    this.setState({ matchID: this.props.params.matchID });
+  },
+
   componentWillReceiveProps: function (nextProps) {
+    AuthStore.postAuthenticate();
     this.setState({ matchID: nextProps.params.matchID });
   },
 
@@ -27059,9 +27116,9 @@ var Matchings = React.createClass({
   }
 });
 
-module.exports = Matchings;
+module.exports = MatchPage;
 
-},{"../reflux/userActions.jsx":277,"./MatchResults.jsx":256,"react":224}],256:[function(require,module,exports){
+},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"../reflux/userActions.jsx":277,"./MatchResults.jsx":256,"react":224,"reflux":240}],256:[function(require,module,exports){
 var React = require("react");
 
 var MatchResults = React.createClass({
@@ -27258,10 +27315,15 @@ module.exports = PasswordField;
 
 },{"react":224}],260:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 var PreferencePage = React.createClass({
   displayName: "PreferencePage",
 
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
 
   contextTypes: {
     router: React.PropTypes.object
@@ -27271,11 +27333,23 @@ var PreferencePage = React.createClass({
     return { preferenceID: "" };
   },
 
+  verify: function (event, status) {
+    if (status) {
+      console.log("preference verify passed");
+    } else {
+      console.log("preference verify failed");
+      UserActions.logout();
+      this.context.router.push("/home");
+    }
+  },
+
   componentWillMount: function () {
+    AuthActions.postAuthenticate();
     this.setState({ preferenceID: this.props.params.preferenceID });
   },
 
   componentWillReceiveProps: function (nextProps) {
+    AuthActions.postAuthenticate();
     this.setState({ preferenceID: nextProps.params.preferenceID });
   },
 
@@ -27291,7 +27365,7 @@ var PreferencePage = React.createClass({
 
 module.exports = PreferencePage;
 
-},{"react":224}],261:[function(require,module,exports){
+},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"../reflux/userActions.jsx":277,"react":224,"reflux":240}],261:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
@@ -27403,6 +27477,8 @@ module.exports = SearchResultsPage;
 },{"../reflux/gameActions.jsx":275,"../reflux/gameStore.jsx":276,"./SearchItem.jsx":261,"react":224,"reflux":240}],263:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
@@ -27420,18 +27496,22 @@ var SettingsPage = React.createClass({
   },
 
   verify: function (event, status) {
-    console.log("verify status: " + status);
     if (status) {
-      this.setState({ settingID: this.props.params.settingID });
+      console.log("setting verify passed");
+    } else {
+      console.log("setting verify failed");
+      UserActions.logout();
+      this.context.router.push("/home");
     }
   },
 
   componentWillMount: function () {
-    console.log("settings page mount...");
     AuthActions.postAuthenticate();
+    this.setState({ settingID: this.props.params.settingID });
   },
 
   componentWillReceiveProps: function (nextProps) {
+    AuthActions.postAuthenticate();
     this.setState({ nextProps: nextProps.params.settingID });
   },
 
@@ -27447,7 +27527,7 @@ var SettingsPage = React.createClass({
 
 module.exports = SettingsPage;
 
-},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"react":224,"reflux":240}],264:[function(require,module,exports){
+},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"../reflux/userActions.jsx":277,"react":224,"reflux":240}],264:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -27475,18 +27555,17 @@ var SignInPanel = React.createClass({
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.UserID);
 
-    if (data.error == -1) {
+    if (data.UserID === -1) {
+      // TODO: Improve UI.
+      this.refs.passwordField.clear();
+      alert("Invalid Email or Password");
       return;
     }
 
-    if (data.length != 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
+    if (data.UserID > 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
       this.context.router.push("/profile/" + data.UserID);
     } else if (data.length == 0) {
       console.log("Do not alert!");
-    } else {
-      // TODO: figure out how to handle failed logins
-      this.refs.passwordField.clear();
-      alert("Invalid Email or Password");
     }
   },
 
@@ -27659,10 +27738,15 @@ module.exports = TimezoneRadioGroup;
 
 },{"react":224,"react-radio-group":57}],266:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 var UserProfilePage = React.createClass({
   displayName: "UserProfilePage",
+
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
 
   getInitialState: function () {
     return { userID: "" };
@@ -27672,13 +27756,29 @@ var UserProfilePage = React.createClass({
     router: React.PropTypes.object
   },
 
+  verify: function (events, status) {
+    // If user is authenticated, do nothing.
+    // Otherwise, logout and let Base handle the rest.
+    if (status) {
+      console.log("profile verify passed");
+    } else {
+      console.log("profile verify failed");
+      UserActions.logout();
+      this.context.router.push("/home");
+    }
+  },
+
   componentDidMount: function () {
     console.log("userprofile mounting...");
-    console.log("profile UserID: " + localStorage.getItem("UserID"));
+    console.log("profile props UserID: " + this.props.params.userID);
+
+    // Authenticate User.
+    AuthActions.postAuthenticate();
     this.setState({ userID: this.props.params.userID });
   },
 
   componentWillReceiveProps: function (nextProps) {
+    AuthActions.postAuthenticate();
     this.setState({ userID: nextProps.params.userID });
   },
 
@@ -27694,7 +27794,7 @@ var UserProfilePage = React.createClass({
 
 module.exports = UserProfilePage;
 
-},{"../reflux/userActions.jsx":277,"react":224}],267:[function(require,module,exports){
+},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"../reflux/userActions.jsx":277,"react":224,"reflux":240}],267:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
@@ -27968,10 +28068,14 @@ var NavItem = React.createClass({
     style: PropTypes.object
   },
 
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
   handleSignOut: function (event) {
     event.preventDefault();
     UserActions.logout();
-    // this.context.router.push("/home");
+    this.context.router.push("/home");
   },
 
   render: function () {
@@ -28124,7 +28228,7 @@ var UserStore = Reflux.createStore({
 
     http.post("/signin", user).then(function (dataJSON) {
       this.user = dataJSON;
-      if (this.user.UserID !== null) {
+      if (this.user.UserID !== null && this.user.UserID !== -1) {
         this.saveToken();
       }
       this.returnStatus();
@@ -28141,7 +28245,7 @@ var UserStore = Reflux.createStore({
     http.post("/create", user).then(function (dataJSON) {
       this.user = dataJSON;
       console.log("user create: " + JSON.stringify(this.user));
-      // Do not save is a status is returned.
+      // Do not save if a status is returned.
       if (this.user.status === 0) {
         this.saveToken();
       }

@@ -1,22 +1,32 @@
 var React = require("react");
+var Reflux = require("reflux");
 var SignInPanel = require("./SignInPanel.jsx");
 var CreateAccountPanel = require("./CreateAccountPanel.jsx");
-var UserActions = require("../reflux/userActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 var HomePage = React.createClass({
+  // Listen to the AuthStore.
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
+
   contextTypes: {
     router: React.PropTypes.object
   },
 
-  componentWillMount: function() {
-    // If the user is authenticated skip the signin page.
-    UserActions.postIsAuthenticated();
-    if (localStorage.getItem("UserID") !== "" && localStorage.getItem("UserID") !== null) {
-      console.log("homepage authenticated");
+  verify: function(event, status) {
+    // If authenticated, do not show the sign in page.
+    if (status) {
+      console.log("home page verify passed...");
       this.context.router.push("/profile/" + localStorage.getItem("UserID"));
     } else {
-      console.log("home mounting...");
+      console.log("home page verify failed");
     }
+  },
+
+  componentWillMount: function() {
+    // If the user is authenticated skip the signin page.
+    console.log("home page mounting...");
+    AuthActions.postAuthenticate();
   },
 
   render: function() {
