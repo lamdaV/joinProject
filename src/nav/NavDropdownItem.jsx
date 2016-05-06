@@ -9,8 +9,6 @@ var NavDropdownItem = React.createClass({
   },
 
   componentWillMount: function() {
-    UserActions.postIsAuthenticated();
-
     var accountSettingRef = "/settings/" + localStorage.getItem("UserID");
     var preferenceRef = "/preference/" + localStorage.getItem("UserID");
 

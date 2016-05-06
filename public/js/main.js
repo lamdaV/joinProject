@@ -26479,6 +26479,8 @@ var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var TimezoneRadioGroup = require("./TimezoneRadioGroup.jsx");
 var Reflux = require("reflux");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
 
@@ -26486,7 +26488,7 @@ var CreateAccountForm = React.createClass({
   displayName: "CreateAccountForm",
 
   // Listen to the UserStore.
-  mixins: [Reflux.listenTo(UserStore, "createUser")],
+  mixins: [Reflux.listenTo(UserStore, "createUser"), Reflux.listenTo(AuthStore, "verify")],
 
   contextTypes: {
     router: React.PropTypes.object
@@ -26494,6 +26496,15 @@ var CreateAccountForm = React.createClass({
 
   getInitialState: function () {
     return { matchError: false, errorUserNotUnique: false };
+  },
+
+  verify: function (event, status) {
+    if (status) {
+      console.log("create form verify passed");
+      this.context.router.push("/profile/" + localStorage.getItem("UserID"));
+    } else {
+      console.log("create form verify failed");
+    }
   },
 
   createUser: function (event, data) {
@@ -26528,7 +26539,7 @@ var CreateAccountForm = React.createClass({
     console.log("password: " + password);
     console.log("timezone: " + timezone);
 
-    // TODO: Transition to the correct page.
+    // TODO: Transition to the correct page. (Preference)
     if (isValid) {
       UserActions.postCreateUser(email, password, timezone);
     } else {
@@ -26566,11 +26577,9 @@ var CreateAccountForm = React.createClass({
 
   componentWillMount: function () {
     // If the user is authenticated skip the signin page.
-    if (localStorage.getItem("jwt") && UserActions.postIsAuthenticated()) {
-      console.log("authenticated");
-      this.context.router.push("/profile/" + localStorage.getItem("UserID"));
-    } else {
-      console.log("create form mounting...");
+    console.log("create form mounting...");
+    if (localStorage.getItem("UserID") && localStorage.getItem("jwt")) {
+      AuthActions.postAuthenticate();
     }
   },
 
@@ -26642,7 +26651,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"../reflux/userActions.jsx":277,"../reflux/userStore.jsx":278,"./EmailField.jsx":250,"./PasswordField.jsx":259,"./TimezoneRadioGroup.jsx":265,"react":224,"reflux":240}],249:[function(require,module,exports){
+},{"../reflux/authActions.jsx":273,"../reflux/authStore.jsx":274,"../reflux/userActions.jsx":277,"../reflux/userStore.jsx":278,"./EmailField.jsx":250,"./PasswordField.jsx":259,"./TimezoneRadioGroup.jsx":265,"react":224,"reflux":240}],249:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -27937,8 +27946,6 @@ var NavDropdownItem = React.createClass({
   },
 
   componentWillMount: function () {
-    UserActions.postIsAuthenticated();
-
     var accountSettingRef = "/settings/" + localStorage.getItem("UserID");
     var preferenceRef = "/preference/" + localStorage.getItem("UserID");
 
@@ -28192,7 +28199,7 @@ module.exports = GameStore;
 },{"../services/httpService.js":279,"./gameActions.jsx":275,"reflux":240}],277:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postIsAuthenticated", "logout"]);
+var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "logout"]);
 
 module.exports = UserActions;
 

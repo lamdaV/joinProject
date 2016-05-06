@@ -177,81 +177,81 @@ app.post("/authentication", function(request, response) {
   });
 });
 
-/*
-  Authenticate the user by evaluating the sent JWT.
-*/
-app.post("/authenticate", function(request, response) {
-  console.log("POST authenticate request...");
-  pool.getConnection(function(error, connection) {
-    if (error) {
-      console.log("Error: Failed to Connect");
-      return;
-    }
-    console.log("connection established");
-
-    // Get JWT in JSON format.
-    /*
-      jwtJSON = {
-        userID: <id>,
-        jwt: <encrypted data>
-      }
-    */
-    var jwtJSON = request.body;
-    console.log("JWT server: " + JSON.stringify(jwtJSON.jwt));
-
-    // Get encrypted data.
-    var token = jwtJSON.jwt;
-
-    var authentication = {
-      jwt: "",
-      UserID: ""
-    };
-
-    // Decode the data.
-    // Note: decoded does not need to be escaped as jwt can only hold data already escaped when the user initally logged in.
-    var decoded;
-    try {
-      decoded = jwt.verify(token, secret);
-    } catch (err) {
-      console.log("error: " + err.message);
-      authentication.error = -1;
-      response.send(authentication);
-      return;
-    }
-
-    console.log("DECODED: " + JSON.stringify(decoded));
-
-    // Resign jwt.
-    var userData = {
-      email: decoded.email,
-      password: decoded.password
-    };
-
-    authentication.jwt = jwt.sign(userData, secret, {expiresIn: "10h"});
-
-    // Create login_function query.
-    var query = format("SET @UserID = -1; CALL login_function({0}, {1}, @UserID); SELECT @UserID AS UserID;", decoded.email, decoded.password);
-
-    console.log("QUERY: " + query);
-
-    pool.query(query, function(error, rows) {
-      if (error) {
-        console.log("Error: " + error.message);
-        response.send(false);
-        return;
-      }
-      console.log("RESPONSE: " + JSON.stringify(rows));
-
-      authentication.UserID = rows[1][0].UserID;
-
-      console.log("authentication data: " + JSON.stringify(authentication));
-      response.send(authentication);
-    });
-
-    // Release connection.
-    connection.release();
-  });
-});
+// /*
+//   Authenticate the user by evaluating the sent JWT.
+// */
+// app.post("/authenticate", function(request, response) {
+//   console.log("POST authenticate request...");
+//   pool.getConnection(function(error, connection) {
+//     if (error) {
+//       console.log("Error: Failed to Connect");
+//       return;
+//     }
+//     console.log("connection established");
+//
+//     // Get JWT in JSON format.
+//     /*
+//       jwtJSON = {
+//         userID: <id>,
+//         jwt: <encrypted data>
+//       }
+//     */
+//     var jwtJSON = request.body;
+//     console.log("JWT server: " + JSON.stringify(jwtJSON.jwt));
+//
+//     // Get encrypted data.
+//     var token = jwtJSON.jwt;
+//
+//     var authentication = {
+//       jwt: "",
+//       UserID: ""
+//     };
+//
+//     // Decode the data.
+//     // Note: decoded does not need to be escaped as jwt can only hold data already escaped when the user initally logged in.
+//     var decoded;
+//     try {
+//       decoded = jwt.verify(token, secret);
+//     } catch (err) {
+//       console.log("error: " + err.message);
+//       authentication.error = -1;
+//       response.send(authentication);
+//       return;
+//     }
+//
+//     console.log("DECODED: " + JSON.stringify(decoded));
+//
+//     // Resign jwt.
+//     var userData = {
+//       email: decoded.email,
+//       password: decoded.password
+//     };
+//
+//     authentication.jwt = jwt.sign(userData, secret, {expiresIn: "10h"});
+//
+//     // Create login_function query.
+//     var query = format("SET @UserID = -1; CALL login_function({0}, {1}, @UserID); SELECT @UserID AS UserID;", decoded.email, decoded.password);
+//
+//     console.log("QUERY: " + query);
+//
+//     pool.query(query, function(error, rows) {
+//       if (error) {
+//         console.log("Error: " + error.message);
+//         response.send(false);
+//         return;
+//       }
+//       console.log("RESPONSE: " + JSON.stringify(rows));
+//
+//       authentication.UserID = rows[1][0].UserID;
+//
+//       console.log("authentication data: " + JSON.stringify(authentication));
+//       response.send(authentication);
+//     });
+//
+//     // Release connection.
+//     connection.release();
+//   });
+// });
 
 /*
   Sign users in by calling the login_function stored procedure.
