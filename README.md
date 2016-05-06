@@ -125,6 +125,10 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ### David Lam
   - [ ] Begin integrating matching page front end with back end
 
+### Extras:
+  - [x] Improved Linter with React.
+  - [x] Commented Existing Code.
+  - 
 ### Kennan French
   - [ ] Scroll box (class? widget?)
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
