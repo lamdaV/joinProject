@@ -5,3 +5,4 @@ node_js:
 before_script:
    - npm install eslint
    - npm install eslint-config-google
+   - chmod u+x eslint
