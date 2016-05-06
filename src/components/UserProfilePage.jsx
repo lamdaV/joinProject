@@ -12,14 +12,9 @@ var UserProfilePage = React.createClass({
 
   componentDidMount: function() {
     console.log("userprofile mounting...");
-    console.log("profile check 1: " + localStorage.getItem("UserID"));
-    console.log("profile check 2: " + this.props.params.userID);
-    if (localStorage.getItem("UserID") === this.props.params.userID) {
-      this.setState({userID: this.props.params.userID});
-    } else {
-      UserActions.logout();
-      this.context.router.push("/home");
-    }
+    console.log("profile UserID: " + localStorage.getItem("UserID"));
+    this.setState({userID: this.props.params.userID});
+
   },
 
   componentWillReceiveProps: function(nextProps) {

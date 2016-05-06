@@ -107,6 +107,73 @@ app.post("/searchGame", function(request, response) {
   });
 });
 
+app.post("/authentication", function(request, response) {
+  console.log("POST !authentication! request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("Error: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    // Get JWT in JSON format.
+    /*
+      jwtJSON = {
+        userID: <id>,
+        jwt: <encrypted data>
+      }
+    */
+    var jwtJSON = request.body;
+    console.log("JWT server: " + JSON.stringify(jwtJSON.jwt));
+
+    // Get encrypted data.
+    var userID = jwtJSON.UserID;
+    var token = jwtJSON.jwt;
+
+    // Pessimistic Assumption: User is not authorized.
+    var authStatus = {
+      status: false
+    };
+
+    // Decode the data.
+    // Note: decoded does not need to be escaped as jwt can only hold data already escaped when the user initally logged in.
+    try {
+      var decoded = jwt.verify(token, secret)
+    } catch(err) {
+      // Send the authStatus on failure to decrypt.
+      console.log("error: " + err.message);
+      response.send(authStatus);
+      return;
+    }
+
+    console.log("DECODED: " + JSON.stringify(decoded));
+
+    // Create login_function query.
+    var query = format("SET @status = -1; CALL login_function({0}, {1}, @status); SELECT @status AS status;", decoded.email, decoded.password);
+
+    console.log("QUERY: " + query);
+
+    pool.query(query, function(error, rows, fields) {
+      if (error) {
+        console.log("Error: " + error.message);
+        response.send(false);
+        return;
+      }
+      console.log("RESPONSE: " + JSON.stringify(rows));
+
+      if (userID == rows[1][0].UserID) {
+        authStatus.status = true;
+      }
+
+      response.send(authStatus);
+    });
+
+    // Release connection.
+    connection.release();
+  });
+});
+
+
 /*
   Authenticate the user by evaluating the sent JWT.
 */
@@ -172,7 +239,7 @@ app.post("/authenticate", function(request, response) {
       }
       console.log("RESPONSE: " + JSON.stringify(rows));
 
-      authentication.UserID = rows[2][0].UserID;
+      authentication.UserID = rows[1][0].UserID;
 
       console.log("authentication data: " + JSON.stringify(authentication));
       response.send(authentication);
@@ -207,7 +274,7 @@ app.post("/signin", function(request, response) {
     console.log("password: " + password);
 
     // Create login_function query.
-    var query = format("SET @UserID = -1; CALL login_function({0}, {1}, @UserID); SELECT @UserID AS UserID;", email, password);
+    var query = format("SET @Status = -1; CALL login_function({0}, {1}, @Status);", email, password);
 
     console.log("QUERY: " + query);
 
@@ -219,8 +286,8 @@ app.post("/signin", function(request, response) {
       }
 
       // Use to determine where data is located.
-      console.log("rows: " + JSON.stringify(rows));
-      console.log("data: " + JSON.stringify(rows[2][0].UserID))
+      console.log("ROWS: " + JSON.stringify(rows));
+      console.log("ROW 1: " + JSON.stringify(rows[1][0]))
 
       // Set up data to be encrypted.
       var userData = {
@@ -231,7 +298,7 @@ app.post("/signin", function(request, response) {
       // Encrypt.
       userData = jwt.sign(userData, secret, {expiresIn: "10h"});
       authentication = {
-        "UserID" : rows[2][0].UserID,
+        "UserID" : rows[1][0].UserID,
         "jwt" : userData
       };
 

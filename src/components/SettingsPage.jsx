@@ -1,7 +1,10 @@
 var React = require("react");
-var UserActions = require("../reflux/userActions.jsx");
+var Reflux = require("reflux");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
 var SettingsPage = React.createClass({
+  mixins: [Reflux.listenTo(AuthStore, "verify")],
 
   contextTypes: {
     router: React.PropTypes.object
@@ -11,8 +14,16 @@ var SettingsPage = React.createClass({
     return ({settingID: ""});
   },
 
+  verify: function(event, status) {
+    console.log("verify status: " + status);
+    if (status) {
+      this.setState({settingID: this.props.params.settingID});
+    }
+  },
+
   componentWillMount: function() {
-    this.setState({settingID: this.props.params.settingID});
+    console.log("settings page mount...");
+    AuthActions.postAuthenticate();
   },
 
   componentWillReceiveProps: function(nextProps) {

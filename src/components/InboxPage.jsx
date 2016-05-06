@@ -6,14 +6,7 @@ var InboxPage = React.createClass({
   },
 
   componentWillMount: function() {
-    UserActions.postIsAuthenticated();
-
-    if (localStorage.getItem("UserID") == this.props.params.inboxID) {
-      this.setState({inboxID: this.props.params.inboxID});
-    } else {
-      UserActions.logout();
-      this.context.router.push("/home");
-    }
+    this.setState({inboxID: this.props.params.inboxID});
   },
 
   componentWillReceiveProps: function(nextProps) {
