@@ -1,4 +1,4 @@
-# Join Project
+# Join Project [![Build Status](https://travis-ci.org/lamdaV/joinProject.svg?branch=master)](https://travis-ci.org/lamdaV/joinProject)
 
 Authors: David Lam, Kennan French, and Christopher Knight
 
@@ -103,7 +103,11 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Complete Game searching
   - [x] Made games page database dependent
   - [x] Added more security checks on authentication-required pages
-  - [x] Set up pages for User Profile, Preference, and Messages.
+  - [x] Set up pages for User Profile, Preference, and Messages
+  - [x] Added ESLint
+  - [x] Added Travis CI integration
+  - [x] Reduced Coupling in handling token authentication
+  - [x] Cleaned code running linter
 
 ### Kennan French:
   - [ ] Make schedule widget
