@@ -120,3 +120,18 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Continue writing stored procedures as needed
   - [x] Figure out mysql data dump
   - [x] Add lots of data to tables
+
+## Milestone 04:
+### David Lam
+  - [ ] Begin integrating matching page front end with back end
+
+### Kennan French
+  - [ ] Scroll box (class? widget?)
+  - [ ] Integrate widgets with React virtualization + fix other React "quirks"
+
+### Chris Knight
+  - [ ] Match page back end/implement matching algorithm
+
+### Group
+  - [ ] Study for test
+  - [ ] Heuristics discussion
