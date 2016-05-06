@@ -110,14 +110,13 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Cleaned code running linter
 
 ### Kennan French:
-  - [ ] Make schedule widget
+  - [x] Make schedule widget
   - [ ] Make rest of widgets needed for user profile page
   - [ ] Profile page should be done
-  - [ ] More integration
+  - [x] More integration
   - [ ] User preferences/settings page
 
 ### Christopher Knight:
   - [ ] Continue writing stored procedures as needed
   - [ ] Figure out mysql data dump
   - [ ] Add lots of data to tables
-
