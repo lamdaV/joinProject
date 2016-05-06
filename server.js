@@ -161,8 +161,11 @@ app.post("/authentication", function(request, response) {
         return;
       }
       console.log("RESPONSE: " + JSON.stringify(rows));
+      console.log("ROW 1: " + JSON.stringify(rows[1]));
+      console.log("USERID arg: " + JSON.stringify(userID));
 
-      if (userID === rows[1][0].UserID) {
+      if (userID == rows[1][0].UserID) {
+        console.log("VERIFIED");
         authStatus.status = true;
       }
 

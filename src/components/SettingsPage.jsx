@@ -18,6 +18,11 @@ var SettingsPage = React.createClass({
   verify: function(event, status) {
     if (status) {
       console.log("setting verify passed");
+      if (localStorage.getItem("UserID") === this.props.params.settingID) {
+        this.setState({settingID: this.props.params.settingID});
+      } else {
+        this.context.router.push("/home");
+      }
     } else {
       console.log("setting verify failed");
       UserActions.logout();
@@ -27,12 +32,6 @@ var SettingsPage = React.createClass({
 
   componentWillMount: function() {
     AuthActions.postAuthenticate();
-    this.setState({settingID: this.props.params.settingID});
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    AuthActions.postAuthenticate();
-    this.setState({nextProps: nextProps.params.settingID});
   },
 
   render: function() {

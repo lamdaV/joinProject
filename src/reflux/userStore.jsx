@@ -7,16 +7,12 @@ var UserStore = Reflux.createStore({
 
   init: function() {
     this.jwt = localStorage.getItem("jwt");
-    if (this.jwt) {
-      console.log("userStore jwt init: " + JSON.stringify(this.jwt));
-      this.postIsAuthenticated();
-    }
   },
 
   postValidateUser: function(email, password) {
     var user = {
-      "email": email,
-      "password": password
+      email: email,
+      password: password
     };
 
     http.post("/signin", user).then(function(dataJSON) {
@@ -30,9 +26,9 @@ var UserStore = Reflux.createStore({
 
   postCreateUser: function(email, password, timezone) {
     var user = {
-      "email": email,
-      "password": password,
-      "timezone": timezone
+      email: email,
+      password: password,
+      timezone: timezone
     };
 
     http.post("/create", user).then(function(dataJSON) {
@@ -43,36 +39,11 @@ var UserStore = Reflux.createStore({
         this.saveToken();
       }
       this.returnStatus();
-
     }.bind(this));
   },
 
-  postIsAuthenticated: function() {
-    if (this.jwt) {
-      var jwtJSON = {
-        "jwt": this.jwt
-      };
-
-      http.post("/authenticate", jwtJSON).then(function(dataJSON) {
-        this.user = dataJSON;
-        console.log("authenticate user: " + JSON.stringify(this.user));
-        var isAuthenticated = localStorage.getItem("UserID") == this.user.UserID
-        if (this.user.error == -1) {
-          localStorage.clear();
-          this.returnStatus();
-        }
-
-        if (isAuthenticated) {
-          this.saveToken();
-          this.returnStatus();
-        }
-        return isAuthenticated;
-      }.bind(this));
-    }
-  },
-
   logout: function() {
-    console.log("logging out...")
+    console.log("logging out...");
     localStorage.clear();
     this.jwt = "";
     this.user = this.jwt;

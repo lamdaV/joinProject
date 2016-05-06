@@ -23,7 +23,7 @@ var NavItem = React.createClass({
 
   render: function() {
     return (
-      <li className = {this.state.hover ? "active": ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
+      <li className = {this.state.hover ? "active" : ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
         <Link onClick = {this.handleSignOut} style = {this.props.linkStyle} to = "#">
             Sign Out
         </Link>

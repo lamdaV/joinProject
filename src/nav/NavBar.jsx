@@ -45,15 +45,15 @@ var NavBar = React.createClass({
     // Optional Props
     if (this.props.bgColor) {
       navStyle.background = this.props.bgColor;
-    };
+    }
 
     if (this.props.titleColor) {
       titleStyle.color = this.props.titleColor;
-    };
+    }
 
     if (this.props.linkColor) {
       linkStyle.color = this.props.linkColor + "!important";
-    };
+    }
 
     var createLinkItem = function(item, index) {
       return (
@@ -66,7 +66,7 @@ var NavBar = React.createClass({
         <nav style = {navStyle} className = "navbar navbar-default navbar-fixed-top">
           <div className = "navbar-header">
 
-            {/*Navbar collapsable button*/}
+            {/* Navbar collapsable button */}
             <button type = "button" className = "navbar-toggle collapsed" data-toggle = "collapse" data-target = "#nav-collapse">
               <span className = "sr-only">Toggle Navigation</span>
               <span className = "icon-bar"></span>
@@ -74,11 +74,11 @@ var NavBar = React.createClass({
               <span className = "icon-bar"></span>
             </button>
 
-            {/*Branding image*/}
+            {/* Branding image */}
             <Link style = {titleStyle} className = "navbar-brand" to = {this.props.brandLink}> {this.props.brandName} </Link>
           </div>
 
-          {/*Collapsed Items*/}
+          {/* Collapsed Items */}
           <div className = "collapse navbar-collapse" id = "nav-collapse">
             <ul className = "nav navbar-nav nav-pills">
               {this.props.enableSignOut ? <NavDropdownItem linkStyle = {linkStyle} /> : null}
@@ -86,11 +86,11 @@ var NavBar = React.createClass({
               {this.props.enableSignOut ? <NavSignOut linkStyle = {linkStyle}/> : null}
             </ul>
 
-            {/*signout*/}
-            {/*{this.props.enableSignOut ? <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
-            </div> : null}*/}
+            {/* signout */}
+            {/* {this.props.enableSignOut ? <div onSubmit = {this.handleSignOut} onClick = {this.handleSignOut} className = "navbar-nav nav-pills">
+            </div> : null} */}
 
-            {/*Search*/}
+            {/* Search */}
             <div>
               <form className = "navbar-form navbar-right">
                 <div className = "form-group">

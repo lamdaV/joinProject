@@ -3,11 +3,11 @@ var NavItemMixIn = {
     return ({hover: false});
   },
 
-  mouseOver: function(event) {
+  mouseOver: function() {
     this.setState({hover: true});
   },
 
-  mouseOut: function(event) {
+  mouseOut: function() {
     this.setState({hover: false});
   }
 };

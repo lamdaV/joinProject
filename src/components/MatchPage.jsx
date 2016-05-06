@@ -19,6 +19,11 @@ var MatchPage = React.createClass({
   verify: function(event, status) {
     if (status) {
       console.log("match verify passed");
+      if (localStorage.getItem("UserID") === this.props.params.matchID) {
+        this.setState({matchID: this.props.params.matchID});
+      } else {
+        this.context.router.push("/home");
+      }
     } else {
       console.log("match verify failed");
       UserActions.logout();
@@ -29,12 +34,6 @@ var MatchPage = React.createClass({
   componentWillMount: function() {
     console.log("matchID: " + this.props.params.matchID);
     AuthActions.postAuthenticate();
-    this.setState({matchID: this.props.params.matchID});
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    AuthActions.postAuthenticate();
-    this.setState({matchID: nextProps.params.matchID});
   },
 
   render: function() {

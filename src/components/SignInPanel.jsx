@@ -30,7 +30,7 @@ var SignInPanel = React.createClass({
       return;
     }
 
-    if (data.UserID > 0 && data.UserID !=== null && data.UserID === localStorage.getItem("UserID")) {
+    if (data.UserID > 0 && data.UserID !== null) {
       this.context.router.push("/profile/" + data.UserID);
     } else if (data.length === 0) {
       console.log("Do not alert!");

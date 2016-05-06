@@ -19,6 +19,11 @@ var PreferencePage = React.createClass({
   verify: function(event, status) {
     if (status) {
       console.log("preference verify passed");
+      if (localStorage.getItem("UserID") === this.props.params.preferenceID) {
+        this.setState({preferenceID: this.props.params.preferenceID});
+      } else {
+        this.context.router.push("/home");
+      }
     } else {
       console.log("preference verify failed");
       UserActions.logout();
@@ -28,12 +33,6 @@ var PreferencePage = React.createClass({
 
   componentWillMount: function() {
     AuthActions.postAuthenticate();
-    this.setState({preferenceID: this.props.params.preferenceID});
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    AuthActions.postAuthenticate();
-    this.setState({preferenceID: nextProps.params.preferenceID});
   },
 
   render: function() {

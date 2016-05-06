@@ -14,9 +14,9 @@ var NavItem = React.createClass({
   },
 
   render: function() {
-    var isInbox = this.props.title == "Inbox";
+    var isInbox = this.props.title === "Inbox";
     return (
-      <li className = {this.state.hover ? "active": ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
+      <li className = {this.state.hover ? "active" : ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
         <Link style = {this.props.linkStyle} to = {this.props.href}>
           {this.props.title}
           {isInbox ? <span className = "badge">24</span> : null}

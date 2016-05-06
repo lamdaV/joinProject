@@ -24,7 +24,7 @@ var CreateAccountForm = React.createClass({
     console.log("status: " + data.status);
 
     // TODO: change where this is routed. (possibly preference page)
-    if (data.UserID || data.status === 0) {
+    if (data.UserID > 0 && data.status === 0) {
       console.log("Routing...");
       this.context.router.push("/profile/" + data.UserID);
     } else if (data.status === 2) {
