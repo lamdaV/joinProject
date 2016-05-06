@@ -3,4 +3,5 @@ sudo: required
 node_js:
   - "5"
 before_script:
-   - chmod +x eslint
+   - npm install eslint
+   - npm install eslint-config-google
