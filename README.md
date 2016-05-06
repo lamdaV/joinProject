@@ -117,6 +117,6 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] User preferences/settings page
 
 ### Christopher Knight:
-  - [ ] Continue writing stored procedures as needed
-  - [ ] Figure out mysql data dump
-  - [ ] Add lots of data to tables
+  - [x] Continue writing stored procedures as needed
+  - [x] Figure out mysql data dump
+  - [x] Add lots of data to tables
