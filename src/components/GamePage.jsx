@@ -7,8 +7,12 @@ var GameActions = require("../reflux/gameActions.jsx");
 var GamePage = React.createClass({
   mixins: [Reflux.listenTo(GameStore, "setGameData")],
 
+  propTypes: {
+    params: React.PropTypes.object
+  },
+
   getInitialState: function() {
-    return ({gameID: "", gameData: "", gameTag: ""});
+    return ({gameID: this.props.params.gameID, gameData: "", gameTag: ""});
   },
 
   setGameData: function(event, data) {
@@ -21,7 +25,6 @@ var GamePage = React.createClass({
 
   componentDidMount: function() {
     GameActions.postGetGame(this.props.params.gameID);
-    this.setState({gameID: this.props.params.gameID});
   },
 
   componentWillReceiveProps: function(nextProps) {

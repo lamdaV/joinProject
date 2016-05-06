@@ -164,10 +164,12 @@ app.post("/authentication", function(request, response) {
       console.log("ROW 1: " + JSON.stringify(rows[1]));
       console.log("USERID arg: " + JSON.stringify(userID));
 
+      /* eslint-disable */
       if (userID == rows[1][0].UserID) {
         console.log("VERIFIED");
         authStatus.status = true;
       }
+      /* eslint-disable */
 
       response.send(authStatus);
     });

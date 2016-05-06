@@ -8,6 +8,7 @@ var NavItem = React.createClass({
   mixins: [NavItemMixIn],
 
   propTypes: {
+    linkStyle: React.PropTypes.object,
     href: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     style: PropTypes.object

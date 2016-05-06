@@ -2,6 +2,7 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
 
+/* global localStorage */
 var UserStore = Reflux.createStore({
   listenables: [UserActions],
 

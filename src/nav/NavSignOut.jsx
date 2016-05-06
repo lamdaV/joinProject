@@ -1,14 +1,14 @@
 var React = require("react");
 var ReactRouter = require("react-router");
-var PropTypes = React.PropTypes;
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("./NavItemMixIn.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 
 var NavItem = React.createClass({
   mixins: [NavItemMixIn],
+
   propTypes: {
-    style: PropTypes.object
+    linkStyle: React.PropTypes.object
   },
 
   contextTypes: {

@@ -4,8 +4,13 @@ var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var SettingsPage = React.createClass({
   mixins: [Reflux.listenTo(AuthStore, "verify")],
+
+  propTypes: {
+    params: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object

@@ -6,6 +6,11 @@ var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
 var SearchItem = React.createClass({
   mixins: [NavItemMixIn],
 
+  propTypes: {
+    item: React.PropTypes.object.isRequired,
+    linkStyle: React.PropTypes.object
+  },
+
   render: function() {
     var href = "/game/" + this.props.item.GameID;
 

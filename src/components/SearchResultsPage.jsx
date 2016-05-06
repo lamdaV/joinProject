@@ -1,14 +1,17 @@
 var React = require("react");
 var SearchItem = require("./SearchItem.jsx");
 var Reflux = require("reflux");
-var GameActions = require("../reflux/gameActions.jsx");
 var GameStore = require("../reflux/gameStore.jsx");
 
 var SearchResultsPage = React.createClass({
   mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
+  propTypes: {
+    params: React.PropTypes.object
+  },
+
   getInitialState: function() {
-    return ({searchQuery: "", results: null});
+    return ({searchQuery: this.props.params.searchQuery, results: null});
   },
 
   displayResults: function(event, data) {
@@ -19,7 +22,6 @@ var SearchResultsPage = React.createClass({
   componentDidMount: function() {
     console.log("searchquery did mount: " + this.props.params.searchQuery);
     GameStore.postSearchGame(this.props.params.searchQuery);
-    this.setState({searchQuery: this.props.params.searchQuery});
   },
 
   componentWillReceiveProps: function(nextProps) {

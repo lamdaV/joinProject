@@ -4,9 +4,14 @@ var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var InboxPage = React.createClass({
   // Listen to the AuthStore.
   mixins: [Reflux.listenTo(AuthStore, "verify")],
+
+  propTypes: {
+    params: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object

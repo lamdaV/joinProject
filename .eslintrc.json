@@ -1,5 +1,11 @@
 {
-    "extends": "google",
+    "plugins": [
+      "react"
+    ],
+    "extends": [
+      "google",
+      "plugin:react/recommended"
+    ],
     "rules": {
       "linebreak-style": ["off", "unix"],
       "max-len": ["off"]

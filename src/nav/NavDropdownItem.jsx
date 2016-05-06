@@ -1,9 +1,13 @@
 var React = require('react');
 var ReactRouter = require('react-router');
-var UserActions = require("../reflux/userActions.jsx");
 var Link = ReactRouter.Link;
 
+/* global localStorage */
 var NavDropdownItem = React.createClass({
+  propTypes: {
+    linkStyle: React.PropTypes.object
+  },
+
   getInitialState: function() {
     return ({accountSettingRef: "", preferenceRef: ""});
   },

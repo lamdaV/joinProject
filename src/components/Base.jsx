@@ -17,9 +17,14 @@ var initialNavLinks = [
   }
 ];
 
+/* global localStorage */
 var Base = React.createClass({
   // Listen to the AuthStore.
   mixins: [Reflux.listenTo(AuthStore, "updateNavBar")],
+
+  propTypes: {
+    children: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object

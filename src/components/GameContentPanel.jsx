@@ -1,6 +1,10 @@
 var React = require("react");
 
 var GameContentPanel = React.createClass({
+  propTypes: {
+    headerColor: React.PropTypes.string
+  },
+
   getInitialState: function() {
     return ({title: "", rating: "", price: "", tags: null});
   },

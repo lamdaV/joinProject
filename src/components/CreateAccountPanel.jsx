@@ -1,6 +1,10 @@
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
+  propTypes: {
+    headerColor: React.PropTypes.string
+  },
+
   contextTypes: {
     router: React.PropTypes.object
   },

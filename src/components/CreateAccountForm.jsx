@@ -8,6 +8,7 @@ var AuthStore = require("../reflux/authStore.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
 
+/* global localStorage */
 var CreateAccountForm = React.createClass({
   // Listen to the UserStore.
   mixins: [Reflux.listenTo(UserStore, "createUser"), Reflux.listenTo(AuthStore, "verify")],

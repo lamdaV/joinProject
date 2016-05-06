@@ -2,6 +2,10 @@ var React = require("react");
 var RadioGroup = require("react-radio-group");
 
 var TimezoneRadioGroup = React.createClass({
+  propTypes: {
+    validityAlert: React.PropTypes.bool
+  },
+
   getDefaultProps: function() {
     return {
       validityAlert: true

@@ -2,6 +2,10 @@ var React = require("react");
 var Validator = require("email-validator");
 
 var EmailField = React.createClass({
+  propTypes: {
+    validityAlert: React.PropTypes.bool
+  },
+
   getDefaultProps: function() {
     return {
       validityAlert: true

@@ -8,6 +8,10 @@ var UserStore = require("../reflux/userStore.jsx");
 var SignInPanel = React.createClass({
   mixins: [Reflux.listenTo(UserStore, "userValidation")],
 
+  propTypes: {
+    headerColor: React.PropTypes.string
+  },
+
   contextTypes: {
     router: React.PropTypes.object
   },
@@ -23,12 +27,14 @@ var SignInPanel = React.createClass({
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.UserID);
 
+    /* eslint-disable */
     if (data.UserID === -1) {
       // TODO: Improve UI.
       this.refs.passwordField.clear();
       alert("Invalid Email or Password");
       return;
     }
+    /* eslint-disable */
 
     if (data.UserID > 0 && data.UserID !== null) {
       this.context.router.push("/profile/" + data.UserID);

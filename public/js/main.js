@@ -26376,11 +26376,16 @@ var initialNavLinks = [{
   href: "/create"
 }];
 
+/* global localStorage */
 var Base = React.createClass({
   displayName: "Base",
 
   // Listen to the AuthStore.
   mixins: [Reflux.listenTo(AuthStore, "updateNavBar")],
+
+  propTypes: {
+    children: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object
@@ -26484,6 +26489,7 @@ var AuthStore = require("../reflux/authStore.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
 
+/* global localStorage */
 var CreateAccountForm = React.createClass({
   displayName: "CreateAccountForm",
 
@@ -26657,6 +26663,10 @@ var React = require("react");
 var CreateAccountPanel = React.createClass({
   displayName: "CreateAccountPanel",
 
+  propTypes: {
+    headerColor: React.PropTypes.string
+  },
+
   contextTypes: {
     router: React.PropTypes.object
   },
@@ -26724,6 +26734,10 @@ var Validator = require("email-validator");
 var EmailField = React.createClass({
   displayName: "EmailField",
 
+  propTypes: {
+    validityAlert: React.PropTypes.bool
+  },
+
   getDefaultProps: function () {
     return {
       validityAlert: true
@@ -26778,6 +26792,10 @@ var React = require("react");
 
 var GameContentPanel = React.createClass({
   displayName: "GameContentPanel",
+
+  propTypes: {
+    headerColor: React.PropTypes.string
+  },
 
   getInitialState: function () {
     return { title: "", rating: "", price: "", tags: null };
@@ -26916,8 +26934,12 @@ var GamePage = React.createClass({
 
   mixins: [Reflux.listenTo(GameStore, "setGameData")],
 
+  propTypes: {
+    params: React.PropTypes.object
+  },
+
   getInitialState: function () {
-    return { gameID: "", gameData: "", gameTag: "" };
+    return { gameID: this.props.params.gameID, gameData: "", gameTag: "" };
   },
 
   setGameData: function (event, data) {
@@ -26930,7 +26952,6 @@ var GamePage = React.createClass({
 
   componentDidMount: function () {
     GameActions.postGetGame(this.props.params.gameID);
-    this.setState({ gameID: this.props.params.gameID });
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -26968,6 +26989,7 @@ var CreateAccountPanel = require("./CreateAccountPanel.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var HomePage = React.createClass({
   displayName: "HomePage",
 
@@ -27017,11 +27039,16 @@ var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var InboxPage = React.createClass({
   displayName: "InboxPage",
 
   // Listen to the AuthStore.
   mixins: [Reflux.listenTo(AuthStore, "verify")],
+
+  propTypes: {
+    params: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object
@@ -27076,10 +27103,15 @@ var AuthActions = require("../reflux/authActions.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var MatchPage = React.createClass({
   displayName: "MatchPage",
 
   mixins: [Reflux.listenTo(AuthStore, "verify")],
+
+  propTypes: {
+    params: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object
@@ -27250,6 +27282,12 @@ var MIN_PASSWORD_LENGTH = 8;
 var PasswordField = React.createClass({
   displayName: "PasswordField",
 
+  propTypes: {
+    validityAlert: React.PropTypes.bool,
+    formError: React.PropTypes.bool,
+    matchError: React.PropTypes.bool
+  },
+
   getDefaultProps: function () {
     return {
       validityAlert: true,
@@ -27325,11 +27363,15 @@ var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var PreferencePage = React.createClass({
   displayName: "PreferencePage",
 
-  //
   mixins: [Reflux.listenTo(AuthStore, "verify")],
+
+  propTypes: {
+    params: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object
@@ -27381,6 +27423,11 @@ var SearchItem = React.createClass({
 
   mixins: [NavItemMixIn],
 
+  propTypes: {
+    item: React.PropTypes.object.isRequired,
+    linkStyle: React.PropTypes.object
+  },
+
   render: function () {
     var href = "/game/" + this.props.item.GameID;
 
@@ -27415,7 +27462,6 @@ module.exports = SearchItem;
 var React = require("react");
 var SearchItem = require("./SearchItem.jsx");
 var Reflux = require("reflux");
-var GameActions = require("../reflux/gameActions.jsx");
 var GameStore = require("../reflux/gameStore.jsx");
 
 var SearchResultsPage = React.createClass({
@@ -27423,8 +27469,12 @@ var SearchResultsPage = React.createClass({
 
   mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
+  propTypes: {
+    params: React.PropTypes.object
+  },
+
   getInitialState: function () {
-    return { searchQuery: "", results: null };
+    return { searchQuery: this.props.params.searchQuery, results: null };
   },
 
   displayResults: function (event, data) {
@@ -27435,7 +27485,6 @@ var SearchResultsPage = React.createClass({
   componentDidMount: function () {
     console.log("searchquery did mount: " + this.props.params.searchQuery);
     GameStore.postSearchGame(this.props.params.searchQuery);
-    this.setState({ searchQuery: this.props.params.searchQuery });
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -27478,17 +27527,22 @@ var SearchResultsPage = React.createClass({
 
 module.exports = SearchResultsPage;
 
-},{"../reflux/gameActions.jsx":275,"../reflux/gameStore.jsx":276,"./SearchItem.jsx":261,"react":224,"reflux":240}],263:[function(require,module,exports){
+},{"../reflux/gameStore.jsx":276,"./SearchItem.jsx":261,"react":224,"reflux":240}],263:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var SettingsPage = React.createClass({
   displayName: "SettingsPage",
 
   mixins: [Reflux.listenTo(AuthStore, "verify")],
+
+  propTypes: {
+    params: React.PropTypes.object
+  },
 
   contextTypes: {
     router: React.PropTypes.object
@@ -27542,6 +27596,10 @@ var SignInPanel = React.createClass({
 
   mixins: [Reflux.listenTo(UserStore, "userValidation")],
 
+  propTypes: {
+    headerColor: React.PropTypes.string
+  },
+
   contextTypes: {
     router: React.PropTypes.object
   },
@@ -27557,12 +27615,14 @@ var SignInPanel = React.createClass({
     console.log("userValidation data: " + JSON.stringify(dataCopy));
     console.log("userID: " + data.UserID);
 
+    /* eslint-disable */
     if (data.UserID === -1) {
       // TODO: Improve UI.
       this.refs.passwordField.clear();
       alert("Invalid Email or Password");
       return;
     }
+    /* eslint-disable */
 
     if (data.UserID > 0 && data.UserID !== null) {
       this.context.router.push("/profile/" + data.UserID);
@@ -27660,6 +27720,10 @@ var RadioGroup = require("react-radio-group");
 var TimezoneRadioGroup = React.createClass({
   displayName: "TimezoneRadioGroup",
 
+  propTypes: {
+    validityAlert: React.PropTypes.bool
+  },
+
   getDefaultProps: function () {
     return {
       validityAlert: true
@@ -27750,8 +27814,12 @@ var UserProfilePage = React.createClass({
 
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  propTypes: {
+    params: React.PropTypes.object
+  },
+
   getInitialState: function () {
-    return { userID: "" };
+    return { userID: this.props.params.userID };
   },
 
   contextTypes: {
@@ -27776,7 +27844,6 @@ var UserProfilePage = React.createClass({
 
     // Authenticate User.
     AuthActions.postAuthenticate();
-    this.setState({ userID: this.props.params.userID });
   },
 
   componentWillReceiveProps: function (nextProps) {
@@ -27809,13 +27876,20 @@ var NavItem = require("./NavItem.jsx");
 var NavSignOut = require("./NavSignOut.jsx");
 var NavDropdownItem = require("./NavDropdownItem.jsx");
 var ReactRouter = require("react-router");
-var Reflux = require("reflux");
-
-var UserActions = require("../reflux/userActions.jsx");
 var Link = ReactRouter.Link;
 
 var NavBar = React.createClass({
   displayName: "NavBar",
+
+  propTypes: {
+    bgColor: React.PropTypes.string,
+    titleColor: React.PropTypes.string,
+    linkColor: React.PropTypes.string,
+    brandLink: React.PropTypes.string.isRequired,
+    brandName: React.PropTypes.string.isRequired,
+    enableSignOut: React.PropTypes.bool.isRequired,
+    navData: React.PropTypes.array.isRequired
+  },
 
   contextTypes: {
     router: React.PropTypes.object
@@ -27932,14 +28006,18 @@ var NavBar = React.createClass({
 
 module.exports = NavBar;
 
-},{"../reflux/userActions.jsx":277,"./NavDropdownItem.jsx":269,"./NavItem.jsx":270,"./NavSignOut.jsx":272,"react":224,"react-router":88,"reflux":240}],269:[function(require,module,exports){
+},{"./NavDropdownItem.jsx":269,"./NavItem.jsx":270,"./NavSignOut.jsx":272,"react":224,"react-router":88}],269:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
-var UserActions = require("../reflux/userActions.jsx");
 var Link = ReactRouter.Link;
 
+/* global localStorage */
 var NavDropdownItem = React.createClass({
   displayName: 'NavDropdownItem',
+
+  propTypes: {
+    linkStyle: React.PropTypes.object
+  },
 
   getInitialState: function () {
     return { accountSettingRef: "", preferenceRef: "" };
@@ -27995,7 +28073,7 @@ var NavDropdownItem = React.createClass({
 
 module.exports = NavDropdownItem;
 
-},{"../reflux/userActions.jsx":277,"react":224,"react-router":88}],270:[function(require,module,exports){
+},{"react":224,"react-router":88}],270:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var PropTypes = React.PropTypes;
@@ -28008,6 +28086,7 @@ var NavItem = React.createClass({
   mixins: [NavItemMixIn],
 
   propTypes: {
+    linkStyle: React.PropTypes.object,
     href: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     style: PropTypes.object
@@ -28054,7 +28133,6 @@ module.exports = NavItemMixIn;
 },{}],272:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
-var PropTypes = React.PropTypes;
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("./NavItemMixIn.jsx");
 var UserActions = require("../reflux/userActions.jsx");
@@ -28063,8 +28141,9 @@ var NavItem = React.createClass({
   displayName: "NavItem",
 
   mixins: [NavItemMixIn],
+
   propTypes: {
-    style: PropTypes.object
+    linkStyle: React.PropTypes.object
   },
 
   contextTypes: {
@@ -28104,6 +28183,7 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var authActions = require("./authActions.jsx");
 
+/* global localStorage */
 var authStore = Reflux.createStore({
   listenables: [authActions],
 
@@ -28147,6 +28227,7 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var GameActions = require("./gameActions.jsx");
 
+/* global localStorage */
 var GameStore = Reflux.createStore({
   listenables: [GameActions],
 
@@ -28208,6 +28289,7 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
 
+/* global localStorage */
 var UserStore = Reflux.createStore({
   listenables: [UserActions],
 

@@ -7,8 +7,12 @@ var AuthStore = require("../reflux/authStore.jsx");
 var UserProfilePage = React.createClass({
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  propTypes: {
+    params: React.PropTypes.object
+  },
+
   getInitialState: function() {
-    return ({userID: ""});
+    return ({userID: this.props.params.userID});
   },
 
   contextTypes: {
@@ -33,7 +37,6 @@ var UserProfilePage = React.createClass({
 
     // Authenticate User.
     AuthActions.postAuthenticate();
-    this.setState({userID: this.props.params.userID});
   },
 
   componentWillReceiveProps: function(nextProps) {

@@ -3,12 +3,19 @@ var NavItem = require("./NavItem.jsx");
 var NavSignOut = require("./NavSignOut.jsx");
 var NavDropdownItem = require("./NavDropdownItem.jsx");
 var ReactRouter = require("react-router");
-var Reflux = require("reflux");
-
-var UserActions = require("../reflux/userActions.jsx");
 var Link = ReactRouter.Link;
 
 var NavBar = React.createClass({
+  propTypes: {
+    bgColor: React.PropTypes.string,
+    titleColor: React.PropTypes.string,
+    linkColor: React.PropTypes.string,
+    brandLink: React.PropTypes.string.isRequired,
+    brandName: React.PropTypes.string.isRequired,
+    enableSignOut: React.PropTypes.bool.isRequired,
+    navData: React.PropTypes.array.isRequired
+  },
+
   contextTypes: {
     router: React.PropTypes.object
   },
@@ -35,7 +42,7 @@ var NavBar = React.createClass({
       MozBoxShadow: "0 0 0 4px rgba(0, 0, 0, 0.4)",
       boxShadow: "0 0 0 4px rgba(0, 0, 0, 0.4)",
       textShadow: "0 -1px 0 rgba(0,0,0,.15)",
-      borderRadius: 0,
+      borderRadius: 0
     };
 
     var titleStyle = {};

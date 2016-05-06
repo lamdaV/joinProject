@@ -5,6 +5,7 @@ var CreateAccountPanel = require("./CreateAccountPanel.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var HomePage = React.createClass({
   // Listen to the AuthStore.
   mixins: [Reflux.listenTo(AuthStore, "verify")],

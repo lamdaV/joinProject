@@ -3,6 +3,12 @@ var React = require("react");
 var MIN_PASSWORD_LENGTH = 8;
 
 var PasswordField = React.createClass({
+  propTypes: {
+    validityAlert: React.PropTypes.bool,
+    formError: React.PropTypes.bool,
+    matchError: React.PropTypes.bool
+  },
+
   getDefaultProps: function() {
     return {
       validityAlert: true,

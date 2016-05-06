@@ -1,6 +1,10 @@
 var React = require("react");
 
 var TimezoneField = React.createClass({
+  propTypes: {
+    validityAlert: React.PropTypes.bool
+  },
+
   getDefaultProps: function() {
     return {
       validityAlert: true
