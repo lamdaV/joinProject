@@ -1,6 +1,5 @@
 var React = require("react");
 var Reflux = require("reflux");
-var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
@@ -37,7 +36,7 @@ var SettingsPage = React.createClass({
   },
 
   render: function() {
-    return(
+    return (
       <h1> Settings of User: {this.state.settingID}</h1>
     );
   }

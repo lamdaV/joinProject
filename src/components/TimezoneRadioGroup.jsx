@@ -51,7 +51,7 @@ var TimezoneRadioGroup = React.createClass({
           )}
         </RadioGroup>
 
-        {(!this.state.isValid  && this.props.validityAlert) ?
+        {(!this.state.isValid && this.props.validityAlert) ?
           <div style = {divStyle} className = "alert alert-danger"> Error: Please select a time zone. </div> : null}
       </div>
     );

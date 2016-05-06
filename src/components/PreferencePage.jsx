@@ -5,6 +5,7 @@ var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
 var PreferencePage = React.createClass({
+  //
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
   contextTypes: {
@@ -36,7 +37,7 @@ var PreferencePage = React.createClass({
   },
 
   render: function() {
-    return(
+    return (
       <h1> Preference of User: {this.state.preferenceID}</h1>
     );
   }

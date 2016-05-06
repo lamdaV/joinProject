@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "watchify src/main.jsx -v -t [ babelify --presets [ react ] ] -o public/js/main.js",
+    "lint": "eslint src/components/*.jsx || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -37,5 +38,8 @@
   "devDependencies": {
     "eslint": "^2.9.0",
     "eslint-config-google": "^0.5.0"
+  },
+  "eslintConfig": {
+    "extends": "google"
   }
 }

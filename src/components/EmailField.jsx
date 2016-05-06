@@ -12,7 +12,7 @@ var EmailField = React.createClass({
     return ({hasChanged: false, isValid: true, email: ""});
   },
 
-  onBlur: function(event) {
+  onBlur: function() {
     this.setState({isValid: Validator.validate(this.state.email)});
   },
 
@@ -34,8 +34,8 @@ var EmailField = React.createClass({
     return (
       <div className = {formClass}>
         <label htmlFor = "email"> Email: </label>
-        <input id = "email" className = "form-control" onBlur = {this.onBlur} onChange = {this.onChange} placeholder = "Email" value =   {this.state.email}></input>
-        {(!this.state.isValid  && this.props.validityAlert) ?
+        <input id = "email" className = "form-control" onBlur = {this.onBlur} onChange = {this.onChange} placeholder = "Email" value = {this.state.email}></input>
+        {(!this.state.isValid && this.props.validityAlert) ?
           <div style = {divStyle} className = "alert alert-danger"> Error: Invalid Email Address. </div> : null}
       </div>
     );

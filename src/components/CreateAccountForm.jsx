@@ -80,7 +80,7 @@ var CreateAccountForm = React.createClass({
     var password = this.refs.passwordField.state.password;
     var passwordCheck = this.refs.passwordFieldCheck.state.password;
 
-    if (password === passwordCheck && password.length != 0 && passwordCheck.length != 0) {
+    if (password === passwordCheck && password.length !== 0 && passwordCheck.length !== 0) {
       this.setState({matchError: false});
     } else {
       this.setState({matchError: true});
@@ -107,34 +107,34 @@ var CreateAccountForm = React.createClass({
         <div className = "panel panel-primary">
           <div style = {panelBodyStyle} className = "panel panel-body">
             <form onSubmit = {this.handleSubmit}>
-              {/*Email Field*/}
+              {/* Email Field */}
               <div className = "row">
                 <EmailField ref = "emailField"/>
               </div>
 
-              {/*Password Field*/}
+              {/* Password Field */}
               <div className = "row" >
                 <PasswordField ref = "passwordField"/>
               </div>
 
-              {/*Re:Password field*/}
+              {/* Re:Password field */}
               <div className = "row" onBlur = {this.checkPassword}>
                 <PasswordField ref = "passwordFieldCheck" labelText = "Re-enter Password" validityAlert = {false} matchError = {this.state.matchError}/>
               </div>
 
-              {/*Timezone radios*/}
+              {/* Timezone radios */}
               <div className = "row">
               <TimezoneRadioGroup ref = "timezoneRadio"/>
               </div>
 
-              {/*Next Button*/}
+              {/* Next Button*/}
               <div className = "row">
                 <div className = "col-sm-12 col-lg-12">
                   <button className = "btn btn-primary"> Next </button>
                 </div>
               </div>
 
-              {/*Dynamic Error*/}
+              {/* Dynamic Error */}
               {this.state.errorUserNotUnique ?
               <div className = "row">
                 <div className = "col-sm-12 alert alert-danger">

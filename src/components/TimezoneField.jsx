@@ -11,7 +11,7 @@ var TimezoneField = React.createClass({
     return ({isValid: true, timezone: ""});
   },
 
-  onBlur: function(event) {
+  onBlur: function() {
     var data = this.state.timezone;
     data = data.toLowerCase();
 
@@ -31,13 +31,13 @@ var TimezoneField = React.createClass({
 
     var divStyle = {
       marginTop: 10
-    }
+    };
 
     return (
       <div className = {formClass}>
         <label htmlFor = "timezone"> Time Zone: </label>
-        <input id = "timezone" className = "form-control" onBlur = {this.onBlur} onChange = {this.onChange} placeholder = "Pacific, Mountain, Central, or Eastern" value =   {this.state.timezone}></input>
-        {(!this.state.isValid  && this.props.validityAlert) ?
+        <input id = "timezone" className = "form-control" onBlur = {this.onBlur} onChange = {this.onChange} placeholder = "Pacific, Mountain, Central, or Eastern" value = {this.state.timezone}></input>
+        {(!this.state.isValid && this.props.validityAlert) ?
           <div style = {divStyle} className = "alert alert-danger"> Error: Invalid Time Zone. </div> : null}
       </div>
     );

@@ -35,11 +35,12 @@ var Base = React.createClass({
     var nextLinks = initialNavLinks;
     var canSignOut = false;
     var brandLink = "/home";
+    var userProfileLink;
 
     // If authenticated, update the navbar.
     if (status) {
-      var userProfileLink = "/profile/" + localStorage.getItem("UserID");
-      var nextLinks = [
+      userProfileLink = "/profile/" + localStorage.getItem("UserID");
+      nextLinks = [
         {
           title: "Profile",
           href: userProfileLink
@@ -65,7 +66,7 @@ var Base = React.createClass({
       canSignOut = true;
     // Otherwise, boot the user off.
     } else {
-      console.log("BASE: User not authenticated")
+      console.log("BASE: User not authenticated");
       UserActions.logout();
       this.context.router.push("/home");
     }

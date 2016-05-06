@@ -15,7 +15,7 @@ var PasswordField = React.createClass({
     return ({hasChanged: false, isValid: true, password: ""});
   },
 
-  onBlur: function(data) {
+  onBlur: function() {
     if (this.state.password.length < MIN_PASSWORD_LENGTH) {
       this.setState({isValid: false});
     } else {
@@ -31,31 +31,26 @@ var PasswordField = React.createClass({
     this.setState({hasChanged: true, password: event.target.value});
   },
 
-  componentWillReceiveProps: function(nextProps) {
-    this.setState({})
-  },
-
   render: function() {
     var divStyle = {
       marginTop: 10
     };
-
+    var formClass;
     if (this.props.formError) {
-      var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
+      formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
     } else {
-      var formClass = "col-sm-12  form-group";
+      formClass = "col-sm-12  form-group";
     }
 
-    var labelText = "Password"
-
+    var labelText = "Password";
 
     return (
       <div className = {formClass}>
         <label htmlFor = "password"> {labelText} </label>
         <input id = "password" className = "form-control" type = "password" onBlur = {this.onBlur} onChange = {this.onChange} placeholder = "Password" value = {this.state.password}></input>
 
-        {/*Error Messages*/}
-        {(!this.state.isValid  && this.props.validityAlert) ?
+        {/* Error Messages */}
+        {(!this.state.isValid && this.props.validityAlert) ?
           <div style = {divStyle} className = "alert alert-danger"> Error: Invalid Password. </div> : null}
 
         {(this.props.matchError) ?

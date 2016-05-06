@@ -43,7 +43,7 @@ var SearchResultsPage = React.createClass({
     return (
       <div>
         <h1> Searching for: {this.state.searchQuery}</h1>
-        {/*<div className = "collapse navbar-collapse" id = "nav-collapse">*/}
+        {/* <div className = "collapse navbar-collapse" id = "nav-collapse"> */}
         <div className = "col-sm-12">
           <ul className = "nav nav-pills nav-stacked">
             {this.state.results ? this.state.results.map(createSearchItem) : null}

@@ -4,14 +4,14 @@ var ListItem = require("./ListItem.jsx");
 
 var ingredients = [
   {
-    "id": 1,
-    "text": "ham"
+    id: 1,
+    text: "ham"
   }, {
-    "id": 2,
-    "text": "green eggs"
+    id: 2,
+    text: "green eggs"
   }, {
-    "id": 3,
-    "text": "potatoes"
+    id: 3,
+    text: "potatoes"
   }
 ];
 

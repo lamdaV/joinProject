@@ -53,7 +53,7 @@ app.post("/getGame", function(request, response) {
     // TODO: Insert CAll procedure.
     var query = format("CALL get_game_by_id({0})", gameID);
 
-    pool.query(query, function(error, rows, fields) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("Error: " + error.message);
         return;
@@ -91,7 +91,7 @@ app.post("/searchGame", function(request, response) {
     var query = format("CALL get_game_by_title({0});", searchQuery);
 
     console.log("QUERY: " + query);
-    pool.query(query, function(error, rows, fields) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("Error: " + error.message);
         return;
@@ -137,9 +137,10 @@ app.post("/authentication", function(request, response) {
 
     // Decode the data.
     // Note: decoded does not need to be escaped as jwt can only hold data already escaped when the user initally logged in.
+    var decoded;
     try {
-      var decoded = jwt.verify(token, secret)
-    } catch(err) {
+      decoded = jwt.verify(token, secret);
+    } catch (err) {
       // Send the authStatus on failure to decrypt.
       console.log("error: " + err.message);
       response.send(authStatus);
@@ -153,7 +154,7 @@ app.post("/authentication", function(request, response) {
 
     console.log("QUERY: " + query);
 
-    pool.query(query, function(error, rows, fields) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("Error: " + error.message);
         response.send(false);
@@ -161,7 +162,7 @@ app.post("/authentication", function(request, response) {
       }
       console.log("RESPONSE: " + JSON.stringify(rows));
 
-      if (userID == rows[1][0].UserID) {
+      if (userID === rows[1][0].UserID) {
         authStatus.status = true;
       }
 
@@ -172,7 +173,6 @@ app.post("/authentication", function(request, response) {
     connection.release();
   });
 });
-
 
 /*
   Authenticate the user by evaluating the sent JWT.
@@ -197,18 +197,19 @@ app.post("/authenticate", function(request, response) {
     console.log("JWT server: " + JSON.stringify(jwtJSON.jwt));
 
     // Get encrypted data.
-    token = jwtJSON.jwt;
+    var token = jwtJSON.jwt;
 
     var authentication = {
-      "jwt" : "",
-      "UserID" : ""
+      jwt: "",
+      UserID: ""
     };
 
     // Decode the data.
     // Note: decoded does not need to be escaped as jwt can only hold data already escaped when the user initally logged in.
+    var decoded;
     try {
-      var decoded = jwt.verify(token, secret)
-    } catch(err) {
+      decoded = jwt.verify(token, secret);
+    } catch (err) {
       console.log("error: " + err.message);
       authentication.error = -1;
       response.send(authentication);
@@ -219,19 +220,18 @@ app.post("/authenticate", function(request, response) {
 
     // Resign jwt.
     var userData = {
-      "email" : decoded.email,
-      "password" : decoded.password
+      email: decoded.email,
+      password: decoded.password
     };
 
     authentication.jwt = jwt.sign(userData, secret, {expiresIn: "10h"});
-
 
     // Create login_function query.
     var query = format("SET @UserID = -1; CALL login_function({0}, {1}, @UserID); SELECT @UserID AS UserID;", decoded.email, decoded.password);
 
     console.log("QUERY: " + query);
 
-    pool.query(query, function(error, rows, fields) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("Error: " + error.message);
         response.send(false);
@@ -266,8 +266,8 @@ app.post("/signin", function(request, response) {
     var user = request.body;
 
     // Escape bad characters.
-    email = mysql.escape(user.email);
-    password = mysql.escape(user.password);
+    var email = mysql.escape(user.email);
+    var password = mysql.escape(user.password);
 
     // Log to console.
     console.log("email: " + email);
@@ -279,8 +279,8 @@ app.post("/signin", function(request, response) {
     console.log("QUERY: " + query);
 
     // Check if user is in User table.
-    pool.query(query, function(error, rows, fields) {
-      if(error) {
+    pool.query(query, function(error, rows) {
+      if (error) {
         console.log("Error: " + error.message);
         return;
       }
@@ -292,20 +292,20 @@ app.post("/signin", function(request, response) {
 
       // Set up data to be encrypted.
       var userData = {
-        "email" : email,
-        "password" : password
+        email: email,
+        password: password
       };
 
-      if (rows[3][0].Status !== 0) {
-        var userID = rows[3][0].Status;
-      } else {
-        var userID = rows[1][0].UserID;
+      // Assume user status is -1 (error).
+      var userID = -1;
+      if (rows[3][0].Status === 0) {
+        userID = rows[1][0].UserID;
       }
       // Encrypt.
       userData = jwt.sign(userData, secret, {expiresIn: "10h"});
-      authentication = {
-        "UserID" : userID,
-        "jwt" : userData
+      var authentication = {
+        UserID: userID,
+        jwt: userData
       };
 
       // Send response.
@@ -332,9 +332,9 @@ app.post("/create", function(request, response) {
     var user = request.body;
 
     // Escape bad characters.
-    email = mysql.escape(user.email);
-    password = mysql.escape(user.password);
-    timezone = mysql.escape(user.timezone);
+    var email = mysql.escape(user.email);
+    var password = mysql.escape(user.password);
+    var timezone = mysql.escape(user.timezone);
 
     // Create create_user query.
     var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, password, timezone);
@@ -342,31 +342,31 @@ app.post("/create", function(request, response) {
     console.log("QUERY: " + query);
 
     // Insert the user.
-    pool.query(query, function(error, rows, fields) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("ERROR: " + error.message);
         return;
       }
 
       console.log("RESPONSE: " + JSON.stringify(rows));
-      var status = rows[3][0].status
+      var status = rows[3][0].status;
 
       var userData = {
-        "email" : email,
-        "password" : password
+        email: email,
+        password: password
       };
 
       userData = jwt.sign(userData, secret, {expiresIn: "10h"});
 
       var authentication = {
-        "status" : status,
-        "UserID" : -1,
-        "jwt" : userData
-      }
+        status: status,
+        UserID: -1,
+        jwt: userData
+      };
 
       // Encrypt.
       if (status === 0) {
-        authentication.UserID = rows[1][0].UserID
+        authentication.UserID = rows[1][0].UserID;
       }
 
       response.send(authentication);
@@ -378,6 +378,8 @@ app.post("/create", function(request, response) {
 });
 
 // ---------TEST REQUEST/Templates------------------------------------
+
+/*
 app.get("/test", function(request, response) {
   console.log("GET test request");
   pool.getConnection(function(error, connection) {
@@ -404,6 +406,7 @@ app.post("/test", function(request, response) {
   testData.push(test);
   response.status(200).send("POST success");
 });
+*/
 // ---------TEST REQUEST/Templates------------------------------------
 
 // Have the server listen on port 3333.

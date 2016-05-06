@@ -30,15 +30,15 @@ var SignInPanel = React.createClass({
       return;
     }
 
-    if (data.UserID > 0 && data.UserID !== null && data.UserID == localStorage.getItem("UserID")) {
+    if (data.UserID > 0 && data.UserID !=== null && data.UserID === localStorage.getItem("UserID")) {
       this.context.router.push("/profile/" + data.UserID);
-    } else if (data.length == 0){
+    } else if (data.length === 0) {
       console.log("Do not alert!");
     }
   },
 
   handleSubmit: function(event) {
-    //TODO: Setup SQL handling and appropriate routing.
+    // TODO: Setup SQL handling and appropriate routing.
     event.preventDefault();
     var email = this.refs.emailField.state.email;
     var password = this.refs.passwordField.state.password;
@@ -64,7 +64,7 @@ var SignInPanel = React.createClass({
 
     if (this.props.headerColor) {
       panelHeaderStyle.background = this.props.headerColor;
-    };
+    }
 
     return (
       <div style = {divStyle} className = "col-xs-6 col-sm-6 col-lg-6">

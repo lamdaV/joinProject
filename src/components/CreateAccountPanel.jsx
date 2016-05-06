@@ -28,17 +28,17 @@ var CreateAccountPanel = React.createClass({
 
     if (this.props.headerColor) {
       panelHeaderStyle.background = this.props.headerColor;
-    };
+    }
 
     return (
       <div style = {divStyle} className = "col-xs-6 col-sm-6 col-lg-6">
-        {/*Create Account Header*/}
+        {/* Create Account Header */}
         <div className = "panel panel-primary">
           <div style = {panelHeaderStyle} className = "panel-heading">
             <h3 className = "text-center"> Create an Account </h3>
           </div>
 
-          {/*Sign up button*/}
+          {/* Sign up button */}
           <div style = {panelBodyStyle} onSubmit = {this.handleSignUp} className = "row panel-body text-center">
             <button style = {buttonStyle} onClick = {this.handleSignUp} className = "btn btn-primary center-block"> Sign Up </button>
           </div>

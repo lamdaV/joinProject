@@ -22,22 +22,22 @@ var MatchResults = React.createClass({
     };
 
     // TODO: Place results from database. Likely with props.
-    return(
+    return (
       <div className = "row">
         <div className = "panel panel-primary">
           <div style = {panelHeadingStyle} className = "panel-heading">
             <h5 style = {textStyle} className = "panel-title">
-              {/*Email*/}
+              {/* Email */}
               <div className = "col-sm-4 text-left">
                 [Email]
               </div>
 
-              {/*Match Score*/}
+              {/* Match Score */}
               <div className = "col-sm-4 text-center">
                 [Matching Score]
               </div>
 
-              {/*Acccept/Reject*/}
+              {/* Acccept/Reject */}
               <div className = "col-sm-4 text-right">
                 <button className = "btn btn-danger" type = "button" onClick = {this.handleReject} >Reject</button>
                 <button className = "btn btn-success" onClick = {this.handleAccept} type = "button">Accept</button>
@@ -45,7 +45,7 @@ var MatchResults = React.createClass({
             </h5>
           </div>
 
-          {/*Heuristic Data*/}
+          {/* Heuristic Data */}
           <div className = "panel-body">
             <h1>
               Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.

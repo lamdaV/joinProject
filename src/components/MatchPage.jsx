@@ -28,12 +28,12 @@ var MatchPage = React.createClass({
 
   componentWillMount: function() {
     console.log("matchID: " + this.props.params.matchID);
-    AuthStore.postAuthenticate();
+    AuthActions.postAuthenticate();
     this.setState({matchID: this.props.params.matchID});
   },
 
   componentWillReceiveProps: function(nextProps) {
-    AuthStore.postAuthenticate();
+    AuthActions.postAuthenticate();
     this.setState({matchID: nextProps.params.matchID});
   },
 

@@ -32,17 +32,17 @@ var InboxPage = React.createClass({
   },
 
   componentWillMount: function() {
-    AuthStore.postAuthenticate();
+    AuthActions.postAuthenticate();
     this.setState({inboxID: this.props.params.inboxID});
   },
 
   componentWillReceiveProps: function(nextProps) {
-    AuthStore.postAuthenticate();
+    AuthActions.postAuthenticate();
     this.setState({inboxID: nextProps.params.inboxID});
   },
 
   render: function() {
-    return(
+    return (
       <h1>Inbox of User: {this.state.inboxID}</h1>
     );
   }
