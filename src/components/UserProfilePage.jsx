@@ -5,6 +5,7 @@ var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
 var UserProfilePage = React.createClass({
+  // test
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
   getInitialState: function() {
