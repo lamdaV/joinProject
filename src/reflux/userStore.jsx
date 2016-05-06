@@ -4,12 +4,21 @@ var UserActions = require("./userActions.jsx");
 
 /* global localStorage */
 var UserStore = Reflux.createStore({
+  /*
+    Listen to UserActions.
+  */
   listenables: [UserActions],
 
+  /*
+    Initialize jwt.
+  */
   init: function() {
     this.jwt = localStorage.getItem("jwt");
   },
 
+  /*
+    Sign the user in.
+  */
   postValidateUser: function(email, password) {
     var user = {
       email: email,
@@ -25,6 +34,9 @@ var UserStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Create a user.
+  */
   postCreateUser: function(email, password, timezone) {
     var user = {
       email: email,
@@ -43,6 +55,9 @@ var UserStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Log the user out.
+  */
   logout: function() {
     console.log("logging out...");
     localStorage.clear();

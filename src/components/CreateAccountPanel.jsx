@@ -1,20 +1,32 @@
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
+  /*
+    Define propTypes.
+  */
   propTypes: {
     headerColor: React.PropTypes.string
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Move to the CreateAccountForm page.
+  */
   handleSignUp: function(event) {
     event.preventDefault();
     console.log("Moving to Create Account page...");
     this.context.router.push("/create");
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var divStyle = {
       marginTop: 10

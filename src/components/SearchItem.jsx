@@ -4,13 +4,22 @@ var Link = ReactRouter.Link;
 var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
 
 var SearchItem = React.createClass({
+  /*
+    Set up "Abstract Class"
+  */
   mixins: [NavItemMixIn],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     item: React.PropTypes.object.isRequired,
     linkStyle: React.PropTypes.object
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var href = "/game/" + this.props.item.GameID;
 

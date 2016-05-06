@@ -6,21 +6,36 @@ var AuthStore = require("../reflux/authStore.jsx");
 
 /* global localStorage */
 var InboxPage = React.createClass({
-  // Listen to the AuthStore.
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set the intial state.
+  */
   getInitialState: function() {
     return ({inboxID: ""});
   },
 
+  /*
+    If the user is authenticate and the user is not attempting to acccess someone else's inbox, leave the state unchange.
+    Otherwise, log the user out and push to home.
+  */
   verify: function(event, status) {
     if (status) {
       console.log("inbox verify passed");

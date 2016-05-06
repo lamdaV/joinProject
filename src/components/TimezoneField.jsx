@@ -1,20 +1,32 @@
 var React = require("react");
 
 var TimezoneField = React.createClass({
+  /*
+    Define propTypes.
+  */
   propTypes: {
     validityAlert: React.PropTypes.bool
   },
 
+  /*
+    Set the default optional prop values.
+  */
   getDefaultProps: function() {
     return {
       validityAlert: true
     };
   },
 
+  /*
+    Set initial state values.
+  */
   getInitialState: function() {
     return ({isValid: true, timezone: ""});
   },
 
+  /*
+    If the component is not focused, validate the field input.
+  */
   onBlur: function() {
     var data = this.state.timezone;
     data = data.toLowerCase();
@@ -26,10 +38,16 @@ var TimezoneField = React.createClass({
     }
   },
 
+  /*
+    Handle the change.
+  */
   onChange: function(event) {
     this.setState({timezone: event.target.value});
   },
 
+  /*
+    Render the function.
+  */
   render: function() {
     var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
 

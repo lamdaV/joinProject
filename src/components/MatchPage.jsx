@@ -7,20 +7,35 @@ var AuthStore = require("../reflux/authStore.jsx");
 
 /* global localStorage */
 var MatchPage = React.createClass({
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Define proptypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set initial state values.
+  */
   getInitialState: function() {
     return ({matchID: ""});
   },
 
+  /*
+    If the User is authenticated and the user is not attempting to access someone else's MatchPage. Otherwise, push to home.
+  */
   verify: function(event, status) {
     if (status) {
       console.log("match verify passed");
@@ -36,11 +51,17 @@ var MatchPage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting the component.
+  */
   componentWillMount: function() {
     console.log("matchID: " + this.props.params.matchID);
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     return (
       <div>

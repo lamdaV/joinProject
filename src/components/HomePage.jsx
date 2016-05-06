@@ -7,13 +7,21 @@ var AuthStore = require("../reflux/authStore.jsx");
 
 /* global localStorage */
 var HomePage = React.createClass({
-  // Listen to the AuthStore.
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Push the user to their profile if they are authenticated.
+  */
   verify: function(event, status) {
     // If authenticated, do not show the sign in page.
     if (status) {
@@ -24,12 +32,18 @@ var HomePage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting.
+  */
   componentWillMount: function() {
     // If the user is authenticated skip the signin page.
     console.log("home page mounting...");
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     return (
       <div>

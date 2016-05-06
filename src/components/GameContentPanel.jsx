@@ -1,19 +1,23 @@
 var React = require("react");
 
 var GameContentPanel = React.createClass({
+  /*
+    Define propTypes.
+  */
   propTypes: {
     headerColor: React.PropTypes.string
   },
 
+  /*
+    Set intial state values.
+  */
   getInitialState: function() {
     return ({title: "", rating: "", price: "", tags: null});
   },
 
-  componentWillMount: function() {
-    // Set some temp values.
-    this.setState({title: "PlaceHolderTitle", rating: "A", price: "NaN"});
-  },
-
+  /*
+    Set corresponding state values when props are received.
+  */
   componentWillReceiveProps: function(nextProps) {
     console.log("GameContentPanel receiving props...");
     console.log("props data: " + JSON.stringify(nextProps.gameData));
@@ -28,6 +32,9 @@ var GameContentPanel = React.createClass({
     }
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     console.log("tag: " + this.state.tags);
     console.log("tag boolean: " + this.state.tags !== "");
@@ -59,6 +66,7 @@ var GameContentPanel = React.createClass({
       pricePanelStyle.background = this.props.headerColor;
     }
 
+    // Function to create a TagLabel. Used in conjuction with map.
     var createTagLabel = function(item, index) {
       return (
         <span className = "label label-info" key = {item.TagName + index}> {item.TagName} </span>

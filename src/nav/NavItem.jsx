@@ -5,8 +5,14 @@ var Link = ReactRouter.Link;
 var NavItemMixIn = require("./NavItemMixIn.jsx");
 
 var NavItem = React.createClass({
+  /*
+    Set up "abstract class."
+  */
   mixins: [NavItemMixIn],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     linkStyle: React.PropTypes.object,
     href: PropTypes.string.isRequired,
@@ -14,6 +20,9 @@ var NavItem = React.createClass({
     style: PropTypes.object
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var isInbox = this.props.title === "Inbox";
     return (

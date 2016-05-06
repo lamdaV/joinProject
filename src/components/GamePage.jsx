@@ -5,16 +5,28 @@ var GameStore = require("../reflux/gameStore.jsx");
 var GameActions = require("../reflux/gameActions.jsx");
 
 var GamePage = React.createClass({
+  /*
+    Listen to the GameStore.
+  */
   mixins: [Reflux.listenTo(GameStore, "setGameData")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set the initial state.
+  */
   getInitialState: function() {
     return ({gameID: this.props.params.gameID, gameData: "", gameTag: ""});
   },
 
+  /*
+    Once data is received from GameStore, set the state accordingly.
+  */
   setGameData: function(event, data) {
     var gameData = data.game;
     var gameTag = data.tag;
@@ -23,15 +35,24 @@ var GamePage = React.createClass({
     this.setState({gameData: gameData, gameTag: gameTag});
   },
 
+  /*
+    Call postGetGame when component is about to mount.
+  */
   componentDidMount: function() {
     GameActions.postGetGame(this.props.params.gameID);
   },
 
+  /*
+    Call postGetGame if new props are received.
+  */
   componentWillReceiveProps: function(nextProps) {
     GameActions.postGetGame(nextProps.params.gameID);
     this.setState({gameID: nextProps.params.gameID});
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     console.log("state gameData: " + JSON.stringify(this.state.gameData));
     return (

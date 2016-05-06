@@ -26367,7 +26367,6 @@ var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 
-// TODO: Set this correctly.
 var initialNavLinks = [{
   title: "Sign In",
   href: "/"
@@ -26380,22 +26379,36 @@ var initialNavLinks = [{
 var Base = React.createClass({
   displayName: "Base",
 
-  // Listen to the AuthStore.
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "updateNavBar")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     children: React.PropTypes.object
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set the state.
+  */
   getInitialState: function () {
     AuthActions.postAuthenticate();
     return { navLinks: initialNavLinks, canSignOut: false, brandLink: "/home" };
   },
 
+  /*
+    Update the navbar based on authStatus.
+  */
   updateNavBar: function (event, status) {
     console.log("base authStatus: " + status);
     var nextLinks = initialNavLinks;
@@ -26441,7 +26454,9 @@ var Base = React.createClass({
     this.setState({ navLinks: nextLinks, canSignOut: canSignOut, brandLink: brandLink });
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var childrenStyle = {
       marginTop: 80
     };
@@ -26496,15 +26511,21 @@ var CreateAccountForm = React.createClass({
   // Listen to the UserStore.
   mixins: [Reflux.listenTo(UserStore, "createUser"), Reflux.listenTo(AuthStore, "verify")],
 
+  // Define router for dynamic pushing.
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set initial state.
+  */
   getInitialState: function () {
     return { matchError: false, errorUserNotUnique: false };
   },
 
+  // Update the component based on authStatus.
   verify: function (event, status) {
+    // If user is already signed in, do not allow user to create another account.
     if (status) {
       console.log("create form verify passed");
       this.context.router.push("/profile/" + localStorage.getItem("UserID"));
@@ -26513,39 +26534,51 @@ var CreateAccountForm = React.createClass({
     }
   },
 
+  /*
+    Create a user based on UserStore.
+  */
   createUser: function (event, data) {
     console.log("userValidation data: " + JSON.stringify(data));
     console.log("userID: " + data.UserID);
     console.log("status: " + data.status);
 
     // TODO: change where this is routed. (possibly preference page)
+    // Route the User creation was successful.
     if (data.UserID > 0 && data.status === 0) {
       console.log("Routing...");
       this.context.router.push("/profile/" + data.UserID);
+      // User Exists, setState to render UI response.
     } else if (data.status === 2) {
-      // TODO: UI response.
-      console.log("User already exists...");
-      this.setState({ errorUserNotUnique: true });
-    } else {
-      console.log("failed to create");
-    }
+        // TODO: UI response.
+        console.log("User already exists...");
+        this.setState({ errorUserNotUnique: true });
+      } else {
+        console.log("failed to create");
+      }
   },
 
+  /*
+    Handle the submission of data.
+  */
   handleSubmit: function (event) {
     // TODO: BUG: If user failed to submit once and it was caught, the user must click next twice.
-
+    // Do not do button default.
     event.preventDefault();
+
+    // Evaluate field validity.
     var isValid = this.checkValidity();
 
+    // Get each field variable.
     var email = this.refs.emailField.state.email;
     var password = this.refs.passwordField.state.password;
     var timezone = this.refs.timezoneRadio.state.selectedValue;
 
+    // Log.
     console.log("email: " + email);
     console.log("password: " + password);
     console.log("timezone: " + timezone);
 
-    // TODO: Transition to the correct page. (Preference)
+    // Send a UserStore action to create a user.
     if (isValid) {
       UserActions.postCreateUser(email, password, timezone);
     } else {
@@ -26553,6 +26586,9 @@ var CreateAccountForm = React.createClass({
     }
   },
 
+  /*
+    Evaluate that the fields are all valid.
+  */
   checkValidity: function () {
     this.refs.emailField.onBlur();
     this.refs.passwordField.onBlur();
@@ -26565,11 +26601,12 @@ var CreateAccountForm = React.createClass({
 
     var isPasswordSame = this.refs.passwordField.state.password === this.refs.passwordFieldCheck.state.password;
 
-    console.log("isPasswordSame: " + isPasswordSame);
-
     return hasChanged && isValid && isPasswordSame;
   },
 
+  /*
+    Evaluates the retyped password is correct.
+  */
   checkPassword: function () {
     var password = this.refs.passwordField.state.password;
     var passwordCheck = this.refs.passwordFieldCheck.state.password;
@@ -26581,6 +26618,9 @@ var CreateAccountForm = React.createClass({
     }
   },
 
+  /*
+    Authticate when the component is ready to mount.
+  */
   componentWillMount: function () {
     // If the user is authenticated skip the signin page.
     console.log("create form mounting...");
@@ -26589,7 +26629,9 @@ var CreateAccountForm = React.createClass({
     }
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var panelBodyStyle = {
       minHeight: 150
     };
@@ -26663,21 +26705,32 @@ var React = require("react");
 var CreateAccountPanel = React.createClass({
   displayName: "CreateAccountPanel",
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     headerColor: React.PropTypes.string
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Move to the CreateAccountForm page.
+  */
   handleSignUp: function (event) {
     event.preventDefault();
     console.log("Moving to Create Account page...");
     this.context.router.push("/create");
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var divStyle = {
       marginTop: 10
     };
@@ -26734,33 +26787,53 @@ var Validator = require("email-validator");
 var EmailField = React.createClass({
   displayName: "EmailField",
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     validityAlert: React.PropTypes.bool
   },
 
+  /*
+    Set default values of optional props.
+  */
   getDefaultProps: function () {
     return {
       validityAlert: true
     };
   },
 
+  /*
+    Set the intial state values.
+  */
   getInitialState: function () {
     return { hasChanged: false, isValid: true, email: "" };
   },
 
+  /*
+    Once focus os off on this component, validate the email.
+  */
   onBlur: function () {
     this.setState({ isValid: Validator.validate(this.state.email) });
   },
 
+  /*
+    Clear the field inputs.
+  */
   clear: function () {
     this.setState({ isValid: true, email: "" });
   },
 
+  /*
+    Set the state value everytime the component receives input.
+  */
   onChange: function (event) {
     this.setState({ hasChanged: true, email: event.target.value });
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
 
     var divStyle = {
@@ -26793,19 +26866,23 @@ var React = require("react");
 var GameContentPanel = React.createClass({
   displayName: "GameContentPanel",
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     headerColor: React.PropTypes.string
   },
 
+  /*
+    Set intial state values.
+  */
   getInitialState: function () {
     return { title: "", rating: "", price: "", tags: null };
   },
 
-  componentWillMount: function () {
-    // Set some temp values.
-    this.setState({ title: "PlaceHolderTitle", rating: "A", price: "NaN" });
-  },
-
+  /*
+    Set corresponding state values when props are received.
+  */
   componentWillReceiveProps: function (nextProps) {
     console.log("GameContentPanel receiving props...");
     console.log("props data: " + JSON.stringify(nextProps.gameData));
@@ -26820,7 +26897,9 @@ var GameContentPanel = React.createClass({
     }
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     console.log("tag: " + this.state.tags);
     console.log("tag boolean: " + this.state.tags !== "");
     var divStyle = {
@@ -26849,6 +26928,7 @@ var GameContentPanel = React.createClass({
       pricePanelStyle.background = this.props.headerColor;
     }
 
+    // Function to create a TagLabel. Used in conjuction with map.
     var createTagLabel = function (item, index) {
       return React.createElement(
         "span",
@@ -26932,16 +27012,28 @@ var GameActions = require("../reflux/gameActions.jsx");
 var GamePage = React.createClass({
   displayName: "GamePage",
 
+  /*
+    Listen to the GameStore.
+  */
   mixins: [Reflux.listenTo(GameStore, "setGameData")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set the initial state.
+  */
   getInitialState: function () {
     return { gameID: this.props.params.gameID, gameData: "", gameTag: "" };
   },
 
+  /*
+    Once data is received from GameStore, set the state accordingly.
+  */
   setGameData: function (event, data) {
     var gameData = data.game;
     var gameTag = data.tag;
@@ -26950,16 +27042,24 @@ var GamePage = React.createClass({
     this.setState({ gameData: gameData, gameTag: gameTag });
   },
 
+  /*
+    Call postGetGame when component is about to mount.
+  */
   componentDidMount: function () {
     GameActions.postGetGame(this.props.params.gameID);
   },
 
+  /*
+    Call postGetGame if new props are received.
+  */
   componentWillReceiveProps: function (nextProps) {
     GameActions.postGetGame(nextProps.params.gameID);
     this.setState({ gameID: nextProps.params.gameID });
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     console.log("state gameData: " + JSON.stringify(this.state.gameData));
     return React.createElement(
       "div",
@@ -26993,13 +27093,21 @@ var AuthStore = require("../reflux/authStore.jsx");
 var HomePage = React.createClass({
   displayName: "HomePage",
 
-  // Listen to the AuthStore.
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Push the user to their profile if they are authenticated.
+  */
   verify: function (event, status) {
     // If authenticated, do not show the sign in page.
     if (status) {
@@ -27010,12 +27118,18 @@ var HomePage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting.
+  */
   componentWillMount: function () {
     // If the user is authenticated skip the signin page.
     console.log("home page mounting...");
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     return React.createElement(
       "div",
@@ -27043,21 +27157,36 @@ var AuthStore = require("../reflux/authStore.jsx");
 var InboxPage = React.createClass({
   displayName: "InboxPage",
 
-  // Listen to the AuthStore.
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set the intial state.
+  */
   getInitialState: function () {
     return { inboxID: "" };
   },
 
+  /*
+    If the user is authenticate and the user is not attempting to acccess someone else's inbox, leave the state unchange.
+    Otherwise, log the user out and push to home.
+  */
   verify: function (event, status) {
     if (status) {
       console.log("inbox verify passed");
@@ -27107,20 +27236,35 @@ var AuthStore = require("../reflux/authStore.jsx");
 var MatchPage = React.createClass({
   displayName: "MatchPage",
 
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Define proptypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set initial state values.
+  */
   getInitialState: function () {
     return { matchID: "" };
   },
 
+  /*
+    If the User is authenticated and the user is not attempting to access someone else's MatchPage. Otherwise, push to home.
+  */
   verify: function (event, status) {
     if (status) {
       console.log("match verify passed");
@@ -27136,11 +27280,17 @@ var MatchPage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting the component.
+  */
   componentWillMount: function () {
     console.log("matchID: " + this.props.params.matchID);
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     return React.createElement(
       "div",
@@ -27165,17 +27315,27 @@ var React = require("react");
 var MatchResults = React.createClass({
   displayName: "MatchResults",
 
-  handleReject: function () {
+  /*
+    Handle Reject button.
+  */
+  handleReject: function (event) {
     // TODO: Get this to work with Kennan's stuff
+    event.preventDefault();
     console.log("Reject button clicked");
   },
 
+  /*
+    Handle Accept button.
+  */
   handleAccept: function () {
     // TODO: Get this to work with Kennan's stuff.
+    event.preventDefault();
     console.log("Accept button clicked");
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var panelHeadingStyle = {
       background: "#563d7c",
       minHeight: 60
@@ -27263,6 +27423,9 @@ var React = require("react");
 var PageNotFound = React.createClass({
   displayName: "PageNotFound",
 
+  /*
+    Render the component.
+  */
   render: function () {
     return React.createElement(
       "h1",
@@ -27282,12 +27445,18 @@ var MIN_PASSWORD_LENGTH = 8;
 var PasswordField = React.createClass({
   displayName: "PasswordField",
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     validityAlert: React.PropTypes.bool,
     formError: React.PropTypes.bool,
     matchError: React.PropTypes.bool
   },
 
+  /*
+    Set default values for optional props.
+  */
   getDefaultProps: function () {
     return {
       validityAlert: true,
@@ -27296,10 +27465,16 @@ var PasswordField = React.createClass({
     };
   },
 
+  /*
+    Set the intial state values.
+  */
   getInitialState: function () {
     return { hasChanged: false, isValid: true, password: "" };
   },
 
+  /*
+    When the component is not focus, check if the length of the password is valid.
+  */
   onBlur: function () {
     if (this.state.password.length < MIN_PASSWORD_LENGTH) {
       this.setState({ isValid: false });
@@ -27308,18 +27483,28 @@ var PasswordField = React.createClass({
     }
   },
 
+  /*
+    Clear the password.
+  */
   clear: function () {
     this.setState({ isValid: true, password: "" });
   },
 
+  /*
+    Handle inputs from the field as they are comming in.
+  */
   onChange: function (event) {
     this.setState({ hasChanged: true, password: event.target.value });
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var divStyle = {
       marginTop: 10
     };
+
+    // Set the formClass values.
     var formClass;
     if (this.props.formError) {
       formClass = this.state.isValid ? "col-sm-12 form-group" : "col-sm-12 form-group has-error";
@@ -27367,20 +27552,35 @@ var AuthStore = require("../reflux/authStore.jsx");
 var PreferencePage = React.createClass({
   displayName: "PreferencePage",
 
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set router to dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set initial state values.
+  */
   getInitialState: function () {
     return { preferenceID: "" };
   },
 
+  /*
+    If user is authenticated and the user is not trying to access someone else's preference page, setState to the props preferenceID. Otherwise, push to home.
+  */
   verify: function (event, status) {
     if (status) {
       console.log("preference verify passed");
@@ -27396,10 +27596,16 @@ var PreferencePage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting.
+  */
   componentWillMount: function () {
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     return React.createElement(
       "h1",
@@ -27421,14 +27627,22 @@ var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
 var SearchItem = React.createClass({
   displayName: "SearchItem",
 
+  /*
+    Set up "Abstract Class"
+  */
   mixins: [NavItemMixIn],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     item: React.PropTypes.object.isRequired,
     linkStyle: React.PropTypes.object
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var href = "/game/" + this.props.item.GameID;
 
     return React.createElement(
@@ -27467,38 +27681,59 @@ var GameStore = require("../reflux/gameStore.jsx");
 var SearchResultsPage = React.createClass({
   displayName: "SearchResultsPage",
 
+  /*
+    Listen to the GameStore.
+  */
   mixins: [Reflux.listenTo(GameStore, "displayResults")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set the intial state values.
+  */
   getInitialState: function () {
     return { searchQuery: this.props.params.searchQuery, results: null };
   },
 
+  /*
+    Display the results from the search query.
+  */
   displayResults: function (event, data) {
     console.log("display data: " + JSON.stringify(data));
     this.setState({ results: data });
   },
 
+  /*
+    Before mounting send a search query.
+  */
   componentDidMount: function () {
     console.log("searchquery did mount: " + this.props.params.searchQuery);
     GameStore.postSearchGame(this.props.params.searchQuery);
   },
 
+  /*
+    Update and send search query with new props.
+  */
   componentWillReceiveProps: function (nextProps) {
     console.log("search receiveProps: " + nextProps.params.searchQuery);
     GameStore.postSearchGame(nextProps.params.searchQuery);
     this.setState({ searchQuery: nextProps.params.searchQuery });
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     console.log("results: " + JSON.stringify(this.state.results));
     var linkStyle = {
       color: "magenta"
     };
 
+    // Create the search items. Useed with map.
     var createSearchItem = function (item, index) {
       return React.createElement(SearchItem, { linkStyle: linkStyle, key: item.Title + item.GameID + index, item: item });
     };
@@ -27538,20 +27773,35 @@ var AuthStore = require("../reflux/authStore.jsx");
 var SettingsPage = React.createClass({
   displayName: "SettingsPage",
 
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set initial state values.
+  */
   getInitialState: function () {
     return { settingID: "" };
   },
 
+  /*
+    If the user is authenticated and the user is not trying to access someone else's settings page, set the state for settingID. Otherwise, push to home.
+  */
   verify: function (event, status) {
     if (status) {
       console.log("setting verify passed");
@@ -27567,10 +27817,16 @@ var SettingsPage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting.
+  */
   componentWillMount: function () {
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     return React.createElement(
       "h1",
@@ -27594,20 +27850,35 @@ var UserStore = require("../reflux/userStore.jsx");
 var SignInPanel = React.createClass({
   displayName: "SignInPanel",
 
+  /*
+    Listen to the UserStore.
+  */
   mixins: [Reflux.listenTo(UserStore, "userValidation")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     headerColor: React.PropTypes.string
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set intial state values.
+  */
   getInitialState: function () {
     return { error: false };
   },
 
+  /*
+    Handle data returned from attempted sign in.
+  */
   userValidation: function (event, data) {
     // Variable for stringification.
     // TODO: clean up logging.
@@ -27631,6 +27902,9 @@ var SignInPanel = React.createClass({
     }
   },
 
+  /*
+    Send field data to the server.
+  */
   handleSubmit: function (event) {
     // TODO: Setup SQL handling and appropriate routing.
     event.preventDefault();
@@ -27645,7 +27919,9 @@ var SignInPanel = React.createClass({
     }
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var divStyle = {
       marginTop: 10
     };
@@ -27720,20 +27996,32 @@ var RadioGroup = require("react-radio-group");
 var TimezoneRadioGroup = React.createClass({
   displayName: "TimezoneRadioGroup",
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     validityAlert: React.PropTypes.bool
   },
 
+  /*
+    Set default values for optional props.
+  */
   getDefaultProps: function () {
     return {
       validityAlert: true
     };
   },
 
+  /*
+    Set intial state values.
+  */
   getInitialState: function () {
     return { hasChanged: false, isValid: true, selectedValue: "" };
   },
 
+  /*
+    Check that a radio butotn is selected.
+  */
   checkValidity: function () {
     if (this.state.selectedValue === "") {
       this.setState({ isValid: false });
@@ -27742,10 +28030,16 @@ var TimezoneRadioGroup = React.createClass({
     }
   },
 
+  /*
+    Handle changes between radio buttons.
+  */
   handleChange: function (event) {
     this.setState({ hasChanged: true, selectedValue: event });
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     var divStyle = {
       marginTop: 10
@@ -27812,20 +28106,35 @@ var AuthStore = require("../reflux/authStore.jsx");
 var UserProfilePage = React.createClass({
   displayName: "UserProfilePage",
 
+  /*
+    Listen to the AuthStore.
+  */
   mixins: [Reflux.listenTo(AuthStore, "verify")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     params: React.PropTypes.object
   },
 
-  getInitialState: function () {
-    return { userID: this.props.params.userID };
-  },
-
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set the intial state values.
+  */
+  getInitialState: function () {
+    return { userID: this.props.params.userID };
+  },
+
+  /*
+    If the user is authenticate, do nothing. Otherwise, log the user out and push to home.
+  */
   verify: function (events, status) {
     // If user is authenticated, do nothing.
     // Otherwise, logout and let Base handle the rest.
@@ -27838,6 +28147,9 @@ var UserProfilePage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting.
+  */
   componentDidMount: function () {
     console.log("userprofile mounting...");
     console.log("profile props UserID: " + this.props.params.userID);
@@ -27846,11 +28158,17 @@ var UserProfilePage = React.createClass({
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Authenticate as component gets new props.
+  */
   componentWillReceiveProps: function (nextProps) {
     AuthActions.postAuthenticate();
     this.setState({ userID: nextProps.params.userID });
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     return React.createElement(
       "h1",
@@ -27881,6 +28199,9 @@ var Link = ReactRouter.Link;
 var NavBar = React.createClass({
   displayName: "NavBar",
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     bgColor: React.PropTypes.string,
     titleColor: React.PropTypes.string,
@@ -27891,14 +28212,23 @@ var NavBar = React.createClass({
     navData: React.PropTypes.array.isRequired
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set inital state values.
+  */
   getInitialState: function () {
     return { searchQuery: "" };
   },
 
+  /*
+    Handle search query by pushing to search page.
+  */
   handleSearchSubmit: function (event) {
     event.preventDefault();
     console.log("submitting: " + this.state.searchQuery);
@@ -27906,12 +28236,17 @@ var NavBar = React.createClass({
     this.context.router.push("/search/" + this.state.searchQuery);
   },
 
+  /*
+    Handle search inputs.
+  */
   handleSearchChange: function (event) {
     console.log("searchQuery: " + event.target.value);
     this.setState({ searchQuery: event.target.value });
   },
 
-  render: function () {
+  /*
+    Render the component.
+  */render: function () {
     var navStyle = {
       WebkitBoxShadow: "0 0 4px rgba(0, 0, 0, 0.4)",
       MozBoxShadow: "0 0 0 4px rgba(0, 0, 0, 0.4)",
@@ -27937,6 +28272,7 @@ var NavBar = React.createClass({
       linkStyle.color = this.props.linkColor + "!important";
     }
 
+    // Create link items. Used with map.
     var createLinkItem = function (item, index) {
       return React.createElement(NavItem, { linkStyle: linkStyle, key: item.title + index, href: item.href, title: item.title });
     };
@@ -28015,14 +28351,23 @@ var Link = ReactRouter.Link;
 var NavDropdownItem = React.createClass({
   displayName: 'NavDropdownItem',
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     linkStyle: React.PropTypes.object
   },
 
+  /*
+    Set initial state values.
+  */
   getInitialState: function () {
     return { accountSettingRef: "", preferenceRef: "" };
   },
 
+  /*
+    Set links when mounting.
+  */
   componentWillMount: function () {
     var accountSettingRef = "/settings/" + localStorage.getItem("UserID");
     var preferenceRef = "/preference/" + localStorage.getItem("UserID");
@@ -28030,6 +28375,9 @@ var NavDropdownItem = React.createClass({
     this.setState({ accountSettingRef: accountSettingRef, preferenceRef: preferenceRef });
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     var linkStyle = {
       color: this.props.linkStyle.color,
@@ -28083,8 +28431,14 @@ var NavItemMixIn = require("./NavItemMixIn.jsx");
 var NavItem = React.createClass({
   displayName: "NavItem",
 
+  /*
+    Set up "abstract class."
+  */
   mixins: [NavItemMixIn],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     linkStyle: React.PropTypes.object,
     href: PropTypes.string.isRequired,
@@ -28092,6 +28446,9 @@ var NavItem = React.createClass({
     style: PropTypes.object
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     var isInbox = this.props.title === "Inbox";
     return React.createElement(
@@ -28115,14 +28472,23 @@ module.exports = NavItem;
 
 },{"./NavItemMixIn.jsx":271,"react":224,"react-router":88}],271:[function(require,module,exports){
 var NavItemMixIn = {
+  /*
+    Set initial state values.
+  */
   getInitialState: function () {
     return { hover: false };
   },
 
+  /*
+    Handle component mouse is over.
+  */
   mouseOver: function () {
     this.setState({ hover: true });
   },
 
+  /*
+    Handle component mouse is out.
+  */
   mouseOut: function () {
     this.setState({ hover: false });
   }
@@ -28140,22 +28506,37 @@ var UserActions = require("../reflux/userActions.jsx");
 var NavItem = React.createClass({
   displayName: "NavItem",
 
+  /*
+    Set "Abstract Class."
+  */
   mixins: [NavItemMixIn],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     linkStyle: React.PropTypes.object
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Handle the sign out.
+  */
   handleSignOut: function (event) {
     event.preventDefault();
     UserActions.logout();
     this.context.router.push("/home");
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
     return React.createElement(
       "li",
@@ -28185,8 +28566,14 @@ var authActions = require("./authActions.jsx");
 
 /* global localStorage */
 var authStore = Reflux.createStore({
+  /*
+    Listen to AuthActions.
+  */
   listenables: [authActions],
 
+  /*
+    Authenticate the User.
+  */
   postAuthenticate: function () {
     console.log("in postAuthenticate");
     if (!localStorage.getItem("jwt")) {
@@ -28208,6 +28595,9 @@ var authStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Push changes to all listers.
+  */
   returnStatus: function () {
     this.trigger("change", this.authStatus);
   }
@@ -28229,8 +28619,14 @@ var GameActions = require("./gameActions.jsx");
 
 /* global localStorage */
 var GameStore = Reflux.createStore({
+  /*
+    Listen to GameActions.
+  */
   listenables: [GameActions],
 
+  /*
+    Initialize store jwt.
+  */
   init: function () {
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
@@ -28238,6 +28634,9 @@ var GameStore = Reflux.createStore({
     }
   },
 
+  /*
+    Search for game by title.
+  */
   postSearchGame: function (searchText) {
     console.log("searchText: " + searchText);
     var searchQuery = {
@@ -28251,6 +28650,9 @@ var GameStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Get Game by ID.
+  */
   postGetGame: function (gameID) {
     console.log("getting gameID: " + gameID);
 
@@ -28270,6 +28672,9 @@ var GameStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Push changes to all listeners.
+  */
   returnStatus: function () {
     this.trigger("change", this.search);
   }
@@ -28291,12 +28696,21 @@ var UserActions = require("./userActions.jsx");
 
 /* global localStorage */
 var UserStore = Reflux.createStore({
+  /*
+    Listen to UserActions.
+  */
   listenables: [UserActions],
 
+  /*
+    Initialize jwt.
+  */
   init: function () {
     this.jwt = localStorage.getItem("jwt");
   },
 
+  /*
+    Sign the user in.
+  */
   postValidateUser: function (email, password) {
     var user = {
       email: email,
@@ -28312,6 +28726,9 @@ var UserStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Create a user.
+  */
   postCreateUser: function (email, password, timezone) {
     var user = {
       email: email,
@@ -28330,6 +28747,9 @@ var UserStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Log the user out.
+  */
   logout: function () {
     console.log("logging out...");
     localStorage.clear();

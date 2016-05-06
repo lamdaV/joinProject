@@ -3,6 +3,6 @@ sudo: required
 node_js:
   - "5"
 before_script:
-   - npm install eslint
-   - npm install eslint-config-google
-   - npm install eslint-plugin-react
+   - npm install eslint -g --save
+   - npm install eslint-config-google -g --save
+   - npm install eslint-plugin-react -g --save

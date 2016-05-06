@@ -4,8 +4,14 @@ var GameActions = require("./gameActions.jsx");
 
 /* global localStorage */
 var GameStore = Reflux.createStore({
+  /*
+    Listen to GameActions.
+  */
   listenables: [GameActions],
 
+  /*
+    Initialize store jwt.
+  */
   init: function() {
     this.jwt = localStorage.getItem("jwt");
     if (this.jwt) {
@@ -13,6 +19,9 @@ var GameStore = Reflux.createStore({
     }
   },
 
+  /*
+    Search for game by title.
+  */
   postSearchGame: function(searchText) {
     console.log("searchText: " + searchText);
     var searchQuery = {
@@ -26,6 +35,9 @@ var GameStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Get Game by ID.
+  */
   postGetGame: function(gameID) {
     console.log("getting gameID: " + gameID);
 
@@ -45,6 +57,9 @@ var GameStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Push changes to all listeners.
+  */
   returnStatus: function() {
     this.trigger("change", this.search);
   }

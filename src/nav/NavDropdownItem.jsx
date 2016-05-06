@@ -4,14 +4,23 @@ var Link = ReactRouter.Link;
 
 /* global localStorage */
 var NavDropdownItem = React.createClass({
+  /*
+    Define propTypes.
+  */
   propTypes: {
     linkStyle: React.PropTypes.object
   },
 
+  /*
+    Set initial state values.
+  */
   getInitialState: function() {
     return ({accountSettingRef: "", preferenceRef: ""});
   },
 
+  /*
+    Set links when mounting.
+  */
   componentWillMount: function() {
     var accountSettingRef = "/settings/" + localStorage.getItem("UserID");
     var preferenceRef = "/preference/" + localStorage.getItem("UserID");
@@ -19,6 +28,9 @@ var NavDropdownItem = React.createClass({
     this.setState({accountSettingRef: accountSettingRef, preferenceRef: preferenceRef});
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var linkStyle = {
       color: this.props.linkStyle.color,

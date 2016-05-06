@@ -4,8 +4,14 @@ var authActions = require("./authActions.jsx");
 
 /* global localStorage */
 var authStore = Reflux.createStore({
+  /*
+    Listen to AuthActions.
+  */
   listenables: [authActions],
 
+  /*
+    Authenticate the User.
+  */
   postAuthenticate: function() {
     console.log("in postAuthenticate");
     if (!localStorage.getItem("jwt")) {
@@ -27,6 +33,9 @@ var authStore = Reflux.createStore({
     }.bind(this));
   },
 
+  /*
+    Push changes to all listers.
+  */
   returnStatus: function() {
     this.trigger("change", this.authStatus);
   }

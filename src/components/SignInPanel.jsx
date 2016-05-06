@@ -6,20 +6,35 @@ var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
 
 var SignInPanel = React.createClass({
+  /*
+    Listen to the UserStore.
+  */
   mixins: [Reflux.listenTo(UserStore, "userValidation")],
 
+  /*
+    Define propTypes.
+  */
   propTypes: {
     headerColor: React.PropTypes.string
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set intial state values.
+  */
   getInitialState: function() {
     return ({error: false});
   },
 
+  /*
+    Handle data returned from attempted sign in.
+  */
   userValidation: function(event, data) {
     // Variable for stringification.
     // TODO: clean up logging.
@@ -43,6 +58,9 @@ var SignInPanel = React.createClass({
     }
   },
 
+  /*
+    Send field data to the server.
+  */
   handleSubmit: function(event) {
     // TODO: Setup SQL handling and appropriate routing.
     event.preventDefault();
@@ -57,6 +75,9 @@ var SignInPanel = React.createClass({
     }
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var divStyle = {
       marginTop: 10

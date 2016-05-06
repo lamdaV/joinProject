@@ -2,20 +2,32 @@ var React = require("react");
 var RadioGroup = require("react-radio-group");
 
 var TimezoneRadioGroup = React.createClass({
+  /*
+    Define propTypes.
+  */
   propTypes: {
     validityAlert: React.PropTypes.bool
   },
 
+  /*
+    Set default values for optional props.
+  */
   getDefaultProps: function() {
     return {
       validityAlert: true
     };
   },
 
+  /*
+    Set intial state values.
+  */
   getInitialState: function() {
     return ({hasChanged: false, isValid: true, selectedValue: ""});
   },
 
+  /*
+    Check that a radio butotn is selected.
+  */
   checkValidity: function() {
     if (this.state.selectedValue === "") {
       this.setState({isValid: false});
@@ -24,10 +36,16 @@ var TimezoneRadioGroup = React.createClass({
     }
   },
 
+  /*
+    Handle changes between radio buttons.
+  */
   handleChange: function(event) {
     this.setState({hasChanged: true, selectedValue: event});
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var divStyle = {
       marginTop: 10

@@ -1,16 +1,27 @@
 var React = require("react");
 
 var MatchResults = React.createClass({
-  handleReject: function() {
+  /*
+    Handle Reject button.
+  */
+  handleReject: function(event) {
     // TODO: Get this to work with Kennan's stuff
+    event.preventDefault();
     console.log("Reject button clicked");
   },
 
+  /*
+    Handle Accept button.
+  */
   handleAccept: function() {
     // TODO: Get this to work with Kennan's stuff.
+    event.preventDefault();
     console.log("Accept button clicked");
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var panelHeadingStyle = {
       background: "#563d7c",

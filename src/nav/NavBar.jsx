@@ -6,6 +6,9 @@ var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
 
 var NavBar = React.createClass({
+  /*
+    Define propTypes.
+  */
   propTypes: {
     bgColor: React.PropTypes.string,
     titleColor: React.PropTypes.string,
@@ -16,14 +19,23 @@ var NavBar = React.createClass({
     navData: React.PropTypes.array.isRequired
   },
 
+  /*
+    Set router for dynamic pushing.
+  */
   contextTypes: {
     router: React.PropTypes.object
   },
 
+  /*
+    Set inital state values.
+  */
   getInitialState: function() {
     return ({searchQuery: ""});
   },
 
+  /*
+    Handle search query by pushing to search page.
+  */
   handleSearchSubmit: function(event) {
     event.preventDefault();
     console.log("submitting: " + this.state.searchQuery);
@@ -31,11 +43,17 @@ var NavBar = React.createClass({
     this.context.router.push("/search/" + this.state.searchQuery);
   },
 
+  /*
+    Handle search inputs.
+  */
   handleSearchChange: function(event) {
     console.log("searchQuery: " + event.target.value);
     this.setState({searchQuery: event.target.value});
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var navStyle = {
       WebkitBoxShadow: "0 0 4px rgba(0, 0, 0, 0.4)",
@@ -62,6 +80,7 @@ var NavBar = React.createClass({
       linkStyle.color = this.props.linkColor + "!important";
     }
 
+    // Create link items. Used with map.
     var createLinkItem = function(item, index) {
       return (
         <NavItem linkStyle = {linkStyle} key = {item.title + index} href = {item.href} title = {item.title} />
