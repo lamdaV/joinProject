@@ -26477,15 +26477,7 @@ var Base = React.createClass({
       React.createElement(
         "div",
         { className: "container" },
-        React.createElement(
-          "div",
-          { className: "row" },
-          React.createElement(
-            "h1",
-            null,
-            "Generic Footer"
-          )
-        )
+        React.createElement("div", { className: "row" })
       )
     );
   }

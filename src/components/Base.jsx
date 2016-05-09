@@ -119,9 +119,9 @@ var Base = React.createClass({
         </div>
 
         {/* Footer */}
+        
         <div className = "container">
           <div className = "row">
-            <h1>Generic Footer</h1>
           </div>
         </div>
       </div>
