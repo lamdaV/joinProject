@@ -1,5 +1,6 @@
 var React = require("react");
 var Reflux = require("reflux");
+var MessageManager = require("./MessageManager.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
@@ -63,7 +64,10 @@ var InboxPage = React.createClass({
 
   render: function() {
     return (
-      <h1>Inbox of User: {this.state.inboxID}</h1>
+      <div>
+        <h1>Inbox of User: {this.state.inboxID}</h1>
+        <MessageManager />
+      </div>
     );
   }
 });
