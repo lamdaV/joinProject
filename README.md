@@ -30,16 +30,15 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 17. You should now see the react webpage.
 
 # List of Pages:
-|         Page          |    Assigned   |    Status    |
-|:---------------------:|:-------------:|:------------:|
-| User Profile          | Kennan French | In Progress  |
-| User Account Setting  | Kennan French | In Progress  |
-| Game Info             | David Lam     | Completed    |
-| Search Result         | David Lam     | Completed    |
-| Preference Selection  | Kennan French | In Progress  |
-| Matching              | David Lam     | In Progress  |
-| Conversation          | Kennan French | In Progress  |
-| Messaging             | David Lam     | In Progress  |
+|         Page          |    Assigned                   |    Status   |
+|:---------------------:|:-----------------------------:|:-----------:|
+| User Profile          | Kennan French                 | In Progress |
+| User Account Setting  | Kennan French                 | In Progress |
+| Game Info             | David Lam                     | Completed   |
+| Search Result         | David Lam                     | Completed   |
+| Preference Selection  | Kennan French                 | In Progress |
+| Matching              | David Lam                     | In Progress |
+| Conversation          | Kennan French <br/> David Lam | In Progress |
 
 # Milestones:
 ## Milestone 01:
@@ -124,7 +123,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 
 ## Milestone 04:
 ### David Lam
-  - [ ] Begin integrating matching page front end with back end
+  - [ ] Begin integrating matching page front end with back end (dependent on Chris)
 
 ### Extras:
   - [x] Improved Linter with React
@@ -142,5 +141,5 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] Match page back end/implement matching algorithm
 
 ### Group
-  - [ ] Study for test
+  - [x] Study for test
   - [ ] Heuristics discussion
