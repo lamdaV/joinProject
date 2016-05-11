@@ -120,10 +120,10 @@ var NavBar = React.createClass({
             <div>
               <form className = "navbar-form navbar-right">
                 <div className = "form-group">
-                  <input onChange = {this.handleSearchChange} type="text" className ="form-control" placeholder="Search" value = {this.state.searchQuery} />
+                  <input onChange = {this.handleSearchChange} type = "text" className = "form-control" placeholder = "Search" value = {this.state.searchQuery} />
                 </div>
 
-                <button onClick = {this.handleSearchSubmit} type="submit" className ="btn btn-default">
+                <button onClick = {this.handleSearchSubmit} type = "submit" className = "btn btn-default">
                   <span className = "glyphicon glyphicon-search"></span>
                 </button>
               </form>
