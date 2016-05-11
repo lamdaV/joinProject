@@ -37,8 +37,9 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 | Game Info             | David Lam     | Completed    |
 | Search Result         | David Lam     | Completed    |
 | Preference Selection  | Kennan French | In Progress  |
-| Matching Page         | David Lam     | In Progress  |
+| Matching              | David Lam     | In Progress  |
 | Conversation          | Kennan French | In Progress  |
+| Messaging             | David Lam     | In Progress  |
 
 # Milestones:
 ## Milestone 01:
