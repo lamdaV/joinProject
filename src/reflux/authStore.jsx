@@ -1,13 +1,13 @@
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
-var authActions = require("./authActions.jsx");
+var AuthActions = require("./authActions.jsx");
 
 /* global localStorage */
-var authStore = Reflux.createStore({
+var AuthStore = Reflux.createStore({
   /*
     Listen to AuthActions.
   */
-  listenables: [authActions],
+  listenables: [AuthActions],
 
   /*
     Authenticate the User.
@@ -41,4 +41,4 @@ var authStore = Reflux.createStore({
   }
 });
 
-module.exports = authStore;
+module.exports = AuthStore;

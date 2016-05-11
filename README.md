@@ -137,7 +137,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] Account Settings Page
   - [ ] Finish Profile Page
 
-### Chris Knight
+### Christopher Knight
   - [ ] Match page back end/implement matching algorithm
 
 ### Group

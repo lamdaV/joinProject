@@ -1,7 +1,7 @@
 var Reflux = require("reflux");
 
-var authActions = Reflux.createActions([
+var AuthActions = Reflux.createActions([
   "postAuthenticate"
 ]);
 
-module.exports = authActions;
+module.exports = AuthActions;
