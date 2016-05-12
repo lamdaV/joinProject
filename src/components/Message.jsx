@@ -8,6 +8,7 @@ var Message = React.createClass({
     timeStamp: React.PropTypes.string.isRequired,
     inboxID: React.PropTypes.string.isRequired,
     senderID: React.PropTypes.number.isRequired,
+    senderEmail: React.PropTypes.string.isRequired,
     message: React.PropTypes.string.isRequired
   },
 
@@ -25,7 +26,7 @@ var Message = React.createClass({
     return (
       <div className = {divClass} >
         <b> {this.props.timeStamp} </b>
-        {this.props.senderID}: <br />
+        {this.props.senderEmail}: <br />
         {this.props.message}
       </div>
     );

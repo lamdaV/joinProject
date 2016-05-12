@@ -29,6 +29,44 @@ app.all("/*", function(request, response, next) {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
+/*
+
+*/
+app.post("/messagePush", function(request, response) {
+  console.log("POST messagePush request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+    var messageJSON = request.body;
+    var inboxID = messageJSON.inboxID;
+    var chatUserID = messageJSON.chatUserID;
+    var message = messageJSON.message;
+
+    inboxID = mysql.escape(inboxID);
+    chatUserID = mysql.escape(chatUserID);
+    message = mysql.escape(message);
+
+    var query = format("CALL add_message({0}, {1}, {2}); CALL get_message_history({0}, {1});", inboxID, chatUserID, message);
+    console.log("QUERY: " + query);
+
+    pool.query(query, function(request, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      response.send(rows);
+    });
+    connection.release();
+  });
+});
+
+/*
+  Get the chat history between two users.
+*/
 app.post("/messageHistory", function(request, response) {
   console.log("POST messageHistory request...");
   pool.getConnection(function(error, connection) {

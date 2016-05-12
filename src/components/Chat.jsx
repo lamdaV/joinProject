@@ -46,18 +46,10 @@ var Chat = React.createClass({
   handleSubmit: function(event) {
     console.log("handling message submission");
     event.preventDefault();
-    var message = this.state.typedMessage;
-    var messageHistory = this.state.messages;
-    console.log("entry: " + message);
-    var messageEntry = {
-      sender: this.state.inboxID,
-      message: message
-    };
 
-    console.log(JSON.stringify(messageEntry));
-    messageHistory.push(messageEntry);
-    // TODO: Hook up with database.
-    this.setState({messages: messageHistory, typedMessage: ""});
+    MessageActions.postMessagePush(this.state.inboxID, this.state.chatUserID, this.state.typedMessage);
+
+    this.setState({typedMessage: ""});
   },
 
   /*
@@ -86,7 +78,7 @@ var Chat = React.createClass({
   parseMessages: function(element, index) {
     this.shouldScrollBottom = true;
     return (
-      <Message key = {element.TimeStamp + index} timeStamp = {element.TimeStamp} inboxID = {this.state.inboxID} senderID = {element.sender} message = {element.Contents} />
+      <Message key = {element.TimeStamp + index} timeStamp = {element.TimeStamp} inboxID = {this.state.inboxID} senderID = {element.sender} senderEmail = {element.Email} message = {element.Contents} />
     );
   },
 

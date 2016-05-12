@@ -26536,18 +26536,10 @@ var Chat = React.createClass({
   handleSubmit: function (event) {
     console.log("handling message submission");
     event.preventDefault();
-    var message = this.state.typedMessage;
-    var messageHistory = this.state.messages;
-    console.log("entry: " + message);
-    var messageEntry = {
-      sender: this.state.inboxID,
-      message: message
-    };
 
-    console.log(JSON.stringify(messageEntry));
-    messageHistory.push(messageEntry);
-    // TODO: Hook up with database.
-    this.setState({ messages: messageHistory, typedMessage: "" });
+    MessageActions.postMessagePush(this.state.inboxID, this.state.chatUserID, this.state.typedMessage);
+
+    this.setState({ typedMessage: "" });
   },
 
   /*
@@ -26575,7 +26567,7 @@ var Chat = React.createClass({
   */
   parseMessages: function (element, index) {
     this.shouldScrollBottom = true;
-    return React.createElement(Message, { key: element.TimeStamp + index, timeStamp: element.TimeStamp, inboxID: this.state.inboxID, senderID: element.sender, message: element.Contents });
+    return React.createElement(Message, { key: element.TimeStamp + index, timeStamp: element.TimeStamp, inboxID: this.state.inboxID, senderID: element.sender, senderEmail: element.Email, message: element.Contents });
   },
 
   /*
@@ -27707,6 +27699,7 @@ var Message = React.createClass({
     timeStamp: React.PropTypes.string.isRequired,
     inboxID: React.PropTypes.string.isRequired,
     senderID: React.PropTypes.number.isRequired,
+    senderEmail: React.PropTypes.string.isRequired,
     message: React.PropTypes.string.isRequired
   },
 
@@ -27731,7 +27724,7 @@ var Message = React.createClass({
         this.props.timeStamp,
         " "
       ),
-      this.props.senderID,
+      this.props.senderEmail,
       ": ",
       React.createElement("br", null),
       this.props.message
@@ -29149,8 +29142,19 @@ var MessageStore = Reflux.createStore({
   /*
     TODO: Method stub
   */
-  postMessagePush: function () {
-    // Remember to add arguments.
+  postMessagePush: function (inboxID, chatUserID, message) {
+    console.log("postMessagePush called");
+    var messageJSON = {
+      inboxID: inboxID,
+      chatUserID: chatUserID,
+      message: message
+    };
+
+    http.post("/messagePush", messageJSON).then(function (dataJSON) {
+      console.log("messagePush received: " + JSON.stringify(dataJSON[1]));
+      this.inboxData.messages = dataJSON[1];
+      this.returnStatus();
+    }.bind(this));
   },
 
   /*

@@ -63,8 +63,19 @@ var MessageStore = Reflux.createStore({
   /*
     TODO: Method stub
   */
-  postMessagePush: function() {
-    // Remember to add arguments.
+  postMessagePush: function(inboxID, chatUserID, message) {
+    console.log("postMessagePush called");
+    var messageJSON = {
+      inboxID: inboxID,
+      chatUserID: chatUserID,
+      message: message
+    };
+
+    http.post("/messagePush", messageJSON).then(function(dataJSON) {
+      console.log("messagePush received: " + JSON.stringify(dataJSON[1]));
+      this.inboxData.messages = dataJSON[1];
+      this.returnStatus();
+    }.bind(this));
   },
 
   /*
