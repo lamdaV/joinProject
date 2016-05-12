@@ -132,7 +132,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Completed Chat components
 
 ### Kennan French
-  - [ ] Scroll box (class? widget?)
+  - [x] Scroll box (class? widget?) (David Lam)
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
   - [ ] Preference Page
   - [ ] Account Settings Page
@@ -143,4 +143,4 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 
 ### Group
   - [x] Study for test
-  - [ ] Heuristics discussion
+  - [x] Heuristics discussion
