@@ -1,251 +1,36 @@
 var React = require("react");
+var Reflux = require("reflux");
+var MessageStore = require("../reflux/messageStore.jsx");
+var MessageActions = require("../reflux/messageActions.jsx");
 var FriendItem = require("./FriendItem.jsx");
 
+
 // TODO: Get rid of when database connection established.
-var friends = [
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  },
-  {
-    email: "d@d.com",
-    userID: 10002
-  },
-  {
-    email: "a@a.com",
-    userID: 4002
-  },
-  {
-    email: "weed@420.com",
-    userID: 420
-  }
-];
 
 var FriendList = React.createClass({
+  /*
+    Listen to the MessageStore.
+  */
+  mixins: [Reflux.listenTo(MessageStore, "setFriendList")],
+
   /*
     Define propTypes.
   */
   propTypes: {
-    propogator: React.PropTypes.func
+    inboxID: React.PropTypes.string.isRequired,
+    propogator: React.PropTypes.func.isRequired
   },
 
   /*
     Set initial state values.
   */
   getInitialState: function() {
-    return ({friends: null});
+    return ({inboxID: this.props.inboxID, friends: null});
+  },
+
+  setFriendList: function(event, data) {
+    console.log("setFriendList data: " + JSON.stringify(data.friends));
+    this.setState({friends: data.friends});
   },
 
   /*
@@ -262,8 +47,9 @@ var FriendList = React.createClass({
   componentWillMount: function() {
     console.log("friend list mounting...");
     // TODO: extrapolate this and with store.
-    this.props.propogator(friends[0].userID);
-    this.setState({friends: friends});
+    // this.props.propogator(friends[0].userID);
+    // this.setState({friends: friends});
+    MessageActions.postFriendList(1001);
   },
 
   /*
@@ -282,7 +68,7 @@ var FriendList = React.createClass({
 
     var createFriendItem = function(item, index) {
       return (
-        <FriendItem linkStyle = {linkStyle} key = {item.email + index} UserID = {item.userID} email = {item.email} propogator = {this.propogator}/>
+        <FriendItem linkStyle = {linkStyle} key = {item.Email + index} UserID = {item.friendID} email = {item.Email} propogator = {this.propogator}/>
       );
     }.bind(this);
 
@@ -294,7 +80,7 @@ var FriendList = React.createClass({
 
         <div className = "panel-body" style = {panelBodyStyle}>
           <ul className="nav nav-pills nav-stacked">
-            {this.state.friends.map(createFriendItem)}
+            {this.state.friends === null ? null : this.state.friends.map(createFriendItem)}
           </ul>
         </div>
       </div>

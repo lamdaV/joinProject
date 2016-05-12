@@ -1,5 +1,7 @@
 var React = require("react");
+var ReactRouter = require("react-router");
 var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
+var Link = ReactRouter.Link;
 
 var FriendItem = React.createClass({
   mixins: [NavItemMixIn],
@@ -8,9 +10,10 @@ var FriendItem = React.createClass({
     Definine propTypes.
   */
   propTypes: {
-    email: React.PropTypes.string,
-    UserID: React.PropTypes.number,
-    propogator: React.PropTypes.func
+    linkStyle: React.PropTypes.object,
+    email: React.PropTypes.string.isRequired,
+    UserID: React.PropTypes.number.isRequired,
+    propogator: React.PropTypes.func.isRequired
   },
 
   handleClick: function(event) {
@@ -21,15 +24,14 @@ var FriendItem = React.createClass({
 
   render: function() {
     return (
-      <li className = {this.state.hover ? "active" : ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut} onClick = {this.handleClick}>
+      <li className = {this.state.hover ? "active" : ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
       {/* TODO: switch <a> with <Link> */}
-        {/* <Link style = {this.props.linkStyle} to = {this.props.href}>
-          {this.props.title}
-          {isInbox ? <span className = "badge">24</span> : null}
-        </Link> */}
-        <a href = "">
+        <Link onClick = {this.handleClick} style = {this.props.linkStyle} to = "">
           {this.props.email}
-        </a>
+        </Link>
+        {/*<a href = "">
+          {this.props.email}
+        </a>*/}
       </li>
     );
   }

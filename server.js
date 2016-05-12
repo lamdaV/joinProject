@@ -32,13 +32,47 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
+  Get friendList of a given user
+*/
+app.post("/friendList", function(request, response) {
+  console.log("POST friendList request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var userIDJSON = request.body;
+    var userID = userIDJSON.UserID;
+
+    console.log("getting friendlist of: " + userID);
+
+    var query = format("CALL get_friends_list({0})", userID);
+    console.log("QUERY: " + query);
+
+    pool.query(query, function(error, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      console.log("ROW 0: " + JSON.stringify(rows[0]));
+      response.send(rows);
+    });
+    connection.release();
+  });
+});
+
+/*
   Get Game given a gameID.
 */
 app.post("/getGame", function(request, response) {
   console.log("POST getGame request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: Failed to Connect");
+      console.log("ERROR: Failed to Connect");
       return;
     }
     console.log("connection established");
@@ -55,7 +89,7 @@ app.post("/getGame", function(request, response) {
 
     pool.query(query, function(error, rows) {
       if (error) {
-        console.log("Error: " + error.message);
+        console.log("ERROR: " + error.message);
         return;
       }
       console.log("RESPONSE: " + JSON.stringify(rows));
@@ -74,7 +108,7 @@ app.post("/searchGame", function(request, response) {
   console.log("POST search game request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: Failed to Connect");
+      console.log("ERROR: Failed to Connect");
       return;
     }
     console.log("connection established");
@@ -93,7 +127,7 @@ app.post("/searchGame", function(request, response) {
     console.log("QUERY: " + query);
     pool.query(query, function(error, rows) {
       if (error) {
-        console.log("Error: " + error.message);
+        console.log("ERROR: " + error.message);
         return;
       }
 
@@ -111,7 +145,7 @@ app.post("/authentication", function(request, response) {
   console.log("POST !authentication! request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: Failed to Connect");
+      console.log("ERROR: Failed to Connect");
       return;
     }
     console.log("connection established");
@@ -156,7 +190,7 @@ app.post("/authentication", function(request, response) {
 
     pool.query(query, function(error, rows) {
       if (error) {
-        console.log("Error: " + error.message);
+        console.log("ERROR: " + error.message);
         response.send(false);
         return;
       }
@@ -186,7 +220,7 @@ app.post("/authentication", function(request, response) {
 //   console.log("POST authenticate request...");
 //   pool.getConnection(function(error, connection) {
 //     if (error) {
-//       console.log("Error: Failed to Connect");
+//       console.log("ERROR: Failed to Connect");
 //       return;
 //     }
 //     console.log("connection established");
@@ -238,7 +272,7 @@ app.post("/authentication", function(request, response) {
 //
 //     pool.query(query, function(error, rows) {
 //       if (error) {
-//         console.log("Error: " + error.message);
+//         console.log("ERROR: " + error.message);
 //         response.send(false);
 //         return;
 //       }
@@ -263,7 +297,7 @@ app.post("/signin", function(request, response) {
   console.log("POST signin request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: Failed to Connect");
+      console.log("ERROR: Failed to Connect");
       return;
     }
 
@@ -286,7 +320,7 @@ app.post("/signin", function(request, response) {
     // Check if user is in User table.
     pool.query(query, function(error, rows) {
       if (error) {
-        console.log("Error: " + error.message);
+        console.log("ERROR: " + error.message);
         return;
       }
 
@@ -330,7 +364,7 @@ app.post("/create", function(request, response) {
   console.log("POST create request...");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: Failed to Connect");
+      console.log("ERROR: Failed to Connect");
       return;
     }
     // Get data sent.
@@ -389,7 +423,7 @@ app.get("/test", function(request, response) {
   console.log("GET test request");
   pool.getConnection(function(error, connection) {
     if (error) {
-      console.log("Error: Failed to Connect");
+      console.log("ERROR: Failed to Connect");
       return;
     }
     console.log("connection established");
@@ -397,7 +431,7 @@ app.get("/test", function(request, response) {
       console.log("query completed");
       connection.release();
       if (error) {
-        console.log("Error: " + error.message);
+        console.log("ERROR: " + error.message);
         return;
       }
       response.send(rows);

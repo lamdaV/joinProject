@@ -2,7 +2,6 @@ var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var Reflux = require("reflux");
-var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
 
 var SignInPanel = React.createClass({

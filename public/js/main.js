@@ -26359,7 +26359,7 @@ var Routes = React.createElement(
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":249,"./components/GamePage.jsx":255,"./components/HomePage.jsx":256,"./components/InboxPage.jsx":257,"./components/MatchPage.jsx":258,"./components/Page1.jsx":262,"./components/PageNotFound.jsx":263,"./components/PreferencePage.jsx":265,"./components/SearchResultsPage.jsx":267,"./components/SettingsPage.jsx":268,"./components/UserProfilePage.jsx":271,"./reflux/userActions.jsx":282,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":249,"./components/GamePage.jsx":255,"./components/HomePage.jsx":256,"./components/InboxPage.jsx":257,"./components/MatchPage.jsx":258,"./components/Page1.jsx":262,"./components/PageNotFound.jsx":263,"./components/PreferencePage.jsx":265,"./components/SearchResultsPage.jsx":267,"./components/SettingsPage.jsx":268,"./components/UserProfilePage.jsx":271,"./reflux/userActions.jsx":284,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
@@ -26485,7 +26485,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":273,"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":282,"react":224,"reflux":240}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":273,"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Message = require("./Message.jsx");
@@ -26699,7 +26699,7 @@ var Chat = React.createClass({
       React.createElement(
         "div",
         { className: "panel panel-body", style: panelBodyStyle, ref: "messageBody" },
-        this.state.messages !== null ? this.state.messages.map(this.parseMessages) : null
+        this.state.messages === null ? null : this.state.messages.map(this.parseMessages)
       ),
       React.createElement(
         "div",
@@ -26935,7 +26935,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":282,"../reflux/userStore.jsx":283,"./EmailField.jsx":251,"./PasswordField.jsx":264,"./TimezoneRadioGroup.jsx":270,"react":224,"reflux":240}],250:[function(require,module,exports){
+},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"../reflux/userStore.jsx":285,"./EmailField.jsx":251,"./PasswordField.jsx":264,"./TimezoneRadioGroup.jsx":270,"react":224,"reflux":240}],250:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -27098,7 +27098,9 @@ module.exports = EmailField;
 
 },{"email-validator":4,"react":224}],252:[function(require,module,exports){
 var React = require("react");
+var ReactRouter = require("react-router");
 var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
+var Link = ReactRouter.Link;
 
 var FriendItem = React.createClass({
   displayName: "FriendItem",
@@ -27109,8 +27111,10 @@ var FriendItem = React.createClass({
     Definine propTypes.
   */
   propTypes: {
-    UserID: React.PropTypes.number,
-    propogator: React.PropTypes.func
+    linkStyle: React.PropTypes.object,
+    email: React.PropTypes.string.isRequired,
+    UserID: React.PropTypes.number.isRequired,
+    propogator: React.PropTypes.func.isRequired
   },
 
   handleClick: function (event) {
@@ -27122,11 +27126,11 @@ var FriendItem = React.createClass({
   render: function () {
     return React.createElement(
       "li",
-      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseOut: this.mouseOut, onClick: this.handleClick },
+      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseOut: this.mouseOut },
       React.createElement(
-        "a",
-        { href: "" },
-        this.props.title
+        Link,
+        { onClick: this.handleClick, style: this.props.linkStyle, to: "" },
+        this.props.email
       )
     );
   }
@@ -27134,199 +27138,41 @@ var FriendItem = React.createClass({
 
 module.exports = FriendItem;
 
-},{"../nav/NavItemMixIn.jsx":276,"react":224}],253:[function(require,module,exports){
+},{"../nav/NavItemMixIn.jsx":276,"react":224,"react-router":88}],253:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
+var MessageStore = require("../reflux/messageStore.jsx");
+var MessageActions = require("../reflux/messageActions.jsx");
 var FriendItem = require("./FriendItem.jsx");
 
 // TODO: Get rid of when database connection established.
-var friends = [{
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}, {
-  email: "d@d.com",
-  userID: 10002
-}, {
-  email: "a@a.com",
-  userID: 4002
-}, {
-  email: "weed@420.com",
-  userID: 420
-}];
 
 var FriendList = React.createClass({
   displayName: "FriendList",
 
   /*
+    Listen to the MessageStore.
+  */
+  mixins: [Reflux.listenTo(MessageStore, "setFriendList")],
+
+  /*
     Define propTypes.
   */
   propTypes: {
-    clickHandler: React.PropTypes.func
+    inboxID: React.PropTypes.string.isRequired,
+    propogator: React.PropTypes.func.isRequired
   },
 
   /*
     Set initial state values.
   */
   getInitialState: function () {
-    return { friends: null };
+    return { inboxID: this.props.inboxID, friends: null };
+  },
+
+  setFriendList: function (event, data) {
+    console.log("setFriendList data: " + JSON.stringify(data.friends));
+    this.setState({ friends: data.friends });
   },
 
   /*
@@ -27343,8 +27189,9 @@ var FriendList = React.createClass({
   componentWillMount: function () {
     console.log("friend list mounting...");
     // TODO: extrapolate this and with store.
-    this.props.propogator(friends[0].userID);
-    this.setState({ friends: friends });
+    // this.props.propogator(friends[0].userID);
+    // this.setState({friends: friends});
+    MessageActions.postFriendList(1001);
   },
 
   /*
@@ -27357,14 +27204,12 @@ var FriendList = React.createClass({
       overflow: "auto"
     };
 
-    var linkStyle = {};
-
-    if (this.props.linkColor) {
-      linkStyle.color = "#563d7c" + "!important";
-    }
+    var linkStyle = {
+      color: "#563d7c"
+    };
 
     var createFriendItem = function (item, index) {
-      return React.createElement(FriendItem, { linkStyle: linkStyle, key: item.email + index, UserID: item.userID, title: item.email, propogator: this.propogator });
+      return React.createElement(FriendItem, { linkStyle: linkStyle, key: item.Email + index, UserID: item.friendID, email: item.Email, propogator: this.propogator });
     }.bind(this);
 
     return React.createElement(
@@ -27381,7 +27226,7 @@ var FriendList = React.createClass({
         React.createElement(
           "ul",
           { className: "nav nav-pills nav-stacked" },
-          this.state.friends.map(createFriendItem)
+          this.state.friends === null ? null : this.state.friends.map(createFriendItem)
         )
       )
     );
@@ -27390,7 +27235,7 @@ var FriendList = React.createClass({
 
 module.exports = FriendList;
 
-},{"./FriendItem.jsx":252,"react":224}],254:[function(require,module,exports){
+},{"../reflux/messageActions.jsx":282,"../reflux/messageStore.jsx":283,"./FriendItem.jsx":252,"react":224,"reflux":240}],254:[function(require,module,exports){
 var React = require("react");
 
 var GameContentPanel = React.createClass({
@@ -27753,14 +27598,14 @@ var InboxPage = React.createClass({
         "Inbox of User: ",
         this.state.inboxID
       ),
-      React.createElement(MessageManager, null)
+      React.createElement(MessageManager, { inboxID: this.props.params.inboxID })
     );
   }
 });
 
 module.exports = InboxPage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":282,"./MessageManager.jsx":261,"react":224,"reflux":240}],258:[function(require,module,exports){
+},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"./MessageManager.jsx":261,"react":224,"reflux":240}],258:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var MatchResults = require("./MatchResults.jsx");
@@ -27845,7 +27690,7 @@ var MatchPage = React.createClass({
 
 module.exports = MatchPage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":282,"./MatchResults.jsx":259,"react":224,"reflux":240}],259:[function(require,module,exports){
+},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"./MatchResults.jsx":259,"react":224,"reflux":240}],259:[function(require,module,exports){
 var React = require("react");
 
 var MatchResults = React.createClass({
@@ -27943,15 +27788,23 @@ var Message = React.createClass({
   displayName: "Message",
 
   /*
+    Define propTypes.
+  */
+  propTypes: {
+    senderID: React.PropTypes.number,
+    message: React.PropTypes.string
+  },
+
+  /*
     Render the component.
   */
   render: function () {
-    //TODO:  Figure out this logic to get message styling.
+    // TODO:  Figure out this logic to get message styling.
     console.log("in Message");
-    var divClass = "alert alert-info";
-    if (this.props.chatUserID === this.props.senderID) {
-      divClass = "alert alert-success";
-    }
+    // var divClass = "alert alert-info";
+    // if (this.props.chatUserID === this.props.senderID) {
+    //   divClass = "alert alert-success";
+    // }
 
     return React.createElement(
       "div",
@@ -27973,6 +27826,13 @@ var Chat = require("./Chat.jsx");
 
 var MessageManager = React.createClass({
   displayName: "MessageManager",
+
+  /*
+    Define propTypes.
+  */
+  propTypes: {
+    inboxID: React.PropTypes.string.isRequired
+  },
 
   /*
     Sets the initial state values.
@@ -27999,7 +27859,7 @@ var MessageManager = React.createClass({
       React.createElement(
         "div",
         { className: "col-sm-4" },
-        React.createElement(FriendList, { propogator: this.chatSwitch })
+        React.createElement(FriendList, { propogator: this.chatSwitch, inboxID: this.props.inboxID })
       ),
       React.createElement(
         "div",
@@ -28230,7 +28090,7 @@ var PreferencePage = React.createClass({
 
 module.exports = PreferencePage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":282,"react":224,"reflux":240}],266:[function(require,module,exports){
+},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"react":224,"reflux":240}],266:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
@@ -28451,12 +28311,11 @@ var SettingsPage = React.createClass({
 
 module.exports = SettingsPage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":282,"react":224,"reflux":240}],269:[function(require,module,exports){
+},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"react":224,"reflux":240}],269:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var Reflux = require("reflux");
-var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
 
 var SignInPanel = React.createClass({
@@ -28601,7 +28460,7 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"../reflux/userActions.jsx":282,"../reflux/userStore.jsx":283,"./EmailField.jsx":251,"./PasswordField.jsx":264,"react":224,"reflux":240}],270:[function(require,module,exports){
+},{"../reflux/userStore.jsx":285,"./EmailField.jsx":251,"./PasswordField.jsx":264,"react":224,"reflux":240}],270:[function(require,module,exports){
 var React = require("react");
 var RadioGroup = require("react-radio-group");
 
@@ -28793,7 +28652,7 @@ var UserProfilePage = React.createClass({
 
 module.exports = UserProfilePage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":282,"react":224,"reflux":240}],272:[function(require,module,exports){
+},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"react":224,"reflux":240}],272:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
@@ -29036,7 +28895,6 @@ module.exports = NavDropdownItem;
 },{"react":224,"react-router":88}],275:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
-var PropTypes = React.PropTypes;
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("./NavItemMixIn.jsx");
 
@@ -29053,9 +28911,9 @@ var NavItem = React.createClass({
   */
   propTypes: {
     linkStyle: React.PropTypes.object,
-    href: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    style: PropTypes.object
+    href: React.PropTypes.string.isRequired,
+    title: React.PropTypes.string.isRequired,
+    style: React.PropTypes.object
   },
 
   /*
@@ -29164,24 +29022,24 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"../reflux/userActions.jsx":282,"./NavItemMixIn.jsx":276,"react":224,"react-router":88}],278:[function(require,module,exports){
+},{"../reflux/userActions.jsx":284,"./NavItemMixIn.jsx":276,"react":224,"react-router":88}],278:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var authActions = Reflux.createActions(["postAuthenticate"]);
+var AuthActions = Reflux.createActions(["postAuthenticate"]);
 
-module.exports = authActions;
+module.exports = AuthActions;
 
 },{"reflux":240}],279:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
-var authActions = require("./authActions.jsx");
+var AuthActions = require("./authActions.jsx");
 
 /* global localStorage */
-var authStore = Reflux.createStore({
+var AuthStore = Reflux.createStore({
   /*
     Listen to AuthActions.
   */
-  listenables: [authActions],
+  listenables: [AuthActions],
 
   /*
     Authenticate the User.
@@ -29215,14 +29073,14 @@ var authStore = Reflux.createStore({
   }
 });
 
-module.exports = authStore;
+module.exports = AuthStore;
 
-},{"../services/httpService.js":284,"./authActions.jsx":278,"reflux":240}],280:[function(require,module,exports){
+},{"../services/httpService.js":286,"./authActions.jsx":278,"reflux":240}],280:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var UserActions = Reflux.createActions(["postSearchGame", "postGetGame"]);
+var GameActions = Reflux.createActions(["postSearchGame", "postGetGame"]);
 
-module.exports = UserActions;
+module.exports = GameActions;
 
 },{"reflux":240}],281:[function(require,module,exports){
 var http = require("../services/httpService.js");
@@ -29294,14 +29152,85 @@ var GameStore = Reflux.createStore({
 
 module.exports = GameStore;
 
-},{"../services/httpService.js":284,"./gameActions.jsx":280,"reflux":240}],282:[function(require,module,exports){
+},{"../services/httpService.js":286,"./gameActions.jsx":280,"reflux":240}],282:[function(require,module,exports){
+var Reflux = require("reflux");
+
+var MessageActions = Reflux.createActions(["postFriendList", "getUnreadCount", "postMessageHistory", "postMessagePush"]);
+
+module.exports = MessageActions;
+
+},{"reflux":240}],283:[function(require,module,exports){
+var http = require("../services/httpService.js");
+var Reflux = require("reflux");
+var MessageActions = require("./messageActions.jsx");
+
+/* global localStorage */
+var MessageStore = Reflux.createStore({
+  /*
+    Listen to GameActions.
+  */
+  listenables: [MessageActions],
+
+  /*
+    Initialize inboxData.
+  */
+  init: function () {
+    console.log("MessageStore init...");
+    this.inboxData = {
+      friends: null
+    };
+  },
+
+  /*
+    Get the friends list of the logged in user.
+  */
+  postFriendList: function (userID) {
+    console.log("postFriendList called");
+    var userID = {
+      UserID: userID
+    };
+
+    http.post("/friendList", userID).then(function (dataJSON) {
+      console.log("friendList received: " + JSON.stringify(dataJSON));
+      this.inboxData.friends = dataJSON[0];
+
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  /*
+    TODO: Method stub
+  */
+  getUnreadCount: function (arg) {},
+
+  /*
+    TODO: Method stub
+  */
+  postMessageHistory: function (arg) {},
+
+  /*
+    TODO: Method stub
+  */
+  postMessagePush: function (arg) {},
+
+  /*
+    Push changes to all listers.
+  */
+  returnStatus: function () {
+    this.trigger("change", this.inboxData);
+  }
+});
+
+module.exports = MessageStore;
+
+},{"../services/httpService.js":286,"./messageActions.jsx":282,"reflux":240}],284:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "logout"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],283:[function(require,module,exports){
+},{"reflux":240}],285:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
@@ -29388,7 +29317,7 @@ var UserStore = Reflux.createStore({
 
 module.exports = UserStore;
 
-},{"../services/httpService.js":284,"./userActions.jsx":282,"reflux":240}],284:[function(require,module,exports){
+},{"../services/httpService.js":286,"./userActions.jsx":284,"reflux":240}],286:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
 var baseUrl = "http://localhost:3333";
 

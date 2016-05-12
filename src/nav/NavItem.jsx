@@ -1,6 +1,5 @@
 var React = require("react");
 var ReactRouter = require("react-router");
-var PropTypes = React.PropTypes;
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("./NavItemMixIn.jsx");
 
@@ -15,9 +14,9 @@ var NavItem = React.createClass({
   */
   propTypes: {
     linkStyle: React.PropTypes.object,
-    href: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    style: PropTypes.object
+    href: React.PropTypes.string.isRequired,
+    title: React.PropTypes.string.isRequired,
+    style: React.PropTypes.object
   },
 
   /*

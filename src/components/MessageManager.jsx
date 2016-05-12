@@ -4,6 +4,13 @@ var Chat = require("./Chat.jsx");
 
 var MessageManager = React.createClass({
   /*
+    Define propTypes.
+  */
+  propTypes: {
+    inboxID: React.PropTypes.string.isRequired
+  },
+
+  /*
     Sets the initial state values.
   */
   getInitialState: function() {
@@ -25,7 +32,7 @@ var MessageManager = React.createClass({
     return (
       <div>
         <div className = "col-sm-4">
-          <FriendList propogator = {this.chatSwitch} />
+          <FriendList propogator = {this.chatSwitch} inboxID = {this.props.inboxID} />
         </div>
 
         <div className = "col-sm-8">

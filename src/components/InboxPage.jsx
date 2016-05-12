@@ -66,7 +66,7 @@ var InboxPage = React.createClass({
     return (
       <div>
         <h1>Inbox of User: {this.state.inboxID}</h1>
-        <MessageManager />
+        <MessageManager inboxID = {this.props.params.inboxID}/>
       </div>
     );
   }
