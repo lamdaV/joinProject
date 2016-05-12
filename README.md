@@ -30,15 +30,15 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 17. You should now see the react webpage.
 
 # List of Pages:
-|         Page          |    Assigned                   |    Status   |
-|:---------------------:|:-----------------------------:|:-----------:|
-| User Profile          | Kennan French                 | In Progress |
-| User Account Setting  | Kennan French                 | In Progress |
-| Game Info             | David Lam                     | Completed   |
-| Search Result         | David Lam                     | Completed   |
-| Preference Selection  | Kennan French                 | In Progress |
-| Matching              | David Lam                     | In Progress |
-| Conversation          | Kennan French <br/> David Lam | In Progress |
+|         Page          |    Assigned                       |    Status     |
+|:---------------------:|:---------------------------------:|:-------------:|
+| User Profile          | Kennan French                     | In Progress   |
+| User Account Setting  | Kennan French                     | In Progress   |
+| Game Info             | David Lam                         | Completed     |
+| Search Result         | David Lam                         | Completed     |
+| Preference Selection  | Kennan French                     | In Progress   |
+| Matching              | David Lam                         | Completed     |
+| Conversation          | ~~Kennan French~~ <br/> David Lam | Completed     |
 
 # Milestones:
 ## Milestone 01:
@@ -130,6 +130,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Commented Existing Code
   - [x] Get basic Chat components
   - [x] Completed Chat components
+  - [x] Match page accept/reject now functional
 
 ### Kennan French
   - [x] Scroll box (class? widget?) (David Lam)
