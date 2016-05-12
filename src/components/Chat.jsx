@@ -1,161 +1,35 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
+var Reflux = require("reflux");
+var MessageStore = require("../reflux/messageStore.jsx");
+var MessageActions = require("../reflux/messageActions.jsx");
 var Message = require("./Message.jsx");
 
-// TODO: remove once connected with database.
-var messageHistory = [
-  {
-    sender: 10002,
-    message: "sup"
-  },
-  {
-    sender: 420,
-    message: "nm you"
-  },
-  {
-    sender: 10002,
-    message: "you got that dank weed"
-  },
-  {
-    sender: 420,
-    message: "duh. want a wiff?"
-  },
-  {
-    sender: 10002,
-    message: "no noob get on the crack powder"
-  },
-  {
-    sender: 420,
-    message: "nah man smoke weed erry day"
-  },
-  {
-    sender: 10002,
-    message: "sup"
-  },
-  {
-    sender: 420,
-    message: "nm you"
-  },
-  {
-    sender: 10002,
-    message: "you got that dank weed"
-  },
-  {
-    sender: 420,
-    message: "duh. want a wiff?"
-  },
-  {
-    sender: 10002,
-    message: "no noob get on the crack powder"
-  },
-  {
-    sender: 420,
-    message: "nah man smoke weed erry day"
-  },
-  {
-    sender: 10002,
-    message: "sup"
-  },
-  {
-    sender: 420,
-    message: "nm you"
-  },
-  {
-    sender: 10002,
-    message: "you got that dank weed"
-  },
-  {
-    sender: 420,
-    message: "duh. want a wiff?"
-  },
-  {
-    sender: 10002,
-    message: "no noob get on the crack powder"
-  },
-  {
-    sender: 420,
-    message: "nah man smoke weed erry day"
-  },
-  {
-    sender: 10002,
-    message: "sup"
-  },
-  {
-    sender: 420,
-    message: "nm you"
-  },
-  {
-    sender: 10002,
-    message: "you got that dank weed"
-  },
-  {
-    sender: 420,
-    message: "duh. want a wiff?"
-  },
-  {
-    sender: 10002,
-    message: "no noob get on the crack powder"
-  },
-  {
-    sender: 420,
-    message: "nah man smoke weed erry day"
-  },
-  {
-    sender: 10002,
-    message: "sup"
-  },
-  {
-    sender: 420,
-    message: "nm you"
-  },
-  {
-    sender: 10002,
-    message: "you got that dank weed"
-  },
-  {
-    sender: 420,
-    message: "duh. want a wiff?"
-  },
-  {
-    sender: 10002,
-    message: "no noob get on the crack powder"
-  },
-  {
-    sender: 420,
-    message: "nah man smoke weed erry day"
-  },
-  {
-    sender: 10002,
-    message: "sup"
-  },
-  {
-    sender: 420,
-    message: "nm you"
-  },
-  {
-    sender: 10002,
-    message: "you got that dank weed"
-  },
-  {
-    sender: 420,
-    message: "duh. want a wiff?"
-  },
-  {
-    sender: 10002,
-    message: "no noob get on the crack powder"
-  },
-  {
-    sender: 420,
-    message: "nah man smoke weed erry day"
-  }
-];
-
 var Chat = React.createClass({
+  /*
+    Listen to the MessageStore.
+  */
+  mixins: [Reflux.listenTo(MessageStore, "setMessageHistory")],
+
+  /*
+    Define propTypes.
+  */
+  propTypes: {
+    inboxID: React.PropTypes.string,
+    chatUserID: React.PropTypes.number,
+    chatUserEmail: React.PropTypes.string
+  },
+
   /*
     Set initial state values.
   */
   getInitialState: function() {
-    return ({chatUserID: -1, messages: null, typedMessage: ""});
+    return ({inboxID: this.props.inboxID, chatUserID: this.props.chatUserID, messages: null, typedMessage: ""});
+  },
+
+  setMessageHistory: function(event, data) {
+    console.log("setMessageHistory data: " + JSON.stringify(data.messages));
+    this.setState({messages: data.messages});
   },
 
   /*
@@ -175,9 +49,8 @@ var Chat = React.createClass({
     var message = this.state.typedMessage;
     var messageHistory = this.state.messages;
     console.log("entry: " + message);
-    // TODO: Get proper userID likely from props.
     var messageEntry = {
-      sender: 10002,
+      sender: this.state.inboxID,
       message: message
     };
 
@@ -191,7 +64,8 @@ var Chat = React.createClass({
     Update the message history when new props are received.
   */
   componentWillReceiveProps: function(nextProps) {
-    this.setState({chatUserID: nextProps.chatUserID, messages: messageHistory});
+    MessageActions.postMessageHistory(this.state.inboxID, nextProps.chatUserID);
+    this.setState({chatUserID: nextProps.chatUserID, chatUserEmail: nextProps.chatUserEmail});
   },
 
   /*
@@ -212,7 +86,7 @@ var Chat = React.createClass({
   parseMessages: function(element, index) {
     this.shouldScrollBottom = true;
     return (
-      <Message key = {element.message + index} chatUserID = {this.state.chatUserID} senderID = {element.sender} message = {element.message} />
+      <Message key = {element.TimeStamp + index} timeStamp = {element.TimeStamp} inboxID = {this.state.inboxID} senderID = {element.sender} message = {element.Contents} />
     );
   },
 
@@ -240,7 +114,7 @@ var Chat = React.createClass({
     return (
       <div className = "panel panel-primary" style = {panelStyle}>
         <div className = "panel panel-heading" >
-          Talking to...(EMAIL) {this.state.chatUserID}
+          Joining with {this.state.chatUserEmail}
         </div>
 
         {/* Message Body */}

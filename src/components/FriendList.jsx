@@ -4,9 +4,6 @@ var MessageStore = require("../reflux/messageStore.jsx");
 var MessageActions = require("../reflux/messageActions.jsx");
 var FriendItem = require("./FriendItem.jsx");
 
-
-// TODO: Get rid of when database connection established.
-
 var FriendList = React.createClass({
   /*
     Listen to the MessageStore.
@@ -29,16 +26,20 @@ var FriendList = React.createClass({
   },
 
   setFriendList: function(event, data) {
-    console.log("setFriendList data: " + JSON.stringify(data.friends));
-    this.setState({friends: data.friends});
+    // Only update when necessary.
+    if (this.state.friends !== data.friends) {
+      console.log("setFriendList data: " + JSON.stringify(data.friends));
+      this.props.propogator(data.friends[0].friendID, data.friends[0].Email);
+      this.setState({friends: data.friends});
+    }
   },
 
   /*
     Inner propogator function. Passes data to parent component.
   */
-  propogator: function(userID) {
+  propogator: function(userID, email) {
     console.log("FriendList propogating userID: " + userID);
-    this.props.propogator(userID);
+    this.props.propogator(userID, email);
   },
 
   /*
@@ -46,10 +47,20 @@ var FriendList = React.createClass({
   */
   componentWillMount: function() {
     console.log("friend list mounting...");
-    // TODO: extrapolate this and with store.
-    // this.props.propogator(friends[0].userID);
-    // this.setState({friends: friends});
-    MessageActions.postFriendList(1001);
+    MessageActions.postFriendList(this.state.inboxID);
+  },
+
+  /*
+    Create a FriendItem. Used with map function.
+  */
+  createFriendItem: function(item, index) {
+    var linkStyle = {
+      color: "#563d7c"
+    };
+
+    return (
+      <FriendItem linkStyle = {linkStyle} key = {item.Email + index} UserID = {item.friendID} email = {item.Email} propogator = {this.propogator}/>
+    );
   },
 
   /*
@@ -62,16 +73,6 @@ var FriendList = React.createClass({
       overflow: "auto"
     };
 
-    var linkStyle = {
-      color: "#563d7c"
-    };
-
-    var createFriendItem = function(item, index) {
-      return (
-        <FriendItem linkStyle = {linkStyle} key = {item.Email + index} UserID = {item.friendID} email = {item.Email} propogator = {this.propogator}/>
-      );
-    }.bind(this);
-
     return (
       <div className = "panel panel-primary">
         <div className = "panel-heading text-center" >
@@ -80,7 +81,7 @@ var FriendList = React.createClass({
 
         <div className = "panel-body" style = {panelBodyStyle}>
           <ul className="nav nav-pills nav-stacked">
-            {this.state.friends === null ? null : this.state.friends.map(createFriendItem)}
+            {this.state.friends === null ? null : this.state.friends.map(this.createFriendItem)}
           </ul>
         </div>
       </div>

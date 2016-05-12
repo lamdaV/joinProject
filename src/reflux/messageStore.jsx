@@ -2,7 +2,6 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var MessageActions = require("./messageActions.jsx");
 
-/* global localStorage */
 var MessageStore = Reflux.createStore({
   /*
     Listen to GameActions.
@@ -15,7 +14,8 @@ var MessageStore = Reflux.createStore({
   init: function() {
     console.log("MessageStore init...");
     this.inboxData = {
-      friends: null
+      friends: null,
+      messages: null
     };
   },
 
@@ -24,11 +24,11 @@ var MessageStore = Reflux.createStore({
   */
   postFriendList: function(userID) {
     console.log("postFriendList called");
-    var userID = {
+    var userIDJSON = {
       UserID: userID
     };
 
-    http.post("/friendList", userID).then(function(dataJSON) {
+    http.post("/friendList", userIDJSON).then(function(dataJSON) {
       console.log("friendList received: " + JSON.stringify(dataJSON));
       this.inboxData.friends = dataJSON[0];
 
@@ -39,22 +39,32 @@ var MessageStore = Reflux.createStore({
   /*
     TODO: Method stub
   */
-  getUnreadCount: function(arg) {
-
+  getUnreadCount: function() {
+    // Remember to add arguments.
   },
 
   /*
     TODO: Method stub
   */
-  postMessageHistory: function(arg) {
+  postMessageHistory: function(inboxID, chatUserID) {
+    console.log("postMessageHistory called");
+    var userIDs = {
+      inboxID: inboxID,
+      chatUserID: chatUserID
+    };
 
+    http.post("/messageHistory", userIDs).then(function(dataJSON) {
+      console.log("messageHistory received: " + JSON.stringify(dataJSON));
+      this.inboxData.messages = dataJSON[0];
+      this.returnStatus();
+    }.bind(this));
   },
 
   /*
     TODO: Method stub
   */
-  postMessagePush: function(arg) {
-
+  postMessagePush: function() {
+    // Remember to add arguments.
   },
 
   /*

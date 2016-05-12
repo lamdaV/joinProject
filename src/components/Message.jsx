@@ -5,23 +5,26 @@ var Message = React.createClass({
     Define propTypes.
   */
   propTypes: {
-    senderID: React.PropTypes.number,
-    message: React.PropTypes.string
+    timeStamp: React.PropTypes.string.isRequired,
+    inboxID: React.PropTypes.string.isRequired,
+    senderID: React.PropTypes.number.isRequired,
+    message: React.PropTypes.string.isRequired
   },
 
   /*
     Render the component.
   */
   render: function() {
-    // TODO:  Figure out this logic to get message styling.
-    console.log("in Message");
-    // var divClass = "alert alert-info";
-    // if (this.props.chatUserID === this.props.senderID) {
-    //   divClass = "alert alert-success";
-    // }
+    /* eslint-disable */
+    var divClass = "alert alert-info";
+    if (this.props.inboxID == this.props.senderID) {
+      divClass = "alert alert-success";
+    }
+    /* eslint-enable */
 
     return (
-      <div>
+      <div className = {divClass} >
+        <b> {this.props.timeStamp} </b>
         {this.props.senderID}: <br />
         {this.props.message}
       </div>

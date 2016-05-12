@@ -19,19 +19,15 @@ var FriendItem = React.createClass({
   handleClick: function(event) {
     event.preventDefault();
     console.log("friendItem sending UserID: " + this.props.UserID);
-    this.props.propogator(this.props.UserID);
+    this.props.propogator(this.props.UserID, this.props.email);
   },
 
   render: function() {
     return (
       <li className = {this.state.hover ? "active" : ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
-      {/* TODO: switch <a> with <Link> */}
         <Link onClick = {this.handleClick} style = {this.props.linkStyle} to = "">
           {this.props.email}
         </Link>
-        {/*<a href = "">
-          {this.props.email}
-        </a>*/}
       </li>
     );
   }

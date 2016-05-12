@@ -7,7 +7,6 @@ var format = require("string-format");
 // TODO: Generate Secret randomly for each user.
 var secret = "SupremeOverlord";
 
-// TODO: Update this with limited user.
 var pool = mysql.createPool({
   connectionLimit: 50,
   host: "127.0.0.1",
@@ -21,7 +20,6 @@ var pool = mysql.createPool({
 var app = express();
 
 app.all("/*", function(request, response, next) {
-  // TODO: figure this out.
   response.header("Access-Control-Allow-Origin", "*");
   response.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
   response.header("Access-Control-Allow-Methods", "POST, GET");
@@ -30,6 +28,41 @@ app.all("/*", function(request, response, next) {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+
+app.post("/messageHistory", function(request, response) {
+  console.log("POST messageHistory request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var userIDsJSON = request.body;
+    var inboxID = userIDsJSON.inboxID;
+    var chatUserID = userIDsJSON.chatUserID;
+
+    console.log("inboxID: " + inboxID);
+    console.log("chatUserID: " + chatUserID);
+
+    inboxID = mysql.escape(inboxID);
+    chatUserID = mysql.escape(chatUserID);
+
+    var query = format("CALL get_message_history({0}, {1});", inboxID, chatUserID);
+    console.log("QUERY: " + query);
+
+    pool.query(query, function(error, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      response.send(rows);
+    });
+    connection.release();
+  });
+});
 
 /*
   Get friendList of a given user
@@ -48,7 +81,9 @@ app.post("/friendList", function(request, response) {
 
     console.log("getting friendlist of: " + userID);
 
-    var query = format("CALL get_friends_list({0})", userID);
+    userID = mysql.escape(userID);
+
+    var query = format("CALL get_friends_list({0});", userID);
     console.log("QUERY: " + query);
 
     pool.query(query, function(error, rows) {
@@ -84,8 +119,7 @@ app.post("/getGame", function(request, response) {
 
     gameID = mysql.escape(gameID);
 
-    // TODO: Insert CAll procedure.
-    var query = format("CALL get_game_by_id({0})", gameID);
+    var query = format("CALL get_game_by_id({0});", gameID);
 
     pool.query(query, function(error, rows) {
       if (error) {

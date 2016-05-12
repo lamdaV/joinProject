@@ -26488,127 +26488,38 @@ module.exports = Base;
 },{"../nav/NavBar.jsx":273,"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":284,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
+var Reflux = require("reflux");
+var MessageStore = require("../reflux/messageStore.jsx");
+var MessageActions = require("../reflux/messageActions.jsx");
 var Message = require("./Message.jsx");
-
-// TODO: remove once connected with database.
-var messageHistory = [{
-  sender: 10002,
-  message: "sup"
-}, {
-  sender: 420,
-  message: "nm you"
-}, {
-  sender: 10002,
-  message: "you got that dank weed"
-}, {
-  sender: 420,
-  message: "duh. want a wiff?"
-}, {
-  sender: 10002,
-  message: "no noob get on the crack powder"
-}, {
-  sender: 420,
-  message: "nah man smoke weed erry day"
-}, {
-  sender: 10002,
-  message: "sup"
-}, {
-  sender: 420,
-  message: "nm you"
-}, {
-  sender: 10002,
-  message: "you got that dank weed"
-}, {
-  sender: 420,
-  message: "duh. want a wiff?"
-}, {
-  sender: 10002,
-  message: "no noob get on the crack powder"
-}, {
-  sender: 420,
-  message: "nah man smoke weed erry day"
-}, {
-  sender: 10002,
-  message: "sup"
-}, {
-  sender: 420,
-  message: "nm you"
-}, {
-  sender: 10002,
-  message: "you got that dank weed"
-}, {
-  sender: 420,
-  message: "duh. want a wiff?"
-}, {
-  sender: 10002,
-  message: "no noob get on the crack powder"
-}, {
-  sender: 420,
-  message: "nah man smoke weed erry day"
-}, {
-  sender: 10002,
-  message: "sup"
-}, {
-  sender: 420,
-  message: "nm you"
-}, {
-  sender: 10002,
-  message: "you got that dank weed"
-}, {
-  sender: 420,
-  message: "duh. want a wiff?"
-}, {
-  sender: 10002,
-  message: "no noob get on the crack powder"
-}, {
-  sender: 420,
-  message: "nah man smoke weed erry day"
-}, {
-  sender: 10002,
-  message: "sup"
-}, {
-  sender: 420,
-  message: "nm you"
-}, {
-  sender: 10002,
-  message: "you got that dank weed"
-}, {
-  sender: 420,
-  message: "duh. want a wiff?"
-}, {
-  sender: 10002,
-  message: "no noob get on the crack powder"
-}, {
-  sender: 420,
-  message: "nah man smoke weed erry day"
-}, {
-  sender: 10002,
-  message: "sup"
-}, {
-  sender: 420,
-  message: "nm you"
-}, {
-  sender: 10002,
-  message: "you got that dank weed"
-}, {
-  sender: 420,
-  message: "duh. want a wiff?"
-}, {
-  sender: 10002,
-  message: "no noob get on the crack powder"
-}, {
-  sender: 420,
-  message: "nah man smoke weed erry day"
-}];
 
 var Chat = React.createClass({
   displayName: "Chat",
 
   /*
+    Listen to the MessageStore.
+  */
+  mixins: [Reflux.listenTo(MessageStore, "setMessageHistory")],
+
+  /*
+    Define propTypes.
+  */
+  propTypes: {
+    inboxID: React.PropTypes.string,
+    chatUserID: React.PropTypes.number,
+    chatUserEmail: React.PropTypes.string
+  },
+
+  /*
     Set initial state values.
   */
   getInitialState: function () {
-    return { chatUserID: -1, messages: null, typedMessage: "" };
+    return { inboxID: this.props.inboxID, chatUserID: this.props.chatUserID, messages: null, typedMessage: "" };
+  },
+
+  setMessageHistory: function (event, data) {
+    console.log("setMessageHistory data: " + JSON.stringify(data.messages));
+    this.setState({ messages: data.messages });
   },
 
   /*
@@ -26628,9 +26539,8 @@ var Chat = React.createClass({
     var message = this.state.typedMessage;
     var messageHistory = this.state.messages;
     console.log("entry: " + message);
-    // TODO: Get proper userID likely from props.
     var messageEntry = {
-      sender: 10002,
+      sender: this.state.inboxID,
       message: message
     };
 
@@ -26644,7 +26554,8 @@ var Chat = React.createClass({
     Update the message history when new props are received.
   */
   componentWillReceiveProps: function (nextProps) {
-    this.setState({ chatUserID: nextProps.chatUserID, messages: messageHistory });
+    MessageActions.postMessageHistory(this.state.inboxID, nextProps.chatUserID);
+    this.setState({ chatUserID: nextProps.chatUserID, chatUserEmail: nextProps.chatUserEmail });
   },
 
   /*
@@ -26664,7 +26575,7 @@ var Chat = React.createClass({
   */
   parseMessages: function (element, index) {
     this.shouldScrollBottom = true;
-    return React.createElement(Message, { key: element.message + index, chatUserID: this.state.chatUserID, senderID: element.sender, message: element.message });
+    return React.createElement(Message, { key: element.TimeStamp + index, timeStamp: element.TimeStamp, inboxID: this.state.inboxID, senderID: element.sender, message: element.Contents });
   },
 
   /*
@@ -26693,8 +26604,8 @@ var Chat = React.createClass({
       React.createElement(
         "div",
         { className: "panel panel-heading" },
-        "Talking to...(EMAIL) ",
-        this.state.chatUserID
+        "Joining with ",
+        this.state.chatUserEmail
       ),
       React.createElement(
         "div",
@@ -26729,7 +26640,7 @@ var Chat = React.createClass({
 
 module.exports = Chat;
 
-},{"./Message.jsx":260,"react":224,"react-dom":56}],249:[function(require,module,exports){
+},{"../reflux/messageActions.jsx":282,"../reflux/messageStore.jsx":283,"./Message.jsx":260,"react":224,"react-dom":56,"reflux":240}],249:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -27120,7 +27031,7 @@ var FriendItem = React.createClass({
   handleClick: function (event) {
     event.preventDefault();
     console.log("friendItem sending UserID: " + this.props.UserID);
-    this.props.propogator(this.props.UserID);
+    this.props.propogator(this.props.UserID, this.props.email);
   },
 
   render: function () {
@@ -27144,8 +27055,6 @@ var Reflux = require("reflux");
 var MessageStore = require("../reflux/messageStore.jsx");
 var MessageActions = require("../reflux/messageActions.jsx");
 var FriendItem = require("./FriendItem.jsx");
-
-// TODO: Get rid of when database connection established.
 
 var FriendList = React.createClass({
   displayName: "FriendList",
@@ -27171,16 +27080,20 @@ var FriendList = React.createClass({
   },
 
   setFriendList: function (event, data) {
-    console.log("setFriendList data: " + JSON.stringify(data.friends));
-    this.setState({ friends: data.friends });
+    // Only update when necessary.
+    if (this.state.friends !== data.friends) {
+      console.log("setFriendList data: " + JSON.stringify(data.friends));
+      this.props.propogator(data.friends[0].friendID, data.friends[0].Email);
+      this.setState({ friends: data.friends });
+    }
   },
 
   /*
     Inner propogator function. Passes data to parent component.
   */
-  propogator: function (userID) {
+  propogator: function (userID, email) {
     console.log("FriendList propogating userID: " + userID);
-    this.props.propogator(userID);
+    this.props.propogator(userID, email);
   },
 
   /*
@@ -27188,10 +27101,18 @@ var FriendList = React.createClass({
   */
   componentWillMount: function () {
     console.log("friend list mounting...");
-    // TODO: extrapolate this and with store.
-    // this.props.propogator(friends[0].userID);
-    // this.setState({friends: friends});
-    MessageActions.postFriendList(1001);
+    MessageActions.postFriendList(this.state.inboxID);
+  },
+
+  /*
+    Create a FriendItem. Used with map function.
+  */
+  createFriendItem: function (item, index) {
+    var linkStyle = {
+      color: "#563d7c"
+    };
+
+    return React.createElement(FriendItem, { linkStyle: linkStyle, key: item.Email + index, UserID: item.friendID, email: item.Email, propogator: this.propogator });
   },
 
   /*
@@ -27203,14 +27124,6 @@ var FriendList = React.createClass({
       maxHeight: 860,
       overflow: "auto"
     };
-
-    var linkStyle = {
-      color: "#563d7c"
-    };
-
-    var createFriendItem = function (item, index) {
-      return React.createElement(FriendItem, { linkStyle: linkStyle, key: item.Email + index, UserID: item.friendID, email: item.Email, propogator: this.propogator });
-    }.bind(this);
 
     return React.createElement(
       "div",
@@ -27226,7 +27139,7 @@ var FriendList = React.createClass({
         React.createElement(
           "ul",
           { className: "nav nav-pills nav-stacked" },
-          this.state.friends === null ? null : this.state.friends.map(createFriendItem)
+          this.state.friends === null ? null : this.state.friends.map(this.createFriendItem)
         )
       )
     );
@@ -27791,24 +27704,33 @@ var Message = React.createClass({
     Define propTypes.
   */
   propTypes: {
-    senderID: React.PropTypes.number,
-    message: React.PropTypes.string
+    timeStamp: React.PropTypes.string.isRequired,
+    inboxID: React.PropTypes.string.isRequired,
+    senderID: React.PropTypes.number.isRequired,
+    message: React.PropTypes.string.isRequired
   },
 
   /*
     Render the component.
   */
   render: function () {
-    // TODO:  Figure out this logic to get message styling.
-    console.log("in Message");
-    // var divClass = "alert alert-info";
-    // if (this.props.chatUserID === this.props.senderID) {
-    //   divClass = "alert alert-success";
-    // }
+    /* eslint-disable */
+    var divClass = "alert alert-info";
+    if (this.props.inboxID == this.props.senderID) {
+      divClass = "alert alert-success";
+    }
+    /* eslint-enable */
 
     return React.createElement(
       "div",
-      null,
+      { className: divClass },
+      React.createElement(
+        "b",
+        null,
+        " ",
+        this.props.timeStamp,
+        " "
+      ),
       this.props.senderID,
       ": ",
       React.createElement("br", null),
@@ -27838,15 +27760,16 @@ var MessageManager = React.createClass({
     Sets the initial state values.
   */
   getInitialState: function () {
-    return { chatUserID: -1 };
+    return { chatUserID: -1, chatUserEmail: "" };
   },
 
   /*
     Handle communication between FriendList component and Chat component.
   */
-  chatSwitch: function (userID) {
+  chatSwitch: function (userID, email) {
     console.log("manager received userID: " + userID);
-    this.setState({ chatUserID: userID });
+    console.log("manager received email: " + email);
+    this.setState({ chatUserID: userID, chatUserEmail: email });
   },
 
   /*
@@ -27864,7 +27787,7 @@ var MessageManager = React.createClass({
       React.createElement(
         "div",
         { className: "col-sm-8" },
-        React.createElement(Chat, { chatUserID: this.state.chatUserID })
+        React.createElement(Chat, { inboxID: this.props.inboxID, chatUserID: this.state.chatUserID, chatUserEmail: this.state.chatUserEmail })
       )
     );
   }
@@ -28317,6 +28240,7 @@ var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
 var Reflux = require("reflux");
 var UserStore = require("../reflux/userStore.jsx");
+var UserActions = require('../reflux/userActions.jsx');
 
 var SignInPanel = React.createClass({
   displayName: "SignInPanel",
@@ -28460,7 +28384,7 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"../reflux/userStore.jsx":285,"./EmailField.jsx":251,"./PasswordField.jsx":264,"react":224,"reflux":240}],270:[function(require,module,exports){
+},{"../reflux/userActions.jsx":284,"../reflux/userStore.jsx":285,"./EmailField.jsx":251,"./PasswordField.jsx":264,"react":224,"reflux":240}],270:[function(require,module,exports){
 var React = require("react");
 var RadioGroup = require("react-radio-group");
 
@@ -29164,7 +29088,6 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var MessageActions = require("./messageActions.jsx");
 
-/* global localStorage */
 var MessageStore = Reflux.createStore({
   /*
     Listen to GameActions.
@@ -29177,7 +29100,8 @@ var MessageStore = Reflux.createStore({
   init: function () {
     console.log("MessageStore init...");
     this.inboxData = {
-      friends: null
+      friends: null,
+      messages: null
     };
   },
 
@@ -29186,11 +29110,11 @@ var MessageStore = Reflux.createStore({
   */
   postFriendList: function (userID) {
     console.log("postFriendList called");
-    var userID = {
+    var userIDJSON = {
       UserID: userID
     };
 
-    http.post("/friendList", userID).then(function (dataJSON) {
+    http.post("/friendList", userIDJSON).then(function (dataJSON) {
       console.log("friendList received: " + JSON.stringify(dataJSON));
       this.inboxData.friends = dataJSON[0];
 
@@ -29201,17 +29125,33 @@ var MessageStore = Reflux.createStore({
   /*
     TODO: Method stub
   */
-  getUnreadCount: function (arg) {},
+  getUnreadCount: function () {
+    // Remember to add arguments.
+  },
 
   /*
     TODO: Method stub
   */
-  postMessageHistory: function (arg) {},
+  postMessageHistory: function (inboxID, chatUserID) {
+    console.log("postMessageHistory called");
+    var userIDs = {
+      inboxID: inboxID,
+      chatUserID: chatUserID
+    };
+
+    http.post("/messageHistory", userIDs).then(function (dataJSON) {
+      console.log("messageHistory received: " + JSON.stringify(dataJSON));
+      this.inboxData.messages = dataJSON[0];
+      this.returnStatus();
+    }.bind(this));
+  },
 
   /*
     TODO: Method stub
   */
-  postMessagePush: function (arg) {},
+  postMessagePush: function () {
+    // Remember to add arguments.
+  },
 
   /*
     Push changes to all listers.

@@ -14,15 +14,16 @@ var MessageManager = React.createClass({
     Sets the initial state values.
   */
   getInitialState: function() {
-    return ({chatUserID: -1});
+    return ({chatUserID: -1, chatUserEmail: ""});
   },
 
   /*
     Handle communication between FriendList component and Chat component.
   */
-  chatSwitch: function(userID) {
+  chatSwitch: function(userID, email) {
     console.log("manager received userID: " + userID);
-    this.setState({chatUserID: userID});
+    console.log("manager received email: " + email);
+    this.setState({chatUserID: userID, chatUserEmail: email});
   },
 
   /*
@@ -36,7 +37,7 @@ var MessageManager = React.createClass({
         </div>
 
         <div className = "col-sm-8">
-          <Chat chatUserID = {this.state.chatUserID} />
+          <Chat inboxID = {this.props.inboxID} chatUserID = {this.state.chatUserID} chatUserEmail = {this.state.chatUserEmail} />
         </div>
       </div>
     );
