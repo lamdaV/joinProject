@@ -129,6 +129,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Improved Linter with React
   - [x] Commented Existing Code
   - [x] Get basic Chat components
+  - [x] Completed Chat components
 
 ### Kennan French
   - [ ] Scroll box (class? widget?)
