@@ -123,7 +123,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 
 ## Milestone 04:
 ### David Lam
-  - [ ] Begin integrating matching page front end with back end (dependent on Chris)
+  - [x] Begin integrating matching page front end with back end (dependent on Chris)
 
 ### Extras:
   - [x] Improved Linter with React
