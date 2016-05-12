@@ -4,7 +4,7 @@ var MessageActions = require("./messageActions.jsx");
 
 var MessageStore = Reflux.createStore({
   /*
-    Listen to GameActions.
+    Listen to MessageActions.
   */
   listenables: [MessageActions],
 
@@ -31,20 +31,19 @@ var MessageStore = Reflux.createStore({
     http.post("/friendList", userIDJSON).then(function(dataJSON) {
       console.log("friendList received: " + JSON.stringify(dataJSON));
       this.inboxData.friends = dataJSON[0];
-
       this.returnStatus();
     }.bind(this));
   },
 
   /*
-    TODO: Method stub
+    TODO: Likely to remove.
   */
   getUnreadCount: function() {
     // Remember to add arguments.
   },
 
   /*
-    TODO: Method stub
+    Get the message history between two users.
   */
   postMessageHistory: function(inboxID, chatUserID) {
     console.log("postMessageHistory called");
@@ -61,7 +60,7 @@ var MessageStore = Reflux.createStore({
   },
 
   /*
-    TODO: Method stub
+    Push a message to the database to add.
   */
   postMessagePush: function(inboxID, chatUserID, message) {
     console.log("postMessagePush called");

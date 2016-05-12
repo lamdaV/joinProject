@@ -4,13 +4,15 @@ var MatchResults = require("./MatchResults.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
+var MatchActions = require("../reflux/matchActions.jsx");
+var MatchStore = require("../reflux/matchStore.jsx");
 
 /* global localStorage */
 var MatchPage = React.createClass({
   /*
     Listen to the AuthStore.
   */
-  mixins: [Reflux.listenTo(AuthStore, "verify")],
+  mixins: [Reflux.listenTo(AuthStore, "verify"), Reflux.listenTo(MatchStore, "setMatchings")],
 
   /*
     Define proptypes.
@@ -30,7 +32,14 @@ var MatchPage = React.createClass({
     Set initial state values.
   */
   getInitialState: function() {
-    return ({matchID: ""});
+    return ({matchID: this.props.params.matchID, matchings: null});
+  },
+
+  setMatchings: function(event, matches) {
+    if (matches.data !== this.state.matchings) {
+      console.log("setMatchings data: " + JSON.stringify(matches.data));
+      this.setState({matchings: matches.data});
+    }
   },
 
   /*
@@ -57,6 +66,16 @@ var MatchPage = React.createClass({
   componentWillMount: function() {
     console.log("matchID: " + this.props.params.matchID);
     AuthActions.postAuthenticate();
+    MatchActions.postMatchings(this.state.matchID);
+  },
+
+  /*
+    Create a MatchingResult. Use with map function.
+  */
+  createMatchingResult: function(item, index) {
+    return (
+      <MatchResults key = {item.UserID + index} userID = {item.UserID} score = {item.pointTotal} />
+    );
   },
 
   /*
@@ -66,7 +85,7 @@ var MatchPage = React.createClass({
     return (
       <div>
         <h1> Matchings Page {this.state.matchID} </h1>
-        <MatchResults />
+        {this.state.matchings === null ? null : this.state.matchings.map(this.createMatchingResult)}
       </div>
     );
   }

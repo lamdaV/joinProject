@@ -30,7 +30,72 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
+  Get an email given a userID.
+*/
+app.post("/matchEmail", function(request, response) {
+  console.log("POST matchEmail request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
 
+    var userIDJSON = request.body;
+    var userID = userIDJSON.userID;
+
+    console.log("matchEmail userID: " + userID);
+
+    userID = mysql.escape(userID);
+
+    var query = format("CALL get_email_by_id({0});", userID);
+
+    pool.query(query, function(request, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      response.send(rows);
+    });
+    connection.release();
+  });
+});
+
+/*
+  Get matchings for a user.
+*/
+app.post("/matchings", function(request, response) {
+  console.log("POST matchings request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var matchIDJSON = request.body;
+    var matchID = matchIDJSON.matchID;
+
+    matchID = mysql.escape(matchID);
+
+    var query = format("CALL match_function({0});", matchID);
+
+    pool.query(query, function(request, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      response.send(rows);
+    });
+
+    connection.release();
+  });
+});
+
+/*
+  Adds a message to the message history of two users.
 */
 app.post("/messagePush", function(request, response) {
   console.log("POST messagePush request...");
@@ -40,6 +105,7 @@ app.post("/messagePush", function(request, response) {
       return;
     }
     console.log("connection established");
+
     var messageJSON = request.body;
     var inboxID = messageJSON.inboxID;
     var chatUserID = messageJSON.chatUserID;

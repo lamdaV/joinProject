@@ -1,11 +1,41 @@
 var React = require("react");
+var Reflux = require("reflux");
+var MatchActions = require("../reflux/matchActions.jsx");
+var MatchStore = require("../reflux/matchStore.jsx");
 
 var MatchResults = React.createClass({
+  mixins: [Reflux.listenTo(MatchStore, "setEmail")],
+
+  /*
+    Define propTypes.
+  */
+  propTypes: {
+    score: React.PropTypes.number.isRequired,
+    userID: React.PropTypes.number.isRequired
+  },
+
+  /*
+    Set inital state values.
+  */
+  getInitialState: function() {
+    return ({email: null});
+  },
+
+  setEmail: function(event, match) {
+    /* eslint-disable */
+    // TODO: Get chris to return emails. Race Condition.
+    if (this.state.email === null) {
+      console.log("setEmail data: " + JSON.stringify(match.email));
+      this.setState({email: match.email[0].Email});
+    }
+    /* eslint-enable */
+  },
+
   /*
     Handle Reject button.
   */
   handleReject: function(event) {
-    // TODO: Get this to work with Kennan's stuff
+    // TODO: Get this to work with Kennan's stuff (remove from list?)
     event.preventDefault();
     console.log("Reject button clicked");
   },
@@ -14,9 +44,13 @@ var MatchResults = React.createClass({
     Handle Accept button.
   */
   handleAccept: function(event) {
-    // TODO: Get this to work with Kennan's stuff.
+    // TODO: Get this to work with Kennan's stuff. (add to friend list) (move to profile)
     event.preventDefault();
     console.log("Accept button clicked");
+  },
+
+  componentWillMount: function() {
+    MatchActions.postGetEmail(this.props.userID);
   },
 
   /*
@@ -40,12 +74,12 @@ var MatchResults = React.createClass({
             <h5 style = {textStyle} className = "panel-title">
               {/* Email */}
               <div className = "col-sm-4 text-left">
-                [Email]
+                {this.state.email}
               </div>
 
               {/* Match Score */}
               <div className = "col-sm-4 text-center">
-                [Matching Score]
+                {this.props.score}
               </div>
 
               {/* Acccept/Reject */}
@@ -57,11 +91,11 @@ var MatchResults = React.createClass({
           </div>
 
           {/* Heuristic Data */}
-          <div className = "panel-body">
+          {/* <div className = "panel-body">
             <h1>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              Determine
             </h1>
-          </div>
+          </div> */}
         </div>
 
       </div>
