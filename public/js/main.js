@@ -26589,7 +26589,6 @@ var Chat = React.createClass({
       maxHeight: 50
     };
 
-    // TODO: Link with database.
     return React.createElement(
       "div",
       { className: "panel panel-primary", style: panelStyle },
@@ -27555,6 +27554,10 @@ var MatchPage = React.createClass({
       console.log("setMatchings data: " + JSON.stringify(matches.data));
       this.setState({ matchings: matches.data });
     }
+
+    if (matches.removeID) {
+      this.removeFromList(matches.removeID);
+    }
   },
 
   /*
@@ -27575,6 +27578,21 @@ var MatchPage = React.createClass({
     }
   },
 
+  removeFromList: function (userID) {
+    console.log("removing from list: " + userID);
+    var matchingsTemp = this.state.matchings;
+    for (var i = 0; i < matchingsTemp.length; i++) {
+      if (matchingsTemp[i].UserID === userID) {
+        matchingsTemp.splice(i, 1);
+      }
+    }
+    this.setState({ matchings: matchingsTemp });
+  },
+
+  acceptHandler: function (userID) {
+    MatchActions.postAddFriend(this.state.matchID, userID);
+  },
+
   /*
     Authenticate before mounting the component.
   */
@@ -27588,7 +27606,7 @@ var MatchPage = React.createClass({
     Create a MatchingResult. Use with map function.
   */
   createMatchingResult: function (item, index) {
-    return React.createElement(MatchResults, { key: item.UserID + index, userID: item.UserID, score: item.pointTotal });
+    return React.createElement(MatchResults, { key: item.UserID + item.Email + index, email: item.Email, userID: item.UserID, score: item.pointTotal, rejectHandler: this.removeFromList, acceptHandler: this.acceptHandler });
   },
 
   /*
@@ -27614,38 +27632,26 @@ module.exports = MatchPage;
 
 },{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/matchActions.jsx":282,"../reflux/matchStore.jsx":283,"../reflux/userActions.jsx":286,"./MatchResults.jsx":259,"react":224,"reflux":240}],259:[function(require,module,exports){
 var React = require("react");
-var Reflux = require("reflux");
-var MatchActions = require("../reflux/matchActions.jsx");
-var MatchStore = require("../reflux/matchStore.jsx");
 
 var MatchResults = React.createClass({
   displayName: "MatchResults",
-
-  mixins: [Reflux.listenTo(MatchStore, "setEmail")],
 
   /*
     Define propTypes.
   */
   propTypes: {
     score: React.PropTypes.number.isRequired,
-    userID: React.PropTypes.number.isRequired
+    email: React.PropTypes.string.isRequired,
+    userID: React.PropTypes.number.isRequired,
+    rejectHandler: React.PropTypes.func.isRequired,
+    acceptHandler: React.PropTypes.func.isRequired
   },
 
   /*
     Set inital state values.
   */
   getInitialState: function () {
-    return { email: null };
-  },
-
-  setEmail: function (event, match) {
-    /* eslint-disable */
-    // TODO: Get chris to return emails. Race Condition.
-    if (this.state.email === null) {
-      console.log("setEmail data: " + JSON.stringify(match.email));
-      this.setState({ email: match.email[0].Email });
-    }
-    /* eslint-enable */
+    return { email: this.props.email };
   },
 
   /*
@@ -27655,6 +27661,7 @@ var MatchResults = React.createClass({
     // TODO: Get this to work with Kennan's stuff (remove from list?)
     event.preventDefault();
     console.log("Reject button clicked");
+    this.props.rejectHandler(this.props.userID);
   },
 
   /*
@@ -27664,10 +27671,7 @@ var MatchResults = React.createClass({
     // TODO: Get this to work with Kennan's stuff. (add to friend list) (move to profile)
     event.preventDefault();
     console.log("Accept button clicked");
-  },
-
-  componentWillMount: function () {
-    MatchActions.postGetEmail(this.props.userID);
+    this.props.acceptHandler(this.props.userID);
   },
 
   /*
@@ -27728,7 +27732,7 @@ var MatchResults = React.createClass({
 
 module.exports = MatchResults;
 
-},{"../reflux/matchActions.jsx":282,"../reflux/matchStore.jsx":283,"react":224,"reflux":240}],260:[function(require,module,exports){
+},{"react":224}],260:[function(require,module,exports){
 var React = require("react");
 
 var Message = React.createClass({
@@ -28731,9 +28735,7 @@ var NavBar = React.createClass({
           React.createElement(
             Link,
             { style: titleStyle, className: "navbar-brand", to: this.props.brandLink },
-            " ",
-            this.props.brandName,
-            " "
+            this.props.brandName
           )
         ),
         React.createElement(
@@ -28890,7 +28892,7 @@ var NavItem = React.createClass({
         isInbox ? React.createElement(
           "span",
           { className: "badge" },
-          "24"
+          React.createElement("span", { className: " glyphicon glyphicon-envelope" })
         ) : null
       )
     );
@@ -29114,7 +29116,7 @@ module.exports = GameStore;
 },{"../services/httpService.js":288,"./gameActions.jsx":280,"reflux":240}],282:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var MatchActions = Reflux.createActions(["postMatchings", "postGetEmail"]);
+var MatchActions = Reflux.createActions(["postMatchings", "postAddFriend"]);
 
 module.exports = MatchActions;
 
@@ -29132,7 +29134,7 @@ var MessageStore = Reflux.createStore({
   init: function () {
     this.matches = {
       data: null,
-      email: null
+      removeID: null
     };
   },
 
@@ -29154,18 +29156,21 @@ var MessageStore = Reflux.createStore({
   },
 
   /*
-    Get the email of a given user.
+    Add the two given users to the friends table.
   */
-  postGetEmail: function (userID) {
-    console.log("postGetEmail called");
-
-    var userIDJSON = {
-      userID: userID
+  postAddFriend: function (userID1, userID2) {
+    var userIDsJSON = {
+      userID1: userID1,
+      userID2: userID2
     };
 
-    http.post("/matchEmail", userIDJSON).then(function (dataJSON) {
-      console.log("matchEmail received: " + JSON.stringify(dataJSON));
-      this.matches.email = dataJSON[0];
+    this.matches.removeID = null;
+
+    http.post("/addFriend", userIDsJSON).then(function (dataJSON) {
+      console.log("addFriend received: " + JSON.stringify(dataJSON));
+      if (dataJSON[0].status === 0) {
+        this.matches.removeID = userID2;
+      }
       this.returnStatus();
     }.bind(this));
   },

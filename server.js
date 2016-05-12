@@ -30,10 +30,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
-  Get an email given a userID.
+  Add the given two users to the friends table.
 */
-app.post("/matchEmail", function(request, response) {
-  console.log("POST matchEmail request...");
+app.post("/addFriend", function(request, response) {
+  console.log("POST addFriend request...");
   pool.getConnection(function(error, connection) {
     if (error) {
       console.log("ERROR: Failed to Connect");
@@ -41,22 +41,23 @@ app.post("/matchEmail", function(request, response) {
     }
     console.log("connection established");
 
-    var userIDJSON = request.body;
-    var userID = userIDJSON.userID;
+    var userIDsJSON = request.body;
+    var userID1 = userIDsJSON.userID1;
+    var userID2 = userIDsJSON.userID2;
 
-    console.log("matchEmail userID: " + userID);
+    userID1 = mysql.escape(userID1);
+    userID2 = mysql.escape(userID2);
 
-    userID = mysql.escape(userID);
+    var query = format("SET @status = -1; CALL add_friend({0}, {1}, @status); SELECT @status AS status;", userID1, userID2);
 
-    var query = format("CALL get_email_by_id({0});", userID);
-
-    pool.query(query, function(request, rows) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("ERROR: " + error.message);
         return;
       }
       console.log("RESPONSE: " + JSON.stringify(rows));
-      response.send(rows);
+      console.log("ROW 2: " + JSON.stringify(rows[2]));
+      response.send(rows[2]);
     });
     connection.release();
   });
@@ -81,7 +82,7 @@ app.post("/matchings", function(request, response) {
 
     var query = format("CALL match_function({0});", matchID);
 
-    pool.query(query, function(request, rows) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("ERROR: " + error.message);
         return;
@@ -118,7 +119,7 @@ app.post("/messagePush", function(request, response) {
     var query = format("CALL add_message({0}, {1}, {2}); CALL get_message_history({0}, {1});", inboxID, chatUserID, message);
     console.log("QUERY: " + query);
 
-    pool.query(query, function(request, rows) {
+    pool.query(query, function(error, rows) {
       if (error) {
         console.log("ERROR: " + error.message);
         return;

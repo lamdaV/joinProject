@@ -101,7 +101,9 @@ var NavBar = React.createClass({
             </button>
 
             {/* Branding image */}
-            <Link style = {titleStyle} className = "navbar-brand" to = {this.props.brandLink}> {this.props.brandName} </Link>
+            <Link style = {titleStyle} className = "navbar-brand" to = {this.props.brandLink}>
+              {this.props.brandName}
+            </Link>
           </div>
 
           {/* Collapsed Items */}

@@ -28,7 +28,7 @@ var NavItem = React.createClass({
       <li className = {this.state.hover ? "active" : ""} onMouseOver = {this.mouseOver} onMouseOut = {this.mouseOut}>
         <Link style = {this.props.linkStyle} to = {this.props.href}>
           {this.props.title}
-          {isInbox ? <span className = "badge">24</span> : null}
+          {isInbox ? <span className = "badge"><span className = " glyphicon glyphicon-envelope"></span></span> : null}
         </Link>
       </li>
     );

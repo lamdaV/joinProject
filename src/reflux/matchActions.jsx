@@ -2,7 +2,7 @@ var Reflux = require("reflux");
 
 var MatchActions = Reflux.createActions([
   "postMatchings",
-  "postGetEmail"
+  "postAddFriend"
 ]);
 
 module.exports = MatchActions;

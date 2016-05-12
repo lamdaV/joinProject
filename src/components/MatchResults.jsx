@@ -1,34 +1,22 @@
 var React = require("react");
-var Reflux = require("reflux");
-var MatchActions = require("../reflux/matchActions.jsx");
-var MatchStore = require("../reflux/matchStore.jsx");
 
 var MatchResults = React.createClass({
-  mixins: [Reflux.listenTo(MatchStore, "setEmail")],
-
   /*
     Define propTypes.
   */
   propTypes: {
     score: React.PropTypes.number.isRequired,
-    userID: React.PropTypes.number.isRequired
+    email: React.PropTypes.string.isRequired,
+    userID: React.PropTypes.number.isRequired,
+    rejectHandler: React.PropTypes.func.isRequired,
+    acceptHandler: React.PropTypes.func.isRequired
   },
 
   /*
     Set inital state values.
   */
   getInitialState: function() {
-    return ({email: null});
-  },
-
-  setEmail: function(event, match) {
-    /* eslint-disable */
-    // TODO: Get chris to return emails. Race Condition.
-    if (this.state.email === null) {
-      console.log("setEmail data: " + JSON.stringify(match.email));
-      this.setState({email: match.email[0].Email});
-    }
-    /* eslint-enable */
+    return ({email: this.props.email});
   },
 
   /*
@@ -38,6 +26,7 @@ var MatchResults = React.createClass({
     // TODO: Get this to work with Kennan's stuff (remove from list?)
     event.preventDefault();
     console.log("Reject button clicked");
+    this.props.rejectHandler(this.props.userID);
   },
 
   /*
@@ -47,10 +36,7 @@ var MatchResults = React.createClass({
     // TODO: Get this to work with Kennan's stuff. (add to friend list) (move to profile)
     event.preventDefault();
     console.log("Accept button clicked");
-  },
-
-  componentWillMount: function() {
-    MatchActions.postGetEmail(this.props.userID);
+    this.props.acceptHandler(this.props.userID);
   },
 
   /*

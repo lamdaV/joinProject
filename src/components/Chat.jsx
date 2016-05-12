@@ -102,7 +102,6 @@ var Chat = React.createClass({
       maxHeight: 50
     };
 
-    // TODO: Link with database.
     return (
       <div className = "panel panel-primary" style = {panelStyle}>
         <div className = "panel panel-heading" >
@@ -122,7 +121,6 @@ var Chat = React.createClass({
               <input type = "text" className = "form-control" placeholder="Type a message" value = {this.state.typedMessage} onChange = {this.handleInputChange} />
 
               {/* Send button */}
-              {/* TODO: Add onClick handler */}
               <span className = "input-group-btn">
                 <button className = "btn btn-default" type = "submit" onClick = {this.handleSubmit}>
                   <span className = "glyphicon glyphicon-send"></span>

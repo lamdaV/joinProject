@@ -40,6 +40,10 @@ var MatchPage = React.createClass({
       console.log("setMatchings data: " + JSON.stringify(matches.data));
       this.setState({matchings: matches.data});
     }
+
+    if (matches.removeID) {
+      this.removeFromList(matches.removeID);
+    }
   },
 
   /*
@@ -60,6 +64,21 @@ var MatchPage = React.createClass({
     }
   },
 
+  removeFromList: function(userID) {
+    console.log("removing from list: " + userID);
+    var matchingsTemp = this.state.matchings;
+    for (var i = 0; i < matchingsTemp.length; i++) {
+      if (matchingsTemp[i].UserID === userID) {
+        matchingsTemp.splice(i, 1);
+      }
+    }
+    this.setState({matchings: matchingsTemp});
+  },
+
+  acceptHandler: function(userID) {
+    MatchActions.postAddFriend(this.state.matchID, userID);
+  },
+
   /*
     Authenticate before mounting the component.
   */
@@ -74,7 +93,7 @@ var MatchPage = React.createClass({
   */
   createMatchingResult: function(item, index) {
     return (
-      <MatchResults key = {item.UserID + index} userID = {item.UserID} score = {item.pointTotal} />
+      <MatchResults key = {item.UserID + item.Email + index} email = {item.Email} userID = {item.UserID} score = {item.pointTotal} rejectHandler = {this.removeFromList} acceptHandler = {this.acceptHandler} />
     );
   },
 

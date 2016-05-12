@@ -11,7 +11,7 @@ var MessageStore = Reflux.createStore({
   init: function() {
     this.matches = {
       data: null,
-      email: null
+      removeID: null
     };
   },
 
@@ -33,18 +33,21 @@ var MessageStore = Reflux.createStore({
   },
 
   /*
-    Get the email of a given user.
+    Add the two given users to the friends table.
   */
-  postGetEmail: function(userID) {
-    console.log("postGetEmail called");
-
-    var userIDJSON = {
-      userID: userID
+  postAddFriend: function(userID1, userID2) {
+    var userIDsJSON = {
+      userID1: userID1,
+      userID2: userID2
     };
 
-    http.post("/matchEmail", userIDJSON).then(function(dataJSON) {
-      console.log("matchEmail received: " + JSON.stringify(dataJSON));
-      this.matches.email = dataJSON[0];
+    this.matches.removeID = null;
+
+    http.post("/addFriend", userIDsJSON).then(function(dataJSON) {
+      console.log("addFriend received: " + JSON.stringify(dataJSON));
+      if (dataJSON[0].status === 0) {
+        this.matches.removeID = userID2;
+      }
       this.returnStatus();
     }.bind(this));
   },
