@@ -131,6 +131,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Get basic Chat components
   - [x] Completed Chat components
   - [x] Match page accept/reject now functional
+  - [x] Users can add games to their "library" from the Game Page
 
 ### Kennan French
   - [x] Scroll box (class? widget?) (David Lam)
