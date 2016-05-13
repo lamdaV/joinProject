@@ -149,13 +149,34 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ### Kennan French
   - [x] Scroll box (class? widget?) (David Lam)
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
-  - [ ] Preference Page
-  - [ ] Account Settings Page
-  - [ ] Finish Profile Page
+  - [ ] User preferences/settings page (done, just fighting with git to publish)
 
 ### Christopher Knight
-  - [ ] Match page back end/implement matching algorithm
+  - [x] Match page back end/implement matching algorithm
 
 ### Group
   - [x] Study for test
-  - [x] Heuristics discussion
+  - [x] Heuristics discussion  
+  
+## Milestone 05:
+
+### David Lam
+  - [ ] Remove friend frontend
+  - [ ] Work on paper
+  
+### Christopher Knight
+  - [ ] Remove friend backend
+  - [ ] Work on paper
+  - [ ] Add indicis
+  
+### Kennan French
+  - [ ] Integrate widgets with React virtualization + fix other React "quirks"
+  - [ ] User preferences/settings page (done, just fighting with git to publish)
+  - [ ] Work on paper
+  - [ ] User preferences page
+  - [ ] Account Settings page
+  - [ ] Integrate Profile page
+  - [ ] User Rate other Users
+  - [ ] Compatability with Mozilla FireFox
+  - [ ] Hash Passwords
+  
