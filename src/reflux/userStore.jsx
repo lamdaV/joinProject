@@ -67,6 +67,18 @@ var UserStore = Reflux.createStore({
   },
 
   /*
+    Adds a given gameID to the users library
+  */
+  postAddToLibrary: function(userID, gameID) {
+    var userData = {
+      userID: userID,
+      gameID: gameID
+    };
+
+    http.post("/addToLibrary", userData);
+  },
+
+  /*
     Saves the jwt data to localStorage.
   */
   saveToken: function() {

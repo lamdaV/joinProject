@@ -30,6 +30,77 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
+  Check if a user already has a game in their library.
+*/
+app.post("/isInLibrary", function(request, response) {
+  console.log("POST isInLibrary request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var userData = request.body;
+    var userID = userData.userID;
+    var gameID = userData.gameID;
+
+    console.log("addToLibrary userID: " + userID);
+    console.log("addToLibrary gameID: " + gameID);
+
+    userID = mysql.escape(userID);
+    gameID = mysql.escape(gameID);
+
+    var query = format("CALL is_Game_In_Library({0}, {1});", userID, gameID);
+    console.log("QUERY: " + query);
+
+    pool.query(query, function(error, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      response.send(rows);
+    });
+    connection.release();
+  });
+});
+
+/*
+  Add a game to a user's library.
+*/
+app.post("/addToLibrary", function(request, response) {
+  console.log("POST addToLibrary request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var userData = request.body
+    var userID = userData.userID;
+    var gameID = userData.gameID;
+
+    userID = mysql.escape(userID);
+    gameID = mysql.escape(gameID);
+
+    var query = format("CALL add_game_to_library({0}, {1});", userID, gameID);
+    console.log("QUERY: " + query);
+
+    // Do not send any response because the client will not process any data.
+    pool.query(query, function(error, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+    });
+    connection.release();
+  });
+});
+
+/*
   Add the given two users to the friends table.
 */
 app.post("/addFriend", function(request, response) {

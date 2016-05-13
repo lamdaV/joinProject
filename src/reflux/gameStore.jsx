@@ -17,6 +17,12 @@ var GameStore = Reflux.createStore({
     if (this.jwt) {
       console.log("gameStore jwt init: " + JSON.stringify(this.jwt));
     }
+
+    this.gameData = {
+      searchData: null,
+      details: null,
+      isInLibrary: null
+    }
   },
 
   /*
@@ -29,7 +35,7 @@ var GameStore = Reflux.createStore({
     };
 
     http.post("/searchGame", searchQuery).then(function(dataJSON) {
-      this.search = dataJSON;
+      this.gameData.searchData = dataJSON;
       console.log("search data: " + JSON.stringify(this.search));
       this.returnStatus();
     }.bind(this));
@@ -41,6 +47,7 @@ var GameStore = Reflux.createStore({
   postGetGame: function(gameID) {
     console.log("getting gameID: " + gameID);
 
+    this.gameData.details = null;
     var gameIDJSON = {
       gameID: gameID
     };
@@ -51,8 +58,26 @@ var GameStore = Reflux.createStore({
         tag: dataJSON[1]
       };
 
-      this.search = dataJSONSimplified;
-      console.log("getGame data: " + JSON.stringify(this.search));
+      this.gameData.details = dataJSONSimplified;
+      console.log("getGame data: " + JSON.stringify(this.gameData.details));
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  /*
+    Check if the given gameID is already in the user's library.
+  */
+  postIsInLibrary: function(userID, gameID) {
+    console.log("isInLibrary Store");
+    this.gameData.isInLibrary = null;
+    var userData = {
+      userID: userID,
+      gameID: gameID
+    };
+
+    http.post("/isInLibrary", userData).then(function(dataJSON) {
+      console.log("isInLibrary data: " + JSON.stringify(dataJSON));
+      this.gameData.isInLibrary = dataJSON[0][0];
       this.returnStatus();
     }.bind(this));
   },
@@ -61,7 +86,7 @@ var GameStore = Reflux.createStore({
     Push changes to all listeners.
   */
   returnStatus: function() {
-    this.trigger("change", this.search);
+    this.trigger("change", this.gameData);
   }
 });
 

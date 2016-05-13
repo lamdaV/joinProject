@@ -3,12 +3,15 @@ var Reflux = require("reflux");
 var GameContentPanel = require("./GameContentPanel.jsx");
 var GameStore = require("../reflux/gameStore.jsx");
 var GameActions = require("../reflux/gameActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var GamePage = React.createClass({
   /*
     Listen to the GameStore.
   */
-  mixins: [Reflux.listenTo(GameStore, "setGameData")],
+  mixins: [Reflux.listenTo(GameStore, "setGameData"), Reflux.listenTo(AuthStore, "verify")],
 
   /*
     Define propTypes.
@@ -18,27 +21,49 @@ var GamePage = React.createClass({
   },
 
   /*
+    Set router for dynamic pushing.
+  */
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  /*
     Set the initial state.
   */
   getInitialState: function() {
-    return ({gameID: this.props.params.gameID, gameData: "", gameTag: ""});
+    return ({gameID: this.props.params.gameID, gameData: "", gameTag: "", isLoggedIn: false, userID: ""});
   },
 
   /*
     Once data is received from GameStore, set the state accordingly.
   */
-  setGameData: function(event, data) {
-    var gameData = data.game;
-    var gameTag = data.tag;
-    console.log("setGameData game: " + JSON.stringify(gameData));
-    console.log("setGameData tag: " + JSON.stringify(gameTag));
-    this.setState({gameData: gameData, gameTag: gameTag});
+  setGameData: function(event, gameData) {
+    if (gameData.details) {
+      var gameSpecs = gameData.details.game;
+      var gameTag = gameData.details.tag;
+      console.log("setGameData game: " + JSON.stringify(gameSpecs));
+      console.log("setGameData tag: " + JSON.stringify(gameTag));
+      this.setState({gameData: gameSpecs, gameTag: gameTag});
+    }
+  },
+
+  /*
+    Ensure the user is logged in before showing the Add to Library button.
+  */
+  verify: function(event, status) {
+    if (status) {
+      console.log("gamePage verify passed");
+      this.setState({isLoggedIn: true, userID: localStorage.getItem("UserID")});
+    } else {
+      console.log("gamePage verify failed");
+    }
   },
 
   /*
     Call postGetGame when component is about to mount.
   */
-  componentDidMount: function() {
+  componentWillMount: function() {
+    AuthActions.postAuthenticate();
     GameActions.postGetGame(this.props.params.gameID);
   },
 
@@ -46,6 +71,7 @@ var GamePage = React.createClass({
     Call postGetGame if new props are received.
   */
   componentWillReceiveProps: function(nextProps) {
+    AuthActions.postAuthenticate();
     GameActions.postGetGame(nextProps.params.gameID);
     this.setState({gameID: nextProps.params.gameID});
   },
@@ -58,10 +84,10 @@ var GamePage = React.createClass({
     return (
       <div>
         {/* TODO: remove header after testing.*/}
-        <h1>Game ID: {this.state.gameID}</h1>
+        <h1> Game ID: {this.state.gameID} </h1>
 
         <div className = "panel-group">
-          <GameContentPanel gameData = {this.state.gameData} gameTag = {this.state.gameTag} headerColor = "#563d7c" />
+          <GameContentPanel gameData = {this.state.gameData} gameTag = {this.state.gameTag} headerColor = "#563d7c" gameID = {this.state.gameID} isLoggedIn = {this.state.isLoggedIn} userID = {this.state.userID} />
         </div>
       </div>
     );

@@ -26774,6 +26774,10 @@ var CreateAccountForm = React.createClass({
       minHeight: 150
     };
 
+    var buttonStyle = {
+      background: "#563d7c"
+    };
+
     return React.createElement(
       "div",
       { className: "col-sm-12" },
@@ -26814,7 +26818,7 @@ var CreateAccountForm = React.createClass({
                 { className: "col-sm-12 col-lg-12" },
                 React.createElement(
                   "button",
-                  { className: "btn btn-primary" },
+                  { className: "btn btn-primary", style: buttonStyle },
                   " Next "
                 )
               )
@@ -27141,22 +27145,52 @@ module.exports = FriendList;
 
 },{"../reflux/messageActions.jsx":284,"../reflux/messageStore.jsx":285,"./FriendItem.jsx":252,"react":224,"reflux":240}],254:[function(require,module,exports){
 var React = require("react");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var GameActions = require("../reflux/gameActions.jsx");
+var GameStore = require("../reflux/gameStore.jsx");
 
 var GameContentPanel = React.createClass({
   displayName: "GameContentPanel",
 
+  mixins: [Reflux.listenTo(GameStore, "setButtonState")],
   /*
     Define propTypes.
   */
   propTypes: {
-    headerColor: React.PropTypes.string
+    headerColor: React.PropTypes.string,
+    gameID: React.PropTypes.string.isRequired,
+    isLoggedIn: React.PropTypes.bool.isRequired,
+    userID: React.PropTypes.string.isRequired
   },
 
   /*
     Set intial state values.
   */
   getInitialState: function () {
-    return { title: "", rating: "", price: "", tags: null };
+    return { title: "", rating: "", price: "", tags: null, isLoggedIn: this.props.isLoggedIn, buttonEnabled: false };
+  },
+
+  /*
+    Add game to the user's library.
+  */
+  addToLibrary: function (event) {
+    event.preventDefault();
+    if (this.state.buttonEnabled) {
+      console.log("adding to library...");
+      UserActions.postAddToLibrary(this.props.userID, this.props.gameID);
+      this.setState({ buttonEnabled: false });
+    } else {
+      console.log("game already in library");
+    }
+  },
+
+  setButtonState: function (event, gameData) {
+    console.log("in setButtonState");
+    if (gameData.isInLibrary && gameData.isInLibrary.isInLibrary === 0) {
+      console.log("setButtonState: " + JSON.stringify(gameData.isInLibrary.isInLibrary));
+      this.setState({ buttonEnabled: true });
+    }
   },
 
   /*
@@ -27174,13 +27208,20 @@ var GameContentPanel = React.createClass({
     if (nextProps.gameTag) {
       this.setState({ tags: nextProps.gameTag });
     }
+
+    if (nextProps.isLoggedIn) {
+      this.setState({ isLoggedIn: nextProps.isLoggedIn });
+    }
+
+    if (this.props.userID !== nextProps.userID) {
+      console.log("firing postIsInLibrary event");
+      GameActions.postIsInLibrary(nextProps.userID, this.props.gameID);
+    }
   },
 
   /*
     Render the component.
   */render: function () {
-    console.log("tag: " + this.state.tags);
-    console.log("tag boolean: " + this.state.tags !== "");
     var divStyle = {
       marginTop: 10
     };
@@ -27200,6 +27241,11 @@ var GameContentPanel = React.createClass({
       fontSize: 36
     };
 
+    var buttonClassName = "btn btn-primary disabled";
+    if (this.state.buttonEnabled) {
+      buttonClassName = "btn btn-primary active";
+    }
+
     var panelHeaderStyle = {};
 
     if (this.props.headerColor) {
@@ -27218,6 +27264,11 @@ var GameContentPanel = React.createClass({
       );
     };
 
+    var buttonStyle = {
+      background: "#527F76",
+      minHeight: 75
+    };
+
     return React.createElement(
       "div",
       { style: divStyle },
@@ -27231,11 +27282,22 @@ var GameContentPanel = React.createClass({
             "div",
             { style: panelHeaderStyle, className: "panel-heading" },
             React.createElement(
-              "h1",
-              { className: "text-center" },
-              " ",
-              this.state.title,
-              " "
+              "div",
+              { className: "row" },
+              React.createElement(
+                "h1",
+                { className: "col-sm-6 text-left" },
+                this.state.title
+              ),
+              this.state.isLoggedIn ? React.createElement(
+                "div",
+                { className: "col-sm-6 text-right" },
+                React.createElement(
+                  "button",
+                  { className: buttonClassName, style: buttonStyle, onClick: this.addToLibrary },
+                  " Add to Library "
+                )
+              ) : null
             )
           ),
           React.createElement(
@@ -27281,20 +27343,23 @@ var GameContentPanel = React.createClass({
 
 module.exports = GameContentPanel;
 
-},{"react":224}],255:[function(require,module,exports){
+},{"../reflux/gameActions.jsx":280,"../reflux/gameStore.jsx":281,"../reflux/userActions.jsx":286,"react":224,"reflux":240}],255:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var GameContentPanel = require("./GameContentPanel.jsx");
 var GameStore = require("../reflux/gameStore.jsx");
 var GameActions = require("../reflux/gameActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
 
+/* global localStorage */
 var GamePage = React.createClass({
   displayName: "GamePage",
 
   /*
     Listen to the GameStore.
   */
-  mixins: [Reflux.listenTo(GameStore, "setGameData")],
+  mixins: [Reflux.listenTo(GameStore, "setGameData"), Reflux.listenTo(AuthStore, "verify")],
 
   /*
     Define propTypes.
@@ -27304,27 +27369,49 @@ var GamePage = React.createClass({
   },
 
   /*
+    Set router for dynamic pushing.
+  */
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  /*
     Set the initial state.
   */
   getInitialState: function () {
-    return { gameID: this.props.params.gameID, gameData: "", gameTag: "" };
+    return { gameID: this.props.params.gameID, gameData: "", gameTag: "", isLoggedIn: false, userID: "" };
   },
 
   /*
     Once data is received from GameStore, set the state accordingly.
   */
-  setGameData: function (event, data) {
-    var gameData = data.game;
-    var gameTag = data.tag;
-    console.log("setGameData game: " + JSON.stringify(gameData));
-    console.log("setGameData tag: " + JSON.stringify(gameTag));
-    this.setState({ gameData: gameData, gameTag: gameTag });
+  setGameData: function (event, gameData) {
+    if (gameData.details) {
+      var gameSpecs = gameData.details.game;
+      var gameTag = gameData.details.tag;
+      console.log("setGameData game: " + JSON.stringify(gameSpecs));
+      console.log("setGameData tag: " + JSON.stringify(gameTag));
+      this.setState({ gameData: gameSpecs, gameTag: gameTag });
+    }
+  },
+
+  /*
+    Ensure the user is logged in before showing the Add to Library button.
+  */
+  verify: function (event, status) {
+    if (status) {
+      console.log("gamePage verify passed");
+      this.setState({ isLoggedIn: true, userID: localStorage.getItem("UserID") });
+    } else {
+      console.log("gamePage verify failed");
+    }
   },
 
   /*
     Call postGetGame when component is about to mount.
   */
-  componentDidMount: function () {
+  componentWillMount: function () {
+    AuthActions.postAuthenticate();
     GameActions.postGetGame(this.props.params.gameID);
   },
 
@@ -27332,6 +27419,7 @@ var GamePage = React.createClass({
     Call postGetGame if new props are received.
   */
   componentWillReceiveProps: function (nextProps) {
+    AuthActions.postAuthenticate();
     GameActions.postGetGame(nextProps.params.gameID);
     this.setState({ gameID: nextProps.params.gameID });
   },
@@ -27346,13 +27434,14 @@ var GamePage = React.createClass({
       React.createElement(
         "h1",
         null,
-        "Game ID: ",
-        this.state.gameID
+        " Game ID: ",
+        this.state.gameID,
+        " "
       ),
       React.createElement(
         "div",
         { className: "panel-group" },
-        React.createElement(GameContentPanel, { gameData: this.state.gameData, gameTag: this.state.gameTag, headerColor: "#563d7c" })
+        React.createElement(GameContentPanel, { gameData: this.state.gameData, gameTag: this.state.gameTag, headerColor: "#563d7c", gameID: this.state.gameID, isLoggedIn: this.state.isLoggedIn, userID: this.state.userID })
       )
     );
   }
@@ -27360,7 +27449,7 @@ var GamePage = React.createClass({
 
 module.exports = GamePage;
 
-},{"../reflux/gameActions.jsx":280,"../reflux/gameStore.jsx":281,"./GameContentPanel.jsx":254,"react":224,"reflux":240}],256:[function(require,module,exports){
+},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/gameActions.jsx":280,"../reflux/gameStore.jsx":281,"./GameContentPanel.jsx":254,"react":224,"reflux":240}],256:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var SignInPanel = require("./SignInPanel.jsx");
@@ -28137,9 +28226,9 @@ var SearchResultsPage = React.createClass({
   /*
     Display the results from the search query.
   */
-  displayResults: function (event, data) {
-    console.log("display data: " + JSON.stringify(data));
-    this.setState({ results: data });
+  displayResults: function (event, gameData) {
+    console.log("display data: " + JSON.stringify(gameData.searchData));
+    this.setState({ results: gameData.searchData });
   },
 
   /*
@@ -29039,7 +29128,7 @@ module.exports = AuthStore;
 },{"../services/httpService.js":288,"./authActions.jsx":278,"reflux":240}],280:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var GameActions = Reflux.createActions(["postSearchGame", "postGetGame"]);
+var GameActions = Reflux.createActions(["postSearchGame", "postGetGame", "postIsInLibrary"]);
 
 module.exports = GameActions;
 
@@ -29063,6 +29152,12 @@ var GameStore = Reflux.createStore({
     if (this.jwt) {
       console.log("gameStore jwt init: " + JSON.stringify(this.jwt));
     }
+
+    this.gameData = {
+      searchData: null,
+      details: null,
+      isInLibrary: null
+    };
   },
 
   /*
@@ -29075,7 +29170,7 @@ var GameStore = Reflux.createStore({
     };
 
     http.post("/searchGame", searchQuery).then(function (dataJSON) {
-      this.search = dataJSON;
+      this.gameData.searchData = dataJSON;
       console.log("search data: " + JSON.stringify(this.search));
       this.returnStatus();
     }.bind(this));
@@ -29087,6 +29182,7 @@ var GameStore = Reflux.createStore({
   postGetGame: function (gameID) {
     console.log("getting gameID: " + gameID);
 
+    this.gameData.details = null;
     var gameIDJSON = {
       gameID: gameID
     };
@@ -29097,8 +29193,26 @@ var GameStore = Reflux.createStore({
         tag: dataJSON[1]
       };
 
-      this.search = dataJSONSimplified;
-      console.log("getGame data: " + JSON.stringify(this.search));
+      this.gameData.details = dataJSONSimplified;
+      console.log("getGame data: " + JSON.stringify(this.gameData.details));
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  /*
+    Check if the given gameID is already in the user's library.
+  */
+  postIsInLibrary: function (userID, gameID) {
+    console.log("isInLibrary Store");
+    this.gameData.isInLibrary = null;
+    var userData = {
+      userID: userID,
+      gameID: gameID
+    };
+
+    http.post("/isInLibrary", userData).then(function (dataJSON) {
+      console.log("isInLibrary data: " + JSON.stringify(dataJSON));
+      this.gameData.isInLibrary = dataJSON[0][0];
       this.returnStatus();
     }.bind(this));
   },
@@ -29107,7 +29221,7 @@ var GameStore = Reflux.createStore({
     Push changes to all listeners.
   */
   returnStatus: function () {
-    this.trigger("change", this.search);
+    this.trigger("change", this.gameData);
   }
 });
 
@@ -29285,7 +29399,7 @@ module.exports = MessageStore;
 },{"../services/httpService.js":288,"./messageActions.jsx":284,"reflux":240}],286:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "logout"]);
+var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postAddToLibrary", "logout"]);
 
 module.exports = UserActions;
 
@@ -29356,6 +29470,18 @@ var UserStore = Reflux.createStore({
     this.jwt = "";
     this.user = this.jwt;
     this.returnStatus();
+  },
+
+  /*
+    Adds a given gameID to the users library
+  */
+  postAddToLibrary: function (userID, gameID) {
+    var userData = {
+      userID: userID,
+      gameID: gameID
+    };
+
+    http.post("/addToLibrary", userData);
   },
 
   /*

@@ -1,18 +1,48 @@
 var React = require("react");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var GameActions = require("../reflux/gameActions.jsx");
+var GameStore = require("../reflux/gameStore.jsx");
 
 var GameContentPanel = React.createClass({
+  mixins: [Reflux.listenTo(GameStore, "setButtonState")],
   /*
     Define propTypes.
   */
   propTypes: {
-    headerColor: React.PropTypes.string
+    headerColor: React.PropTypes.string,
+    gameID: React.PropTypes.string.isRequired,
+    isLoggedIn: React.PropTypes.bool.isRequired,
+    userID: React.PropTypes.string.isRequired
   },
 
   /*
     Set intial state values.
   */
   getInitialState: function() {
-    return ({title: "", rating: "", price: "", tags: null});
+    return ({title: "", rating: "", price: "", tags: null, isLoggedIn: this.props.isLoggedIn, buttonEnabled: false});
+  },
+
+  /*
+    Add game to the user's library.
+  */
+  addToLibrary: function(event) {
+    event.preventDefault();
+    if (this.state.buttonEnabled) {
+      console.log("adding to library...");
+      UserActions.postAddToLibrary(this.props.userID, this.props.gameID);
+      this.setState({buttonEnabled: false});
+    } else {
+      console.log("game already in library");
+    }
+  },
+
+  setButtonState: function(event, gameData) {
+    console.log("in setButtonState");
+    if (gameData.isInLibrary && gameData.isInLibrary.isInLibrary === 0) {
+      console.log("setButtonState: " + JSON.stringify(gameData.isInLibrary.isInLibrary));
+      this.setState({buttonEnabled: true});
+    }
   },
 
   /*
@@ -30,14 +60,22 @@ var GameContentPanel = React.createClass({
     if (nextProps.gameTag) {
       this.setState({tags: nextProps.gameTag});
     }
+
+    if (nextProps.isLoggedIn) {
+      this.setState({isLoggedIn: nextProps.isLoggedIn});
+    }
+
+    if (this.props.userID !== nextProps.userID) {
+      console.log("firing postIsInLibrary event");
+      GameActions.postIsInLibrary(nextProps.userID, this.props.gameID);
+    }
+
   },
 
   /*
     Render the component.
   */
   render: function() {
-    console.log("tag: " + this.state.tags);
-    console.log("tag boolean: " + this.state.tags !== "");
     var divStyle = {
       marginTop: 10
     };
@@ -57,9 +95,12 @@ var GameContentPanel = React.createClass({
       fontSize: 36
     };
 
-    var panelHeaderStyle = {
+    var buttonClassName = "btn btn-primary disabled";
+    if (this.state.buttonEnabled) {
+      buttonClassName = "btn btn-primary active";
+    }
 
-    };
+    var panelHeaderStyle = {};
 
     if (this.props.headerColor) {
       panelHeaderStyle.background = this.props.headerColor;
@@ -73,19 +114,33 @@ var GameContentPanel = React.createClass({
       );
     };
 
+    var buttonStyle = {
+      background: "#527F76",
+      minHeight: 75
+    };
+
     return (
       <div style = {divStyle}>
         <div className = "col-xs-9 col-sm-9">
           <div style = {detailPanelStyle} className = "panel panel-primary">
-            {/* Game title */}
             <div style = {panelHeaderStyle} className = "panel-heading">
-              <h1 className = "text-center"> {this.state.title} </h1>
+              {/* Game title */}
+              <div className = "row">
+                <h1 className = "col-sm-6 text-left">
+                  {this.state.title}
+                </h1>
+
+                {/* Add to Library */}
+                {this.state.isLoggedIn ? <div className = "col-sm-6 text-right">
+                  <button className = {buttonClassName} style = {buttonStyle} onClick = {this.addToLibrary}> Add to Library </button>
+                </div> : null}
+
+              </div>
             </div>
 
             {/* Game Details should go here */}
             <div className = "panel-body">
               <h3> Rating: {this.state.rating} </h3>
-              {/* TODO: List tags here Potentially make as separate row */}
               <h3> Tags: </h3>
               {this.state.tags ? this.state.tags.map(createTagLabel) : null}
             </div>

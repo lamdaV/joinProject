@@ -26,9 +26,9 @@ var SearchResultsPage = React.createClass({
   /*
     Display the results from the search query.
   */
-  displayResults: function(event, data) {
-    console.log("display data: " + JSON.stringify(data));
-    this.setState({results: data});
+  displayResults: function(event, gameData) {
+    console.log("display data: " + JSON.stringify(gameData.searchData));
+    this.setState({results: gameData.searchData});
   },
 
   /*

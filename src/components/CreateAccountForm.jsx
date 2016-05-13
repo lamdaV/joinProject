@@ -140,6 +140,10 @@ var CreateAccountForm = React.createClass({
       minHeight: 150
     };
 
+    var buttonStyle = {
+      background: "#563d7c"
+    };
+
     return (
       <div className = "col-sm-12">
         <div className = "panel panel-primary">
@@ -168,7 +172,7 @@ var CreateAccountForm = React.createClass({
               {/* Next Button*/}
               <div className = "row">
                 <div className = "col-sm-12 col-lg-12">
-                  <button className = "btn btn-primary"> Next </button>
+                  <button className = "btn btn-primary" style = {buttonStyle}> Next </button>
                 </div>
               </div>
 
