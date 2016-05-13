@@ -79,6 +79,10 @@ var Base = React.createClass({
         {
           title: "Inbox",
           href: "/inbox/" + localStorage.getItem("UserID")
+        },
+        {
+          title: "Library",
+          href: "/library/" + localStorage.getItem("UserID")
         }
       ];
       canSignOut = true;

@@ -21,7 +21,8 @@ var GameStore = Reflux.createStore({
     this.gameData = {
       searchData: null,
       details: null,
-      isInLibrary: null
+      isInLibrary: null,
+      library: null
     };
   },
 
@@ -80,6 +81,33 @@ var GameStore = Reflux.createStore({
       this.gameData.isInLibrary = dataJSON[0][0];
       this.returnStatus();
     }.bind(this));
+  },
+
+  /*
+    Get the user library.
+  */
+  postGetLibrary: function(userID) {
+    console.log("getLibrary: " + userID);
+    this.gameData.library = null;
+    var userData = {
+      userID: userID
+    };
+
+    http.post("/getLibrary", userData).then(function(dataJSON) {
+      console.log("getLibrary data: " + JSON.stringify(dataJSON));
+      this.gameData.library = dataJSON[0];
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  postDeleteGameFromLibrary: function(userID, gameID) {
+    console.log("deleteGameFromLibrary: " + userID);
+    var userData = {
+      userID: userID,
+      gameID: gameID
+    };
+
+    http.post("/deleteGameFromLibrary", userData);
   },
 
   /*

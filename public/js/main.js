@@ -26331,6 +26331,7 @@ var MatchPage = require("./components/MatchPage.jsx");
 var InboxPage = require("./components/InboxPage.jsx");
 var SettingsPage = require("./components/SettingsPage.jsx");
 var PreferencePage = require("./components/PreferencePage.jsx");
+var LibraryPage = require("./components/LibraryPage.jsx");
 
 var History = useRouterHistory(CreateHistory)({
   queryKey: false
@@ -26353,13 +26354,14 @@ var Routes = React.createElement(
     React.createElement(Route, { path: "/inbox/:inboxID", component: InboxPage }),
     React.createElement(Route, { path: "/settings/:settingID", component: SettingsPage }),
     React.createElement(Route, { path: "/preference/:preferenceID", component: PreferencePage }),
+    React.createElement(Route, { path: "/library/:libraryID", component: LibraryPage }),
     React.createElement(Route, { path: "*", component: PageNotFound })
   )
 );
 
 module.exports = Routes;
 
-},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":249,"./components/GamePage.jsx":255,"./components/HomePage.jsx":256,"./components/InboxPage.jsx":257,"./components/MatchPage.jsx":258,"./components/Page1.jsx":262,"./components/PageNotFound.jsx":263,"./components/PreferencePage.jsx":265,"./components/SearchResultsPage.jsx":267,"./components/SettingsPage.jsx":268,"./components/UserProfilePage.jsx":271,"./reflux/userActions.jsx":286,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
+},{"./components/Base.jsx":247,"./components/CreateAccountForm.jsx":249,"./components/GamePage.jsx":255,"./components/HomePage.jsx":256,"./components/InboxPage.jsx":257,"./components/LibraryPage.jsx":259,"./components/MatchPage.jsx":260,"./components/Page1.jsx":264,"./components/PageNotFound.jsx":265,"./components/PreferencePage.jsx":267,"./components/SearchResultsPage.jsx":269,"./components/SettingsPage.jsx":270,"./components/UserProfilePage.jsx":273,"./reflux/userActions.jsx":288,"history":48,"react":224,"react-router":88}],247:[function(require,module,exports){
 var React = require("react");
 var NavBar = require("../nav/NavBar.jsx");
 var Reflux = require("reflux");
@@ -26436,6 +26438,9 @@ var Base = React.createClass({
       }, {
         title: "Inbox",
         href: "/inbox/" + localStorage.getItem("UserID")
+      }, {
+        title: "Library",
+        href: "/library/" + localStorage.getItem("UserID")
       }];
       canSignOut = true;
       // Otherwise, boot the user off.
@@ -26485,7 +26490,7 @@ var Base = React.createClass({
 
 module.exports = Base;
 
-},{"../nav/NavBar.jsx":273,"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":286,"react":224,"reflux":240}],248:[function(require,module,exports){
+},{"../nav/NavBar.jsx":275,"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/userActions.jsx":288,"react":224,"reflux":240}],248:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Reflux = require("reflux");
@@ -26631,7 +26636,7 @@ var Chat = React.createClass({
 
 module.exports = Chat;
 
-},{"../reflux/messageActions.jsx":284,"../reflux/messageStore.jsx":285,"./Message.jsx":260,"react":224,"react-dom":56,"reflux":240}],249:[function(require,module,exports){
+},{"../reflux/messageActions.jsx":286,"../reflux/messageStore.jsx":287,"./Message.jsx":262,"react":224,"react-dom":56,"reflux":240}],249:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -26841,7 +26846,7 @@ var CreateAccountForm = React.createClass({
 
 module.exports = CreateAccountForm;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":286,"../reflux/userStore.jsx":287,"./EmailField.jsx":251,"./PasswordField.jsx":264,"./TimezoneRadioGroup.jsx":270,"react":224,"reflux":240}],250:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/userActions.jsx":288,"../reflux/userStore.jsx":289,"./EmailField.jsx":251,"./PasswordField.jsx":266,"./TimezoneRadioGroup.jsx":272,"react":224,"reflux":240}],250:[function(require,module,exports){
 var React = require("react");
 
 var CreateAccountPanel = React.createClass({
@@ -27044,7 +27049,7 @@ var FriendItem = React.createClass({
 
 module.exports = FriendItem;
 
-},{"../nav/NavItemMixIn.jsx":276,"react":224,"react-router":88}],253:[function(require,module,exports){
+},{"../nav/NavItemMixIn.jsx":278,"react":224,"react-router":88}],253:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var MessageStore = require("../reflux/messageStore.jsx");
@@ -27143,7 +27148,7 @@ var FriendList = React.createClass({
 
 module.exports = FriendList;
 
-},{"../reflux/messageActions.jsx":284,"../reflux/messageStore.jsx":285,"./FriendItem.jsx":252,"react":224,"reflux":240}],254:[function(require,module,exports){
+},{"../reflux/messageActions.jsx":286,"../reflux/messageStore.jsx":287,"./FriendItem.jsx":252,"react":224,"reflux":240}],254:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
@@ -27343,7 +27348,7 @@ var GameContentPanel = React.createClass({
 
 module.exports = GameContentPanel;
 
-},{"../reflux/gameActions.jsx":280,"../reflux/gameStore.jsx":281,"../reflux/userActions.jsx":286,"react":224,"reflux":240}],255:[function(require,module,exports){
+},{"../reflux/gameActions.jsx":282,"../reflux/gameStore.jsx":283,"../reflux/userActions.jsx":288,"react":224,"reflux":240}],255:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var GameContentPanel = require("./GameContentPanel.jsx");
@@ -27449,7 +27454,7 @@ var GamePage = React.createClass({
 
 module.exports = GamePage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/gameActions.jsx":280,"../reflux/gameStore.jsx":281,"./GameContentPanel.jsx":254,"react":224,"reflux":240}],256:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/gameActions.jsx":282,"../reflux/gameStore.jsx":283,"./GameContentPanel.jsx":254,"react":224,"reflux":240}],256:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var SignInPanel = require("./SignInPanel.jsx");
@@ -27514,7 +27519,7 @@ var HomePage = React.createClass({
 
 module.exports = HomePage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"./CreateAccountPanel.jsx":250,"./SignInPanel.jsx":269,"react":224,"reflux":240}],257:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"./CreateAccountPanel.jsx":250,"./SignInPanel.jsx":271,"react":224,"reflux":240}],257:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var MessageManager = require("./MessageManager.jsx");
@@ -27598,7 +27603,208 @@ var InboxPage = React.createClass({
 
 module.exports = InboxPage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":286,"./MessageManager.jsx":261,"react":224,"reflux":240}],258:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/userActions.jsx":288,"./MessageManager.jsx":263,"react":224,"reflux":240}],258:[function(require,module,exports){
+var React = require("react");
+var ReactRouter = require("react-router");
+var Link = ReactRouter.Link;
+var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
+var GameActions = require("../reflux/gameActions.jsx");
+
+var LibraryItem = React.createClass({
+  displayName: "LibraryItem",
+
+  /*
+    Set up "Abstract Class"
+  */
+  mixins: [NavItemMixIn],
+
+  /*
+    Define propTypes.
+  */
+  propTypes: {
+    item: React.PropTypes.object.isRequired,
+    libraryID: React.PropTypes.string.isRequired,
+    deletePropogator: React.PropTypes.func.isRequired,
+    linkStyle: React.PropTypes.object
+  },
+
+  handleDelete: function (event) {
+    event.preventDefault();
+    console.log("handle Delete");
+    GameActions.postDeleteGameFromLibrary(this.props.libraryID, this.props.item.GameID);
+    this.props.deletePropogator(this.props.item.GameID);
+  },
+
+  /*
+    Render the component.
+  */render: function () {
+    var href = "/game/" + this.props.item.GameID;
+
+    return React.createElement(
+      "li",
+      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseOut: this.mouseOut },
+      React.createElement(
+        Link,
+        { style: this.props.linkStyle, to: href },
+        React.createElement(
+          "div",
+          { className: "row" },
+          React.createElement(
+            "div",
+            { className: "col-sm-4" },
+            this.props.item.Title
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-offset-4 col-sm-4 text-right" },
+            React.createElement(
+              "button",
+              { className: "btn btn-danger", type: "button", onClick: this.handleDelete },
+              " Delete "
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+module.exports = LibraryItem;
+
+},{"../nav/NavItemMixIn.jsx":278,"../reflux/gameActions.jsx":282,"react":224,"react-router":88}],259:[function(require,module,exports){
+var React = require("react");
+var Reflux = require("reflux");
+var UserActions = require("../reflux/userActions.jsx");
+var AuthActions = require("../reflux/authActions.jsx");
+var AuthStore = require("../reflux/authStore.jsx");
+var GameActions = require("../reflux/gameActions.jsx");
+var GameStore = require("../reflux/gameStore.jsx");
+var UserActions = require("../reflux/userActions.jsx");
+var UserStore = require("../reflux/userStore.jsx");
+var LibraryItem = require("./LibraryItem.jsx");
+
+/* global localStorage */
+var LibraryPage = React.createClass({
+  displayName: "LibraryPage",
+
+  /*
+    Listen to the AuthStore and GameStore.
+  */
+  mixins: [Reflux.listenTo(AuthStore, "verify"), Reflux.listenTo(GameStore, "setLibrary")],
+
+  /*
+    Define propTypes.
+  */
+  propTypes: {
+    params: React.PropTypes.object
+  },
+
+  /*
+    Set router to dynamic pushing.
+  */
+  contextTypes: {
+    router: React.PropTypes.object
+  },
+
+  /*
+    Set initial state values.
+  */
+  getInitialState: function () {
+    return { libraryID: "", library: null };
+  },
+
+  /*
+    Updates the library on delete.
+  */
+  updateLibrary: function (gameID) {
+    console.log("updateLibrary gameID: " + gameID);
+    var libraryTemp = this.state.library;
+    for (var i = 0; i < libraryTemp.length; i++) {
+      if (libraryTemp[i].GameID === gameID) {
+        libraryTemp.splice(i, 1);
+      }
+    }
+
+    this.setState({ library: libraryTemp });
+  },
+
+  /*
+    If user is authenticated and the user is not trying to access someone else's preference page, setState to the props libraryID. Otherwise, push to home.
+  */
+  verify: function (event, status) {
+    if (status) {
+      console.log("preference verify passed");
+      if (localStorage.getItem("UserID") === this.props.params.libraryID) {
+        this.setState({ libraryID: this.props.params.libraryID });
+      } else {
+        this.context.router.push("/home");
+      }
+    } else {
+      console.log("preference verify failed");
+      UserActions.logout();
+      this.context.router.push("/home");
+    }
+  },
+
+  /*
+    Sets the user library.
+  */
+  setLibrary: function (event, gameData) {
+    if (gameData.library) {
+      console.log("setLibrary data: " + JSON.stringify(gameData.library));
+      this.setState({ library: gameData.library });
+    }
+  },
+
+  /*
+    Create a library item. Used with map.
+  */
+  createLibraryItem: function (item, index) {
+    var linkStyle = {
+      color: "magenta"
+    };
+
+    return React.createElement(LibraryItem, { key: item.GameID + "" + index, item: item, linkStyle: linkStyle, libraryID: this.state.libraryID, deletePropogator: this.updateLibrary });
+  },
+
+  /*
+    Authenticate before mounting.
+  */
+  componentWillMount: function () {
+    AuthActions.postAuthenticate();
+    GameActions.postGetLibrary(this.props.params.libraryID);
+  },
+
+  /*
+    Render the component.
+  */
+  render: function () {
+    return React.createElement(
+      "div",
+      null,
+      React.createElement(
+        "h1",
+        null,
+        " LibraryPage of User: ",
+        this.state.libraryID,
+        " "
+      ),
+      React.createElement(
+        "div",
+        { className: "col-sm-12" },
+        React.createElement(
+          "ul",
+          { className: "nav nav-pills nav-stacked" },
+          this.state.library === null ? null : this.state.library.map(this.createLibraryItem)
+        )
+      )
+    );
+  }
+});
+
+module.exports = LibraryPage;
+
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/gameActions.jsx":282,"../reflux/gameStore.jsx":283,"../reflux/userActions.jsx":288,"../reflux/userStore.jsx":289,"./LibraryItem.jsx":258,"react":224,"reflux":240}],260:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var MatchResults = require("./MatchResults.jsx");
@@ -27719,7 +27925,7 @@ var MatchPage = React.createClass({
 
 module.exports = MatchPage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/matchActions.jsx":282,"../reflux/matchStore.jsx":283,"../reflux/userActions.jsx":286,"./MatchResults.jsx":259,"react":224,"reflux":240}],259:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/matchActions.jsx":284,"../reflux/matchStore.jsx":285,"../reflux/userActions.jsx":288,"./MatchResults.jsx":261,"react":224,"reflux":240}],261:[function(require,module,exports){
 var React = require("react");
 
 var MatchResults = React.createClass({
@@ -27821,7 +28027,7 @@ var MatchResults = React.createClass({
 
 module.exports = MatchResults;
 
-},{"react":224}],260:[function(require,module,exports){
+},{"react":224}],262:[function(require,module,exports){
 var React = require("react");
 
 var Message = React.createClass({
@@ -27869,7 +28075,7 @@ var Message = React.createClass({
 
 module.exports = Message;
 
-},{"react":224}],261:[function(require,module,exports){
+},{"react":224}],263:[function(require,module,exports){
 var React = require("react");
 var FriendList = require("./FriendList.jsx");
 var Chat = require("./Chat.jsx");
@@ -27923,7 +28129,7 @@ var MessageManager = React.createClass({
 
 module.exports = MessageManager;
 
-},{"./Chat.jsx":248,"./FriendList.jsx":253,"react":224}],262:[function(require,module,exports){
+},{"./Chat.jsx":248,"./FriendList.jsx":253,"react":224}],264:[function(require,module,exports){
 var React = require("react");
 
 var Page1 = React.createClass({
@@ -27940,7 +28146,7 @@ var Page1 = React.createClass({
 
 module.exports = Page1;
 
-},{"react":224}],263:[function(require,module,exports){
+},{"react":224}],265:[function(require,module,exports){
 var React = require("react");
 
 var PageNotFound = React.createClass({
@@ -27960,7 +28166,7 @@ var PageNotFound = React.createClass({
 
 module.exports = PageNotFound;
 
-},{"react":224}],264:[function(require,module,exports){
+},{"react":224}],266:[function(require,module,exports){
 var React = require("react");
 
 var MIN_PASSWORD_LENGTH = 8;
@@ -28064,7 +28270,7 @@ var PasswordField = React.createClass({
 
 module.exports = PasswordField;
 
-},{"react":224}],265:[function(require,module,exports){
+},{"react":224}],267:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
@@ -28141,7 +28347,7 @@ var PreferencePage = React.createClass({
 
 module.exports = PreferencePage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":286,"react":224,"reflux":240}],266:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/userActions.jsx":288,"react":224,"reflux":240}],268:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
@@ -28195,7 +28401,7 @@ var SearchItem = React.createClass({
 
 module.exports = SearchItem;
 
-},{"../nav/NavItemMixIn.jsx":276,"react":224,"react-router":88}],267:[function(require,module,exports){
+},{"../nav/NavItemMixIn.jsx":278,"react":224,"react-router":88}],269:[function(require,module,exports){
 var React = require("react");
 var SearchItem = require("./SearchItem.jsx");
 var Reflux = require("reflux");
@@ -28285,7 +28491,7 @@ var SearchResultsPage = React.createClass({
 
 module.exports = SearchResultsPage;
 
-},{"../reflux/gameStore.jsx":281,"./SearchItem.jsx":266,"react":224,"reflux":240}],268:[function(require,module,exports){
+},{"../reflux/gameStore.jsx":283,"./SearchItem.jsx":268,"react":224,"reflux":240}],270:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
@@ -28362,7 +28568,7 @@ var SettingsPage = React.createClass({
 
 module.exports = SettingsPage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":286,"react":224,"reflux":240}],269:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/userActions.jsx":288,"react":224,"reflux":240}],271:[function(require,module,exports){
 var React = require("react");
 var EmailField = require("./EmailField.jsx");
 var PasswordField = require("./PasswordField.jsx");
@@ -28512,7 +28718,7 @@ var SignInPanel = React.createClass({
 
 module.exports = SignInPanel;
 
-},{"../reflux/userActions.jsx":286,"../reflux/userStore.jsx":287,"./EmailField.jsx":251,"./PasswordField.jsx":264,"react":224,"reflux":240}],270:[function(require,module,exports){
+},{"../reflux/userActions.jsx":288,"../reflux/userStore.jsx":289,"./EmailField.jsx":251,"./PasswordField.jsx":266,"react":224,"reflux":240}],272:[function(require,module,exports){
 var React = require("react");
 var RadioGroup = require("react-radio-group");
 
@@ -28619,7 +28825,7 @@ var TimezoneRadioGroup = React.createClass({
 
 module.exports = TimezoneRadioGroup;
 
-},{"react":224,"react-radio-group":57}],271:[function(require,module,exports){
+},{"react":224,"react-radio-group":57}],273:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
@@ -28704,14 +28910,14 @@ var UserProfilePage = React.createClass({
 
 module.exports = UserProfilePage;
 
-},{"../reflux/authActions.jsx":278,"../reflux/authStore.jsx":279,"../reflux/userActions.jsx":286,"react":224,"reflux":240}],272:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/userActions.jsx":288,"react":224,"reflux":240}],274:[function(require,module,exports){
 var React = require("react");
 var ReactDOM = require("react-dom");
 var Routes = require("./Routes.jsx");
 
 ReactDOM.render(Routes, document.getElementById("Base"));
 
-},{"./Routes.jsx":246,"react":224,"react-dom":56}],273:[function(require,module,exports){
+},{"./Routes.jsx":246,"react":224,"react-dom":56}],275:[function(require,module,exports){
 var React = require("react");
 var NavItem = require("./NavItem.jsx");
 var NavSignOut = require("./NavSignOut.jsx");
@@ -28863,7 +29069,7 @@ var NavBar = React.createClass({
 
 module.exports = NavBar;
 
-},{"./NavDropdownItem.jsx":274,"./NavItem.jsx":275,"./NavSignOut.jsx":277,"react":224,"react-router":88}],274:[function(require,module,exports){
+},{"./NavDropdownItem.jsx":276,"./NavItem.jsx":277,"./NavSignOut.jsx":279,"react":224,"react-router":88}],276:[function(require,module,exports){
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
@@ -28942,7 +29148,7 @@ var NavDropdownItem = React.createClass({
 
 module.exports = NavDropdownItem;
 
-},{"react":224,"react-router":88}],275:[function(require,module,exports){
+},{"react":224,"react-router":88}],277:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
@@ -28990,7 +29196,7 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"./NavItemMixIn.jsx":276,"react":224,"react-router":88}],276:[function(require,module,exports){
+},{"./NavItemMixIn.jsx":278,"react":224,"react-router":88}],278:[function(require,module,exports){
 var NavItemMixIn = {
   /*
     Set initial state values.
@@ -29016,7 +29222,7 @@ var NavItemMixIn = {
 
 module.exports = NavItemMixIn;
 
-},{}],277:[function(require,module,exports){
+},{}],279:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
@@ -29072,14 +29278,14 @@ var NavItem = React.createClass({
 
 module.exports = NavItem;
 
-},{"../reflux/userActions.jsx":286,"./NavItemMixIn.jsx":276,"react":224,"react-router":88}],278:[function(require,module,exports){
+},{"../reflux/userActions.jsx":288,"./NavItemMixIn.jsx":278,"react":224,"react-router":88}],280:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var AuthActions = Reflux.createActions(["postAuthenticate"]);
 
 module.exports = AuthActions;
 
-},{"reflux":240}],279:[function(require,module,exports){
+},{"reflux":240}],281:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var AuthActions = require("./authActions.jsx");
@@ -29125,14 +29331,14 @@ var AuthStore = Reflux.createStore({
 
 module.exports = AuthStore;
 
-},{"../services/httpService.js":288,"./authActions.jsx":278,"reflux":240}],280:[function(require,module,exports){
+},{"../services/httpService.js":290,"./authActions.jsx":280,"reflux":240}],282:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var GameActions = Reflux.createActions(["postSearchGame", "postGetGame", "postIsInLibrary"]);
+var GameActions = Reflux.createActions(["postSearchGame", "postGetGame", "postIsInLibrary", "postGetLibrary", "postDeleteGameFromLibrary"]);
 
 module.exports = GameActions;
 
-},{"reflux":240}],281:[function(require,module,exports){
+},{"reflux":240}],283:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var GameActions = require("./gameActions.jsx");
@@ -29156,7 +29362,8 @@ var GameStore = Reflux.createStore({
     this.gameData = {
       searchData: null,
       details: null,
-      isInLibrary: null
+      isInLibrary: null,
+      library: null
     };
   },
 
@@ -29218,6 +29425,33 @@ var GameStore = Reflux.createStore({
   },
 
   /*
+    Get the user library.
+  */
+  postGetLibrary: function (userID) {
+    console.log("getLibrary: " + userID);
+    this.gameData.library = null;
+    var userData = {
+      userID: userID
+    };
+
+    http.post("/getLibrary", userData).then(function (dataJSON) {
+      console.log("getLibrary data: " + JSON.stringify(dataJSON));
+      this.gameData.library = dataJSON[0];
+      this.returnStatus();
+    }.bind(this));
+  },
+
+  postDeleteGameFromLibrary: function (userID, gameID) {
+    console.log("deleteGameFromLibrary: " + userID);
+    var userData = {
+      userID: userID,
+      gameID: gameID
+    };
+
+    http.post("/deleteGameFromLibrary", userData);
+  },
+
+  /*
     Push changes to all listeners.
   */
   returnStatus: function () {
@@ -29227,14 +29461,14 @@ var GameStore = Reflux.createStore({
 
 module.exports = GameStore;
 
-},{"../services/httpService.js":288,"./gameActions.jsx":280,"reflux":240}],282:[function(require,module,exports){
+},{"../services/httpService.js":290,"./gameActions.jsx":282,"reflux":240}],284:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var MatchActions = Reflux.createActions(["postMatchings", "postAddFriend"]);
 
 module.exports = MatchActions;
 
-},{"reflux":240}],283:[function(require,module,exports){
+},{"reflux":240}],285:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var MatchActions = require("./matchActions.jsx");
@@ -29299,14 +29533,14 @@ var MessageStore = Reflux.createStore({
 
 module.exports = MessageStore;
 
-},{"../services/httpService.js":288,"./matchActions.jsx":282,"reflux":240}],284:[function(require,module,exports){
+},{"../services/httpService.js":290,"./matchActions.jsx":284,"reflux":240}],286:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var MessageActions = Reflux.createActions(["postFriendList", "getUnreadCount", "postMessageHistory", "postMessagePush"]);
 
 module.exports = MessageActions;
 
-},{"reflux":240}],285:[function(require,module,exports){
+},{"reflux":240}],287:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var MessageActions = require("./messageActions.jsx");
@@ -29396,14 +29630,14 @@ var MessageStore = Reflux.createStore({
 
 module.exports = MessageStore;
 
-},{"../services/httpService.js":288,"./messageActions.jsx":284,"reflux":240}],286:[function(require,module,exports){
+},{"../services/httpService.js":290,"./messageActions.jsx":286,"reflux":240}],288:[function(require,module,exports){
 var Reflux = require("reflux");
 
 var UserActions = Reflux.createActions(["postValidateUser", "postCreateUser", "postAddToLibrary", "logout"]);
 
 module.exports = UserActions;
 
-},{"reflux":240}],287:[function(require,module,exports){
+},{"reflux":240}],289:[function(require,module,exports){
 var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var UserActions = require("./userActions.jsx");
@@ -29502,7 +29736,7 @@ var UserStore = Reflux.createStore({
 
 module.exports = UserStore;
 
-},{"../services/httpService.js":288,"./userActions.jsx":286,"reflux":240}],288:[function(require,module,exports){
+},{"../services/httpService.js":290,"./userActions.jsx":288,"reflux":240}],290:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
 var baseUrl = "http://localhost:3333";
 
@@ -29528,4 +29762,4 @@ var Service = {
 
 module.exports = Service;
 
-},{"whatwg-fetch":245}]},{},[272]);
+},{"whatwg-fetch":245}]},{},[274]);

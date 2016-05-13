@@ -30,6 +30,73 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
+  Delete a specified game from a user's library.
+*/
+app.post("/deleteGameFromLibrary", function(request) {
+  console.log("POST deleteGameFromLibrary request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var userData = request.body;
+    var userID = userData.userID;
+    var gameID = userData.gameID;
+
+    userID = mysql.escape(userID);
+    gameID = mysql.escape(gameID);
+
+    var query = format("CALL delete_game_from_library({0}, {1});", userID, gameID);
+    console.log("QUERY: " + query);
+
+    // No response.
+    pool.query(query, function(error) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+    });
+    connection.release();
+  });
+});
+
+/*
+  Get a user's library
+*/
+app.post("/getLibrary", function(request, response) {
+  console.log("POST getLibrary request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var userData = request.body;
+    var userID = userData.userID;
+
+    userID = mysql.escape(userID);
+
+    var query = format("CALL get_user_library({0});", userID);
+    console.log("QUERY: " + query);
+
+    pool.query(query, function(error, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+
+      console.log("RESPONSE: " + JSON.stringify(rows));
+
+      response.send(rows);
+    });
+    connection.release();
+  });
+});
+
+/*
   Check if a user already has a game in their library.
 */
 app.post("/isInLibrary", function(request, response) {
