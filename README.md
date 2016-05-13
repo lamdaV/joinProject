@@ -158,7 +158,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Study for test
   - [x] Heuristics discussion  
   
-## Milestone 04:
+## Milestone 05:
 
 ### David Lam
   - [ ] Remove friend frontend
