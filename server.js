@@ -3,6 +3,8 @@ var bodyParser = require("body-parser");
 var mysql = require("mysql");
 var jwt = require("jsonwebtoken");
 var format = require("string-format");
+var favicon = require("serve-favicon");
+var path = require("path");
 
 // TODO: Generate Secret randomly for each user.
 var secret = "SupremeOverlord";
@@ -18,6 +20,7 @@ var pool = mysql.createPool({
 });
 
 var app = express();
+app.use(favicon(path.join(__dirname, "/public/favicon.ico")));
 
 app.all("/*", function(request, response, next) {
   response.header("Access-Control-Allow-Origin", "*");
@@ -726,5 +729,10 @@ app.post("/test", function(request, response) {
 // ---------TEST REQUEST/Templates------------------------------------
 
 // Have the server listen on port 3333.
-app.listen(3333);
-console.log("Server at localhost:3333");
+app.listen(3333, function(error) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Server at localhost:3333");
+  }
+});

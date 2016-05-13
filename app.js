@@ -1,5 +1,15 @@
-var app = require("express")();
-var bodyParser = require("body-parser");
+var express = require("express");
+var favicon = require("serve-favicon");
+var path = require("path");
+var app = express();
+
+var destination = ["css", "js", "fonts"];
+destination.map(function(folder) {
+  app.use("/" + folder, express.static(path.join(__dirname, "/public", folder)));
+  return null;
+});
+
+app.use(favicon(path.join(__dirname, "/public/favicon.ico")));
 
 app.all("/*", function(request, response, next) {
   response.header("Access-Control-Allow-Origin", "*");
@@ -8,44 +18,14 @@ app.all("/*", function(request, response, next) {
   next();
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
-
 app.get("/", function(request, response) {
-  response.sendFile(__dirname + "/public/index.html");
+  response.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
-app.get("/css/bootstrap.min.css", function(request, response) {
-  response.sendFile(__dirname + "/public/css/bootstrap.min.css");
+app.listen(3330, function(error) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Webserver listening at localhost:3330");
+  }
 });
-
-app.get("/css/bootstrap-theme.min.css", function(request, response) {
-  response.sendFile(__dirname + "/public/css/bootstrap-theme.min.css");
-});
-
-app.get("/js/jquery-1.12.1.min.js", function(request, response) {
-  response.sendFile(__dirname + "/public/js/jquery-1.12.1.min.js");
-});
-
-app.get("/js/main.js", function(request, response) {
-  response.sendFile(__dirname + "/public/js/main.js");
-});
-
-app.get("/js/bootstrap.min.js", function(request, response) {
-  response.sendFile(__dirname + "/public/js/bootstrap.min.js");
-});
-
-app.get("/fonts/glyphicons-halflings-regular.woff", function(request, response) {
-  response.sendFile(__dirname + "/public/fonts/glyphicons-halflings-regular.woff");
-});
-
-app.get("/fonts/glyphicons-halflings-regular.woff2", function(request, response) {
-  response.sendFile(__dirname + "/public/fonts/glyphicons-halflings-regular.woff2");
-});
-
-app.get("/fonts/glyphicons-halflings-regular.ttf", function(request, response) {
-  response.sendFile(__dirname + "/public/fonts/glyphicons-halflings-regular.ttf");
-});
-
-console.log("Webserver listening at localhost:3330");
-app.listen(3330);
