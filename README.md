@@ -152,7 +152,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] User preferences/settings page (done, just fighting with git to publish)
 
 ### Christopher Knight
-  - [ ] Match page back end/implement matching algorithm
+  - [x] Match page back end/implement matching algorithm
 
 ### Group
   - [x] Study for test
