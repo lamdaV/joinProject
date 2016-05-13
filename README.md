@@ -29,6 +29,9 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 16. Open your prefered browser and go to `localhost:<port>` where `<port>` is the port used in `http-server`.
 17. You should now see the react webpage.
 
+# Alternative:
+  1. Rather than using `http-server`, you can launch `node app.js` or `nodemon app.js` instead. Everything else still follows.
+
 # List of Pages:
 |         Page          |    Assigned                       |    Status     |
 |:---------------------:|:---------------------------------:|:-------------:|
@@ -132,6 +135,16 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Completed Chat components
   - [x] Match page accept/reject now functional
   - [x] Users can add games to their "library" from the Game Page
+  - [x] Users can now view their library
+  - [x] Users can now delete games from their library
+  - [x] SQL Stored Procedures written:
+      - get_game_by_id
+      - add_message
+      - add_friend
+      - get_message_history
+      - is_game_in_library
+      - get_user_library
+      - delete_game_from_library
 
 ### Kennan French
   - [x] Scroll box (class? widget?) (David Lam)
