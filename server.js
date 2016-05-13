@@ -70,7 +70,7 @@ app.post("/isInLibrary", function(request, response) {
 /*
   Add a game to a user's library.
 */
-app.post("/addToLibrary", function(request, response) {
+app.post("/addToLibrary", function(request) {
   console.log("POST addToLibrary request...");
   pool.getConnection(function(error, connection) {
     if (error) {
@@ -79,7 +79,7 @@ app.post("/addToLibrary", function(request, response) {
     }
     console.log("connection established");
 
-    var userData = request.body
+    var userData = request.body;
     var userID = userData.userID;
     var gameID = userData.gameID;
 
@@ -90,7 +90,7 @@ app.post("/addToLibrary", function(request, response) {
     console.log("QUERY: " + query);
 
     // Do not send any response because the client will not process any data.
-    pool.query(query, function(error, rows) {
+    pool.query(query, function(error) {
       if (error) {
         console.log("ERROR: " + error.message);
         return;

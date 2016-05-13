@@ -69,7 +69,6 @@ var GameContentPanel = React.createClass({
       console.log("firing postIsInLibrary event");
       GameActions.postIsInLibrary(nextProps.userID, this.props.gameID);
     }
-
   },
 
   /*

@@ -22,7 +22,7 @@ var GameStore = Reflux.createStore({
       searchData: null,
       details: null,
       isInLibrary: null
-    }
+    };
   },
 
   /*
