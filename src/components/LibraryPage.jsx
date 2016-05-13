@@ -5,8 +5,6 @@ var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 var GameActions = require("../reflux/gameActions.jsx");
 var GameStore = require("../reflux/gameStore.jsx");
-var UserActions = require("../reflux/userActions.jsx");
-var UserStore = require("../reflux/userStore.jsx");
 var LibraryItem = require("./LibraryItem.jsx");
 
 /* global localStorage */
@@ -89,7 +87,7 @@ var LibraryPage = React.createClass({
     };
 
     return (
-      <LibraryItem key = {item.GameID + "" + index} item = {item} linkStyle = {linkStyle} libraryID = {this.state.libraryID} deletePropogator = {this.updateLibrary} />
+      <LibraryItem key = {String(item.GameID) + index} item = {item} linkStyle = {linkStyle} libraryID = {this.state.libraryID} deletePropogator = {this.updateLibrary} />
     );
   },
 

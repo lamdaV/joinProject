@@ -12,8 +12,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.get("/", function(request, response) {
-  // response.sendFile(__dirname + "/public")
-  // response.sendFile(__dirname + "/public/css/bootstrap.min.css");
   response.sendFile(__dirname + "/public/index.html");
 });
 
