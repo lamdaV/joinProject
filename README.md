@@ -149,9 +149,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ### Kennan French
   - [x] Scroll box (class? widget?) (David Lam)
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
-  - [ ] Preference Page
-  - [ ] Account Settings Page
-  - [ ] Finish Profile Page
+  - [ ] User preferences/settings page (done, just fighting with git to publish)
 
 ### Christopher Knight
   - [ ] Match page back end/implement matching algorithm
