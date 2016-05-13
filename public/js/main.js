@@ -27679,8 +27679,6 @@ var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 var GameActions = require("../reflux/gameActions.jsx");
 var GameStore = require("../reflux/gameStore.jsx");
-var UserActions = require("../reflux/userActions.jsx");
-var UserStore = require("../reflux/userStore.jsx");
 var LibraryItem = require("./LibraryItem.jsx");
 
 /* global localStorage */
@@ -27764,7 +27762,7 @@ var LibraryPage = React.createClass({
       color: "magenta"
     };
 
-    return React.createElement(LibraryItem, { key: item.GameID + "" + index, item: item, linkStyle: linkStyle, libraryID: this.state.libraryID, deletePropogator: this.updateLibrary });
+    return React.createElement(LibraryItem, { key: String(item.GameID) + index, item: item, linkStyle: linkStyle, libraryID: this.state.libraryID, deletePropogator: this.updateLibrary });
   },
 
   /*
@@ -27804,7 +27802,7 @@ var LibraryPage = React.createClass({
 
 module.exports = LibraryPage;
 
-},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/gameActions.jsx":282,"../reflux/gameStore.jsx":283,"../reflux/userActions.jsx":288,"../reflux/userStore.jsx":289,"./LibraryItem.jsx":258,"react":224,"reflux":240}],260:[function(require,module,exports){
+},{"../reflux/authActions.jsx":280,"../reflux/authStore.jsx":281,"../reflux/gameActions.jsx":282,"../reflux/gameStore.jsx":283,"../reflux/userActions.jsx":288,"./LibraryItem.jsx":258,"react":224,"reflux":240}],260:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var MatchResults = require("./MatchResults.jsx");
@@ -29738,7 +29736,7 @@ module.exports = UserStore;
 
 },{"../services/httpService.js":290,"./userActions.jsx":288,"reflux":240}],290:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
-var baseUrl = "http://localhost:3333";
+var baseUrl = "http://joincsse333.csse.rose-hulman.edu:3333";
 
 var Service = {
   post: function (url, data) {
