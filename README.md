@@ -167,7 +167,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ### Christopher Knight
   - [ ] Remove friend backend
   - [ ] Work on paper
-
+  - [ ] Add indicis
 ### Kennan French
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
   - [ ] User preferences/settings page (done, just fighting with git to publish)
