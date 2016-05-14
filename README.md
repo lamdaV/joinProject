@@ -157,26 +157,22 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ### Group
   - [x] Study for test
   - [x] Heuristics discussion  
-  
-## Milestone 05:
 
+## Milestone 05:
 ### David Lam
-  - [ ] Remove friend frontend
+  - [x] Remove friend frontend
   - [ ] Work on paper
-  
+
 ### Christopher Knight
-  - [ ] Remove friend backend
+  - [x] Remove friend backend (David Lam)
   - [ ] Work on paper
-  - [ ] Add indicis
-  
+  - [ ] Add index to tables
+
 ### Kennan French
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
   - [ ] User preferences/settings page (done, just fighting with git to publish)
   - [ ] Work on paper
-  - [ ] User preferences page
-  - [ ] Account Settings page
   - [ ] Integrate Profile page
   - [ ] User Rate other Users
-  - [ ] Compatability with Mozilla FireFox
+  - [ ] Compatibility with Mozilla Firefox
   - [ ] Hash Passwords
-  
