@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "watchify src/main.jsx -v -t [ babelify --presets [ react ] ] -o public/js/main.js",
-    "lint": "eslint src/components/*.jsx src/nav/*.jsx src/reflux/*.jsx /src/services/*.jsx *.js",
+    "lint": "eslint src/components/*.jsx src/nav/*.jsx src/reflux/*.jsx /src/services/*.js *.js",
     "test": "npm run lint"
   },
   "repository": {

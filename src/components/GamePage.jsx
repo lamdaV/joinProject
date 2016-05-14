@@ -83,9 +83,6 @@ var GamePage = React.createClass({
     console.log("state gameData: " + JSON.stringify(this.state.gameData));
     return (
       <div>
-        {/* TODO: remove header after testing.*/}
-        <h1> Game ID: {this.state.gameID} </h1>
-
         <div className = "panel-group">
           <GameContentPanel gameData = {this.state.gameData} gameTag = {this.state.gameTag} headerColor = "#563d7c" gameID = {this.state.gameID} isLoggedIn = {this.state.isLoggedIn} userID = {this.state.userID} />
         </div>

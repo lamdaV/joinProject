@@ -51,7 +51,6 @@ var CreateAccountForm = React.createClass({
       this.context.router.push("/profile/" + data.UserID);
     // User Exists, setState to render UI response.
     } else if (data.status === 2) {
-      // TODO: UI response.
       console.log("User already exists...");
       this.setState({errorUserNotUnique: true});
     } else {

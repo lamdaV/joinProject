@@ -36,12 +36,6 @@ var SignInPanel = React.createClass({
     Handle data returned from attempted sign in.
   */
   userValidation: function(event, data) {
-    // Variable for stringification.
-    // TODO: clean up logging.
-    var dataCopy = data;
-    console.log("userValidation data: " + JSON.stringify(dataCopy));
-    console.log("userID: " + data.UserID);
-
     /* eslint-disable */
     if (data.UserID === -1) {
       // TODO: Improve UI.

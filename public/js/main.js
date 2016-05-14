@@ -26692,7 +26692,6 @@ var CreateAccountForm = React.createClass({
       this.context.router.push("/profile/" + data.UserID);
       // User Exists, setState to render UI response.
     } else if (data.status === 2) {
-        // TODO: UI response.
         console.log("User already exists...");
         this.setState({ errorUserNotUnique: true });
       } else {
@@ -27010,7 +27009,6 @@ module.exports = EmailField;
 },{"email-validator":4,"react":224}],252:[function(require,module,exports){
 var React = require("react");
 var ReactRouter = require("react-router");
-var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
 var Link = ReactRouter.Link;
 
 // CONSTANTS
@@ -27019,7 +27017,6 @@ var RIGHT_CLICK = 3;
 
 var FriendItem = React.createClass({
   displayName: "FriendItem",
-
 
   /*
     Definine propTypes.
@@ -27115,7 +27112,7 @@ var FriendItem = React.createClass({
 
 module.exports = FriendItem;
 
-},{"../nav/NavItemMixIn.jsx":278,"react":224,"react-router":88}],253:[function(require,module,exports){
+},{"react":224,"react-router":88}],253:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var MessageStore = require("../reflux/messageStore.jsx");
@@ -27512,18 +27509,12 @@ var GamePage = React.createClass({
 
   /*
     Render the component.
-  */render: function () {
+  */
+  render: function () {
     console.log("state gameData: " + JSON.stringify(this.state.gameData));
     return React.createElement(
       "div",
       null,
-      React.createElement(
-        "h1",
-        null,
-        " Game ID: ",
-        this.state.gameID,
-        " "
-      ),
       React.createElement(
         "div",
         { className: "panel-group" },
@@ -28032,7 +28023,6 @@ var MatchResults = React.createClass({
     Handle Reject button.
   */
   handleReject: function (event) {
-    // TODO: Get this to work with Kennan's stuff (remove from list?)
     event.preventDefault();
     console.log("Reject button clicked");
     this.props.rejectHandler(this.props.userID);
@@ -28042,7 +28032,6 @@ var MatchResults = React.createClass({
     Handle Accept button.
   */
   handleAccept: function (event) {
-    // TODO: Get this to work with Kennan's stuff. (add to friend list) (move to profile)
     event.preventDefault();
     console.log("Accept button clicked");
     this.props.acceptHandler(this.props.userID);
@@ -28060,7 +28049,6 @@ var MatchResults = React.createClass({
       fontSize: 28
     };
 
-    // TODO: Place results from database. Likely with props.
     return React.createElement(
       "div",
       { className: "row" },
@@ -28688,12 +28676,6 @@ var SignInPanel = React.createClass({
     Handle data returned from attempted sign in.
   */
   userValidation: function (event, data) {
-    // Variable for stringification.
-    // TODO: clean up logging.
-    var dataCopy = data;
-    console.log("userValidation data: " + JSON.stringify(dataCopy));
-    console.log("userID: " + data.UserID);
-
     /* eslint-disable */
     if (data.UserID === -1) {
       // TODO: Improve UI.
@@ -29658,13 +29640,6 @@ var MessageStore = Reflux.createStore({
   },
 
   /*
-    TODO: Likely to remove.
-  */
-  getUnreadCount: function () {
-    // Remember to add arguments.
-  },
-
-  /*
     Get the message history between two users.
   */
   postMessageHistory: function (inboxID, chatUserID) {
@@ -29829,7 +29804,7 @@ module.exports = UserStore;
 
 },{"../services/httpService.js":290,"./userActions.jsx":288,"reflux":240}],290:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
-var baseUrl = "http://localhost:3333";
+var baseUrl = "http://joincsse333.csse.rose-hulman.edu:3333";
 
 var Service = {
   post: function (url, data) {

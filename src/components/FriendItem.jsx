@@ -1,6 +1,5 @@
 var React = require("react");
 var ReactRouter = require("react-router");
-var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
 var Link = ReactRouter.Link;
 
 // CONSTANTS
@@ -8,7 +7,6 @@ var LEFT_CLICK = 1;
 var RIGHT_CLICK = 3;
 
 var FriendItem = React.createClass({
-
   /*
     Definine propTypes.
   */
@@ -79,13 +77,13 @@ var FriendItem = React.createClass({
                     Delete
                   </button>
                 </div>
+              </div> :
+
+              <div className = "row">
+                <div className = "col-sm-12">
+                  {this.props.email}
+                </div>
               </div>
-            :
-            <div className = "row">
-              <div className = "col-sm-12">
-                {this.props.email}
-              </div>
-            </div>
           }
         </Link>
       </li>

@@ -23,7 +23,6 @@ var MatchResults = React.createClass({
     Handle Reject button.
   */
   handleReject: function(event) {
-    // TODO: Get this to work with Kennan's stuff (remove from list?)
     event.preventDefault();
     console.log("Reject button clicked");
     this.props.rejectHandler(this.props.userID);
@@ -33,7 +32,6 @@ var MatchResults = React.createClass({
     Handle Accept button.
   */
   handleAccept: function(event) {
-    // TODO: Get this to work with Kennan's stuff. (add to friend list) (move to profile)
     event.preventDefault();
     console.log("Accept button clicked");
     this.props.acceptHandler(this.props.userID);
@@ -52,7 +50,6 @@ var MatchResults = React.createClass({
       fontSize: 28
     };
 
-    // TODO: Place results from database. Likely with props.
     return (
       <div className = "row">
         <div className = "panel panel-primary">

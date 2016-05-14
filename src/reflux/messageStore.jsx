@@ -36,13 +36,6 @@ var MessageStore = Reflux.createStore({
   },
 
   /*
-    TODO: Likely to remove.
-  */
-  getUnreadCount: function() {
-    // Remember to add arguments.
-  },
-
-  /*
     Get the message history between two users.
   */
   postMessageHistory: function(inboxID, chatUserID) {
