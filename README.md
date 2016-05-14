@@ -10,13 +10,14 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - http-server
   - Putty or SSH client
 
-# How to use:
+# How to use (Local):
 1. Download the repository.
 2. Navigate to the root of the repository folder via terminal.
 3. Run `npm install` to update/retrieve required npm packages.
 4. Run `npm install http-server --g` to install required test package.
 5. Run `npm start` to build main.js located in `public\js`. This will build the main.js upon any detected changes. Note: the terminal will be inactive.
 6. Run `http-server -p <port>` to start the server.
+  - Alternative: Rather than using `http-server`, you can launch `node app.js` or `nodemon app.js` instead. Everything else still follows.
 7. Open Putty or SSH client.
 8. Go to `Connection -> SSH -> Tunnels`.
 9. Set port to `3306` and destination to `localhost:3306`. Then click the add button.
@@ -29,8 +30,13 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 16. Open your prefered browser and go to `localhost:<port>` where `<port>` is the port used in `http-server`.
 17. You should now see the react webpage.
 
-# Alternative:
-  1. Rather than using `http-server`, you can launch `node app.js` or `nodemon app.js` instead. Everything else still follows.
+# How to use (Remote):
+1. SSH into the provided VM (see steps above).
+2. Enter into the terminal `cd joinProject/`.
+3. Recommended: enter into the terminal `git pull origin master`.
+4. Run the shell script by entering this into the terminal `./run.sh`.
+5. You can now access the server remotely by going to `joincsse333.csse.rose-hulman.edu` (only when on campus).
+6. Note: The servers (web and API server) will now run indefinitely. To shut down the servers, run `forever stopall`.
 
 # List of Pages:
 |         Page          |    Assigned                       |    Status     |
