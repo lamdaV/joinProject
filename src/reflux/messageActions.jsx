@@ -4,7 +4,8 @@ var MessageActions = Reflux.createActions([
   "postFriendList",
   "getUnreadCount",
   "postMessageHistory",
-  "postMessagePush"
+  "postMessagePush",
+  "postDeleteFriend"
 ]);
 
 module.exports = MessageActions;

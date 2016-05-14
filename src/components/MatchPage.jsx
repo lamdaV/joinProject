@@ -70,6 +70,7 @@ var MatchPage = React.createClass({
     for (var i = 0; i < matchingsTemp.length; i++) {
       if (matchingsTemp[i].UserID === userID) {
         matchingsTemp.splice(i, 1);
+        break;
       }
     }
     this.setState({matchings: matchingsTemp});

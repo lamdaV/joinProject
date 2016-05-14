@@ -70,8 +70,8 @@ var MatchResults = React.createClass({
 
               {/* Acccept/Reject */}
               <div className = "col-sm-4 text-right">
-                <button className = "btn btn-danger" type = "button" onClick = {this.handleReject} >Reject</button>
-                <button className = "btn btn-success" onClick = {this.handleAccept} type = "button">Accept</button>
+                <button className = "btn btn-danger" type = "button" onClick = {this.handleReject}> Reject </button>
+                <button className = "btn btn-success" onClick = {this.handleAccept} type = "button"> Accept </button>
               </div>
             </h5>
           </div>

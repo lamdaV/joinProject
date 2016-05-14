@@ -27013,10 +27013,13 @@ var ReactRouter = require("react-router");
 var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
 var Link = ReactRouter.Link;
 
+// CONSTANTS
+var LEFT_CLICK = 1;
+var RIGHT_CLICK = 3;
+
 var FriendItem = React.createClass({
   displayName: "FriendItem",
 
-  mixins: [NavItemMixIn],
 
   /*
     Definine propTypes.
@@ -27025,23 +27028,86 @@ var FriendItem = React.createClass({
     linkStyle: React.PropTypes.object,
     email: React.PropTypes.string.isRequired,
     UserID: React.PropTypes.number.isRequired,
-    propogator: React.PropTypes.func.isRequired
+    propogator: React.PropTypes.func.isRequired,
+    deletePropogator: React.PropTypes.func.isRequired
   },
 
-  handleClick: function (event) {
+  /*
+  Set initial state values.
+  */
+  getInitialState: function () {
+    return { hover: false, showDelete: false };
+  },
+
+  /*
+    Handle component mouse is over.
+  */
+  mouseOver: function () {
+    this.setState({ hover: true });
+  },
+
+  /*
+    Handle component mouse is out.
+  */
+  mouseLeave: function () {
+    this.setState({ hover: false, showDelete: false });
+  },
+
+  handleLeftClick: function (event) {
     event.preventDefault();
-    console.log("friendItem sending UserID: " + this.props.UserID);
-    this.props.propogator(this.props.UserID, this.props.email);
+    if (event.nativeEvent.which === LEFT_CLICK) {
+      console.log("friendItem sending UserID: " + this.props.UserID);
+      this.props.propogator(this.props.UserID, this.props.email);
+    }
+  },
+
+  handleRightClick: function (event) {
+    event.preventDefault();
+    if (event.nativeEvent.which === RIGHT_CLICK) {
+      console.log("showing delete button...");
+      this.setState({ showDelete: true });
+    }
+  },
+
+  handleDelete: function (event) {
+    event.preventDefault();
+    console.log("deleting friend: " + this.props.UserID);
+    this.props.deletePropogator(this.props.UserID);
   },
 
   render: function () {
     return React.createElement(
       "li",
-      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseOut: this.mouseOut },
+      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseLeave: this.mouseLeave, onContextMenu: this.handleRightClick },
       React.createElement(
         Link,
-        { onClick: this.handleClick, style: this.props.linkStyle, to: "" },
-        this.props.email
+        { onClick: this.handleLeftClick, style: this.props.linkStyle, to: "" },
+        this.state.showDelete ? React.createElement(
+          "div",
+          { className: "row" },
+          React.createElement(
+            "div",
+            { className: "col-sm-8" },
+            this.props.email
+          ),
+          React.createElement(
+            "div",
+            { className: "col-sm-4" },
+            React.createElement(
+              "button",
+              { className: "btn btn-danger", onClick: this.handleDelete, type: "button" },
+              "Delete"
+            )
+          )
+        ) : React.createElement(
+          "div",
+          { className: "row" },
+          React.createElement(
+            "div",
+            { className: "col-sm-12" },
+            this.props.email
+          )
+        )
       )
     );
   }
@@ -27097,6 +27163,21 @@ var FriendList = React.createClass({
   },
 
   /*
+    Deletes a friend from the friends list.
+  */
+  deleteFriend: function (userID) {
+    var friendTemp = this.state.friends;
+    for (var i = 0; i < friendTemp.length; i++) {
+      if (friendTemp[i].friendID === userID) {
+        friendTemp.splice(i, 1);
+        break;
+      }
+    }
+    MessageStore.postDeleteFriend(this.state.inboxID, userID);
+    this.setState({ friends: friendTemp });
+  },
+
+  /*
     Get proper database values for friends list.
   */
   componentWillMount: function () {
@@ -27112,7 +27193,7 @@ var FriendList = React.createClass({
       color: "#563d7c"
     };
 
-    return React.createElement(FriendItem, { linkStyle: linkStyle, key: item.Email + index, UserID: item.friendID, email: item.Email, propogator: this.propogator });
+    return React.createElement(FriendItem, { linkStyle: linkStyle, key: item.Email + index, UserID: item.friendID, email: item.Email, propogator: this.propogator, deletePropogator: this.deleteFriend });
   },
 
   /*
@@ -27608,7 +27689,6 @@ var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
-var GameActions = require("../reflux/gameActions.jsx");
 
 var LibraryItem = React.createClass({
   displayName: "LibraryItem",
@@ -27631,7 +27711,6 @@ var LibraryItem = React.createClass({
   handleDelete: function (event) {
     event.preventDefault();
     console.log("handle Delete");
-    GameActions.postDeleteGameFromLibrary(this.props.libraryID, this.props.item.GameID);
     this.props.deletePropogator(this.props.item.GameID);
   },
 
@@ -27671,7 +27750,7 @@ var LibraryItem = React.createClass({
 
 module.exports = LibraryItem;
 
-},{"../nav/NavItemMixIn.jsx":278,"../reflux/gameActions.jsx":282,"react":224,"react-router":88}],259:[function(require,module,exports){
+},{"../nav/NavItemMixIn.jsx":278,"react":224,"react-router":88}],259:[function(require,module,exports){
 var React = require("react");
 var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
@@ -27720,9 +27799,10 @@ var LibraryPage = React.createClass({
     for (var i = 0; i < libraryTemp.length; i++) {
       if (libraryTemp[i].GameID === gameID) {
         libraryTemp.splice(i, 1);
+        break;
       }
     }
-
+    GameActions.postDeleteGameFromLibrary(this.state.libraryID, gameID);
     this.setState({ library: libraryTemp });
   },
 
@@ -27877,6 +27957,7 @@ var MatchPage = React.createClass({
     for (var i = 0; i < matchingsTemp.length; i++) {
       if (matchingsTemp[i].UserID === userID) {
         matchingsTemp.splice(i, 1);
+        break;
       }
     }
     this.setState({ matchings: matchingsTemp });
@@ -28008,12 +28089,12 @@ var MatchResults = React.createClass({
               React.createElement(
                 "button",
                 { className: "btn btn-danger", type: "button", onClick: this.handleReject },
-                "Reject"
+                " Reject "
               ),
               React.createElement(
                 "button",
                 { className: "btn btn-success", onClick: this.handleAccept, type: "button" },
-                "Accept"
+                " Accept "
               )
             )
           )
@@ -29534,7 +29615,7 @@ module.exports = MessageStore;
 },{"../services/httpService.js":290,"./matchActions.jsx":284,"reflux":240}],286:[function(require,module,exports){
 var Reflux = require("reflux");
 
-var MessageActions = Reflux.createActions(["postFriendList", "getUnreadCount", "postMessageHistory", "postMessagePush"]);
+var MessageActions = Reflux.createActions(["postFriendList", "getUnreadCount", "postMessageHistory", "postMessagePush", "postDeleteFriend"]);
 
 module.exports = MessageActions;
 
@@ -29616,6 +29697,18 @@ var MessageStore = Reflux.createStore({
       this.inboxData.messages = dataJSON[1];
       this.returnStatus();
     }.bind(this));
+  },
+
+  /*
+    Deletes a the user pairs from the `Is Friends With` table.
+  */
+  postDeleteFriend: function (userID, friendID) {
+    var userData = {
+      userID: userID,
+      friendID: friendID
+    };
+
+    http.post("/deleteFriend", userData);
   },
 
   /*
@@ -29736,7 +29829,7 @@ module.exports = UserStore;
 
 },{"../services/httpService.js":290,"./userActions.jsx":288,"reflux":240}],290:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
-var baseUrl = "http://joincsse333.csse.rose-hulman.edu:3333";
+var baseUrl = "http://localhost:3333";
 
 var Service = {
   post: function (url, data) {

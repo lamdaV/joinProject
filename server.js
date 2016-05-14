@@ -33,6 +33,39 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 /*
+  Delete a friend from a user's friends list.
+*/
+app.post("/deleteFriend", function(request) {
+  console.log("POST deleteFriend request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    console.log("connection established");
+
+    var userData = request.body;
+    var userID = userData.userID;
+    var friendID = userData.friendID;
+
+    userID = mysql.escape(userID);
+    friendID = mysql.escape(friendID);
+
+    var query = format("CALL delete_friend({0}, {1});", userID, friendID);
+    console.log("QUERY: " + query);
+
+    // No response.
+    pool.query(query, function(error) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+    });
+    connection.release();
+  });
+});
+
+/*
   Delete a specified game from a user's library.
 */
 app.post("/deleteGameFromLibrary", function(request) {

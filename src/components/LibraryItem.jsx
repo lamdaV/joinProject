@@ -2,7 +2,6 @@ var React = require("react");
 var ReactRouter = require("react-router");
 var Link = ReactRouter.Link;
 var NavItemMixIn = require("../nav/NavItemMixIn.jsx");
-var GameActions = require("../reflux/gameActions.jsx");
 
 var LibraryItem = React.createClass({
   /*
@@ -23,7 +22,6 @@ var LibraryItem = React.createClass({
   handleDelete: function(event) {
     event.preventDefault();
     console.log("handle Delete");
-    GameActions.postDeleteGameFromLibrary(this.props.libraryID, this.props.item.GameID);
     this.props.deletePropogator(this.props.item.GameID);
   },
 

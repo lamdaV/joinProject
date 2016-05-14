@@ -44,9 +44,10 @@ var LibraryPage = React.createClass({
     for (var i = 0; i < libraryTemp.length; i++) {
       if (libraryTemp[i].GameID === gameID) {
         libraryTemp.splice(i, 1);
+        break;
       }
     }
-
+    GameActions.postDeleteGameFromLibrary(this.state.libraryID, gameID);
     this.setState({library: libraryTemp});
   },
 

@@ -43,6 +43,21 @@ var FriendList = React.createClass({
   },
 
   /*
+    Deletes a friend from the friends list.
+  */
+  deleteFriend: function(userID) {
+    var friendTemp = this.state.friends;
+    for (var i = 0; i < friendTemp.length; i++) {
+      if (friendTemp[i].friendID === userID) {
+        friendTemp.splice(i, 1);
+        break;
+      }
+    }
+    MessageStore.postDeleteFriend(this.state.inboxID, userID);
+    this.setState({friends: friendTemp});
+  },
+
+  /*
     Get proper database values for friends list.
   */
   componentWillMount: function() {
@@ -59,7 +74,7 @@ var FriendList = React.createClass({
     };
 
     return (
-      <FriendItem linkStyle = {linkStyle} key = {item.Email + index} UserID = {item.friendID} email = {item.Email} propogator = {this.propogator}/>
+      <FriendItem linkStyle = {linkStyle} key = {item.Email + index} UserID = {item.friendID} email = {item.Email} propogator = {this.propogator} deletePropogator = {this.deleteFriend} />
     );
   },
 

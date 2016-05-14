@@ -78,6 +78,18 @@ var MessageStore = Reflux.createStore({
   },
 
   /*
+    Deletes a the user pairs from the `Is Friends With` table.
+  */
+  postDeleteFriend: function(userID, friendID) {
+    var userData = {
+      userID: userID,
+      friendID: friendID
+    };
+
+    http.post("/deleteFriend", userData);
+  },
+
+  /*
     Push changes to all listers.
   */
   returnStatus: function() {
