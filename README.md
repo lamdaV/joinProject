@@ -163,6 +163,12 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Remove friend frontend
   - [ ] Work on paper
 
+### Extras:
+  - [x] Updated SQL Stored Procedures:
+    - get_friends_list (Now returns alphabetically)
+  - [x] Wrote SQL Stored Procedures:
+    - delete_friend (Chris was asleep when writing UI)
+
 ### Christopher Knight
   - [x] Remove friend backend (David Lam)
   - [ ] Work on paper
