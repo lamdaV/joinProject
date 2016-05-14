@@ -35,7 +35,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 2. Enter into the terminal `cd joinProject/`.
 3. Recommended: enter into the terminal `git pull origin master`.
 4. Run the shell script by entering this into the terminal `./run.sh`.
-5. You can now access the server remotely by going to `joincsse333.csse.rose-hulman.edu` (only when on campus).
+5. You can now access the server remotely by going to `joincsse333.csse.rose-hulman.edu:3330` (only when on campus).
 6. Note: The servers (web and API server) will now run indefinitely. To shut down the servers, run `forever stopall`.
 
 # List of Pages:
