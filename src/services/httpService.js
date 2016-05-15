@@ -1,5 +1,5 @@
 var Fetch = require("whatwg-fetch");
-var baseUrl = "http://joincsse333.csse.rose-hulman.ed:3333";
+var baseUrl = "http://joincsse333.csse.rose-hulman.edu:3333";
 
 var Service = {
   post: function(url, data) {
