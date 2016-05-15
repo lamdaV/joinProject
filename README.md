@@ -1,5 +1,5 @@
 [![forthebadge](http://forthebadge.com/images/badges/compatibility-club-penguin.svg)](http://forthebadge.com)
-# Join Project [![Build Status](https://travis-ci.org/lamdaV/joinProject.svg?branch=master)](https://travis-ci.org/lamdaV/joinProject) [![Depedency Status](https://david-dm.org/lamdav/joinProject.svg)](https://david-dm.org/?success)[![forthebadge](http://forthebadge.co
+# Join Project [![Build Status](https://travis-ci.org/lamdaV/joinProject.svg?branch=master)](https://travis-ci.org/lamdaV/joinProject) [![Depedency Status](https://david-dm.org/lamdav/joinProject.svg)](https://david-dm.org/?success)
 
 Authors: David Lam, Kennan French, and Christopher Knight
 
