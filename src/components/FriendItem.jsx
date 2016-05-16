@@ -74,7 +74,7 @@ var FriendItem = React.createClass({
     Render the component.
   */
   render: function() {
-    var liClassName = ""
+    var liClassName = "";
     if (this.state.hover) {
       liClassName += "active";
     }
