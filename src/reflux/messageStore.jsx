@@ -39,7 +39,8 @@ var MessageStore = Reflux.createStore({
     Get the message history between two users.
   */
   postMessageHistory: function(inboxID, chatUserID) {
-    console.log("postMessageHistory called");
+    console.log("postMessageHistory inboxID: " + inboxID);
+    console.log("postMessageHistory chatUserID: " + chatUserID);
     var userIDs = {
       inboxID: inboxID,
       chatUserID: chatUserID

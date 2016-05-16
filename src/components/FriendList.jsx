@@ -53,6 +53,8 @@ var FriendList = React.createClass({
         break;
       }
     }
+    console.log("updated friendTemp: " + JSON.stringify(friendTemp));
+    this.propogator(friendTemp[0].friendID, friendTemp[0].Email);
     MessageStore.postDeleteFriend(this.state.inboxID, userID);
     this.setState({friends: friendTemp});
   },

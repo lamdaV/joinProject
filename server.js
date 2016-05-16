@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 /*
   Delete a friend from a user's friends list.
 */
-app.post("/deleteFriend", function(request) {
+app.post("/deleteFriend", function(request, response) {
   console.log("POST deleteFriend request...");
   pool.getConnection(function(error, connection) {
     if (error) {
@@ -60,6 +60,8 @@ app.post("/deleteFriend", function(request) {
         console.log("ERROR: " + error.message);
         return;
       }
+      console.log("DELETE friend sucess");
+      response.send(true);
     });
     connection.release();
   });
@@ -68,7 +70,7 @@ app.post("/deleteFriend", function(request) {
 /*
   Delete a specified game from a user's library.
 */
-app.post("/deleteGameFromLibrary", function(request) {
+app.post("/deleteGameFromLibrary", function(request, response) {
   console.log("POST deleteGameFromLibrary request...");
   pool.getConnection(function(error, connection) {
     if (error) {
@@ -93,6 +95,8 @@ app.post("/deleteGameFromLibrary", function(request) {
         console.log("ERROR: " + error.message);
         return;
       }
+      console.log("DELETE game sucess");
+      response.send(true);
     });
     connection.release();
   });
@@ -173,7 +177,7 @@ app.post("/isInLibrary", function(request, response) {
 /*
   Add a game to a user's library.
 */
-app.post("/addToLibrary", function(request) {
+app.post("/addToLibrary", function(request, response) {
   console.log("POST addToLibrary request...");
   pool.getConnection(function(error, connection) {
     if (error) {
@@ -198,6 +202,8 @@ app.post("/addToLibrary", function(request) {
         console.log("ERROR: " + error.message);
         return;
       }
+      console.log("ADD game success");
+      response.send(true);
     });
     connection.release();
   });

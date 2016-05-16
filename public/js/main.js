@@ -26637,6 +26637,10 @@ var Chat = React.createClass({
     Update the message history when new props are received.
   */
   componentWillReceiveProps: function (nextProps) {
+    if (this.state.chatUserID === nextProps.chatUserID) {
+      console.log("already in chatroom with user: " + this.state.chatUserID);
+      return;
+    }
     MessageActions.postMessageHistory(this.state.inboxID, nextProps.chatUserID);
     this.setState({ chatUserID: nextProps.chatUserID, chatUserEmail: nextProps.chatUserEmail });
   },
@@ -27136,14 +27140,20 @@ var FriendItem = React.createClass({
     this.setState({ hover: false, showDelete: false });
   },
 
+  /*
+    Handle left click when left click is detected.
+  */
   handleLeftClick: function (event) {
     event.preventDefault();
-    if (event.nativeEvent.which === LEFT_CLICK) {
+    if (event.nativeEvent.which === LEFT_CLICK && !this.state.showDelete) {
       console.log("friendItem sending UserID: " + this.props.UserID);
       this.props.propogator(this.props.UserID, this.props.email);
     }
   },
 
+  /*
+    Show the delete button when right click detected.
+  */
   handleRightClick: function (event) {
     event.preventDefault();
     if (event.nativeEvent.which === RIGHT_CLICK) {
@@ -27152,16 +27162,30 @@ var FriendItem = React.createClass({
     }
   },
 
+  /*
+    Delete the friend when delete button is clicked.
+  */
   handleDelete: function (event) {
     event.preventDefault();
     console.log("deleting friend: " + this.props.UserID);
     this.props.deletePropogator(this.props.UserID);
   },
 
+  /*
+    Render the component.
+  */
   render: function () {
+    var liClassName = "";
+    if (this.state.hover) {
+      liClassName += "active";
+    }
+    if (this.state.showDelete) {
+      liClassName += " disabled";
+    }
+
     return React.createElement(
       "li",
-      { className: this.state.hover ? "active" : "", onMouseOver: this.mouseOver, onMouseLeave: this.mouseLeave, onContextMenu: this.handleRightClick },
+      { className: liClassName, onMouseOver: this.mouseOver, onMouseLeave: this.mouseLeave, onContextMenu: this.handleRightClick },
       React.createElement(
         Link,
         { onClick: this.handleLeftClick, style: this.props.linkStyle, to: "" },
@@ -27256,6 +27280,8 @@ var FriendList = React.createClass({
         break;
       }
     }
+    console.log("updated friendTemp: " + JSON.stringify(friendTemp));
+    this.propogator(friendTemp[0].friendID, friendTemp[0].Email);
     MessageStore.postDeleteFriend(this.state.inboxID, userID);
     this.setState({ friends: friendTemp });
   },
@@ -29729,7 +29755,8 @@ var MessageStore = Reflux.createStore({
     Get the message history between two users.
   */
   postMessageHistory: function (inboxID, chatUserID) {
-    console.log("postMessageHistory called");
+    console.log("postMessageHistory inboxID: " + inboxID);
+    console.log("postMessageHistory chatUserID: " + chatUserID);
     var userIDs = {
       inboxID: inboxID,
       chatUserID: chatUserID
@@ -29890,7 +29917,10 @@ module.exports = UserStore;
 
 },{"../services/httpService.js":292,"./userActions.jsx":290,"reflux":242}],292:[function(require,module,exports){
 var Fetch = require("whatwg-fetch");
+
+// Un/comment baseUrl depending on server hosting or local testing.
 var baseUrl = "http://joincsse333.csse.rose-hulman.edu:3333";
+// var baseUrl = "http://localhost:3333";
 
 var Service = {
   post: function (url, data) {

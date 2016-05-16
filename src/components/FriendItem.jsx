@@ -39,14 +39,20 @@ var FriendItem = React.createClass({
     this.setState({hover: false, showDelete: false});
   },
 
+  /*
+    Handle left click when left click is detected.
+  */
   handleLeftClick: function(event) {
     event.preventDefault();
-    if (event.nativeEvent.which === LEFT_CLICK) {
+    if (event.nativeEvent.which === LEFT_CLICK && !this.state.showDelete) {
       console.log("friendItem sending UserID: " + this.props.UserID);
       this.props.propogator(this.props.UserID, this.props.email);
     }
   },
 
+  /*
+    Show the delete button when right click detected.
+  */
   handleRightClick: function(event) {
     event.preventDefault();
     if (event.nativeEvent.which === RIGHT_CLICK) {
@@ -55,15 +61,29 @@ var FriendItem = React.createClass({
     }
   },
 
+  /*
+    Delete the friend when delete button is clicked.
+  */
   handleDelete: function(event) {
     event.preventDefault();
     console.log("deleting friend: " + this.props.UserID);
     this.props.deletePropogator(this.props.UserID);
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
+    var liClassName = ""
+    if (this.state.hover) {
+      liClassName += "active";
+    }
+    if (this.state.showDelete) {
+      liClassName += " disabled";
+    }
+
     return (
-      <li className = {this.state.hover ? "active" : ""} onMouseOver = {this.mouseOver} onMouseLeave = {this.mouseLeave} onContextMenu = {this.handleRightClick} >
+      <li className = {liClassName} onMouseOver = {this.mouseOver} onMouseLeave = {this.mouseLeave} onContextMenu = {this.handleRightClick} >
         <Link onClick = {this.handleLeftClick} style = {this.props.linkStyle} to = "">
           {
             this.state.showDelete ?
