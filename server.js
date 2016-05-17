@@ -5,6 +5,8 @@ var jwt = require("jsonwebtoken");
 var format = require("string-format");
 var favicon = require("serve-favicon");
 var path = require("path");
+var bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 // TODO: Generate Secret randomly for each user.
 var secret = "SupremeOverlord";
@@ -687,9 +689,10 @@ app.post("/create", function(request, response) {
     var email = mysql.escape(user.email);
     var password = mysql.escape(user.password);
     var timezone = mysql.escape(user.timezone);
+    var hash = bcrypt.hashSync(password, saltRounds);
 
     // Create create_user query.
-    var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, password, timezone);
+    var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, hash, timezone);
 
     console.log("QUERY: " + query);
 
@@ -705,7 +708,7 @@ app.post("/create", function(request, response) {
 
       var userData = {
         email: email,
-        password: password
+        hash: hash
       };
 
       userData = jwt.sign(userData, secret, {expiresIn: "10h"});
@@ -725,6 +728,68 @@ app.post("/create", function(request, response) {
     });
 
     // Release connection.
+    connection.release();
+  });
+});
+
+app.post("/createPreference", function(request, response) {
+  console.log("POST createPreference request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    //get data sent
+    var preference = request.body;
+    var platform = preference.platform;
+    var genre = preference.genre;
+
+    //create query
+    var query = format("CALL add_preference({0}, {1});", genre, platform);
+
+    console.log("QUERY: " + query);
+
+    //insert the preference
+    pool.query(query, function(error, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      response.send(rows);
+    });
+    connection.release();
+  });
+});
+
+app.post("/associatePreference", function(request, response) {
+  console.log("POST associatePreference request...");
+  pool.getConnection(function(error, connection) {
+    if (error) {
+      console.log("ERROR: Failed to Connect");
+      return;
+    }
+    //get data sent
+    var userPreference = request.body;
+    var preferenceID = userPreference.preferenceID;
+    var userID = userPreference.userID;
+
+    //create query
+    var query = format("CALL user_add_pref({0}, {1});", userID, preferenceID);
+
+    console.log("QUERY: " + query);
+
+    //run the query
+    pool.query(query, function(error, rows) {
+      if (error) {
+        console.log("ERROR: " + error.message);
+        return;
+      }
+
+      console.log("RESPONSE: " + JSON.stringify(rows));
+      response.send(rows);
+    });
     connection.release();
   });
 });
