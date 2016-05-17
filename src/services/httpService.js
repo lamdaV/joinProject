@@ -1,5 +1,8 @@
 var Fetch = require("whatwg-fetch");
+
+// Un/comment baseUrl depending on server hosting or local testing.
 var baseUrl = "http://joincsse333.csse.rose-hulman.edu:3333";
+// var baseUrl = "http://localhost:3333";
 
 var Service = {
   post: function(url, data) {

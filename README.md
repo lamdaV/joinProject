@@ -175,6 +175,8 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
     - get_friends_list (Now returns alphabetically)
   - [x] Wrote SQL Stored Procedures:
     - delete_friend (Chris was asleep when writing UI)
+  - [x] Added dependencies badge.
+  - [x] Addded bash shell script for starting servers.
 
 ### Christopher Knight
   - [x] Remove friend backend (David Lam)

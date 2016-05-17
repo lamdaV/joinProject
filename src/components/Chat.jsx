@@ -56,6 +56,10 @@ var Chat = React.createClass({
     Update the message history when new props are received.
   */
   componentWillReceiveProps: function(nextProps) {
+    if (this.state.chatUserID === nextProps.chatUserID) {
+      console.log("already in chatroom with user: " + this.state.chatUserID);
+      return;
+    }
     MessageActions.postMessageHistory(this.state.inboxID, nextProps.chatUserID);
     this.setState({chatUserID: nextProps.chatUserID, chatUserEmail: nextProps.chatUserEmail});
   },
