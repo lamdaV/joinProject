@@ -698,7 +698,7 @@ app.post("/create", function(request, response) {
     var hash = bcrypt.hashSync(password, saltRounds);
 
     // Create create_user query.
-    var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, hash, timezone);
+    var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, password, timezone);
 
     console.log("QUERY: " + query);
 
@@ -714,7 +714,7 @@ app.post("/create", function(request, response) {
 
       var userData = {
         email: email,
-        hash: hash
+        password: password
       };
 
       userData = jwt.sign(userData, secret, {expiresIn: "10h"});
