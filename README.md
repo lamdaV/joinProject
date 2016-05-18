@@ -177,11 +177,15 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
     - delete_friend (Chris was asleep when writing UI)
   - [x] Added dependencies badge.
   - [x] Addded bash shell script for starting servers.
+  - [x] Integrated changes introduced by multi-valued Platform changes.
 
 ### Christopher Knight
   - [x] Remove friend backend (David Lam)
   - [ ] Work on paper
-  - [ ] Add index to tables
+  - [x] Add index to tables
+
+### Extras:
+  - [x] Get multi-valued property of Platform working
 
 ### Kennan French
   - [ ] Integrate widgets with React virtualization + fix other React "quirks"
