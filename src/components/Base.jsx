@@ -63,15 +63,6 @@ var Base = React.createClass({
           title: "Profile",
           href: userProfileLink
         },
-        // TODO: Remove when done testing
-        {
-          title: "Other User",
-          href: "/profile/99"
-        },
-        {
-          title: "Game Test",
-          href: "/game/1001"
-        },
         {
           title: "MatchMe",
           href: "/match/" + localStorage.getItem("UserID")

@@ -56,7 +56,8 @@ var GameStore = Reflux.createStore({
     http.post("/getGame", gameIDJSON).then(function(dataJSON) {
       var dataJSONSimplified = {
         game: dataJSON[0][0],
-        tag: dataJSON[1]
+        tag: dataJSON[1],
+        platform: dataJSON[2]
       };
 
       this.gameData.details = dataJSONSimplified;

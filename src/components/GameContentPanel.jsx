@@ -12,6 +12,8 @@ var GameContentPanel = React.createClass({
   propTypes: {
     headerColor: React.PropTypes.string,
     gameID: React.PropTypes.string.isRequired,
+    gameTag: React.PropTypes.array,
+    gamePlatform: React.PropTypes.array,
     isLoggedIn: React.PropTypes.bool.isRequired,
     userID: React.PropTypes.string.isRequired
   },
@@ -20,7 +22,7 @@ var GameContentPanel = React.createClass({
     Set intial state values.
   */
   getInitialState: function() {
-    return ({title: "", rating: "", price: "", tags: null, isLoggedIn: this.props.isLoggedIn, buttonEnabled: false});
+    return ({title: "", rating: "", price: "", tags: null, platform: null, isLoggedIn: this.props.isLoggedIn, buttonEnabled: false});
   },
 
   /*
@@ -37,6 +39,9 @@ var GameContentPanel = React.createClass({
     }
   },
 
+  /*
+    Changes the button's state based on db data.
+  */
   setButtonState: function(event, gameData) {
     console.log("in setButtonState");
     if (gameData.isInLibrary && gameData.isInLibrary.isInLibrary === 0) {
@@ -52,6 +57,7 @@ var GameContentPanel = React.createClass({
     console.log("GameContentPanel receiving props...");
     console.log("props data: " + JSON.stringify(nextProps.gameData));
     console.log("props tag: " + JSON.stringify(nextProps.gameTag));
+    console.log("props platform: " + JSON.stringify(nextProps.gamePlatform));
 
     if (nextProps.gameData) {
       this.setState({title: nextProps.gameData.Title, rating: nextProps.gameData.Rating, price: nextProps.gameData.Price});
@@ -59,6 +65,10 @@ var GameContentPanel = React.createClass({
 
     if (nextProps.gameTag) {
       this.setState({tags: nextProps.gameTag});
+    }
+
+    if (nextProps.gamePlatform) {
+      this.setState({platform: nextProps.gamePlatform});
     }
 
     if (nextProps.isLoggedIn) {
@@ -113,6 +123,13 @@ var GameContentPanel = React.createClass({
       );
     };
 
+    // Function to create a PlatformLabel. Used in conjuction with map.
+    var createPlatformLabel = function(item, index) {
+      return (
+        <span className = "label label-info" key = {item.plat_name + index}> {item.plat_name} </span>
+      );
+    };
+
     var buttonStyle = {
       background: "#527F76",
       minHeight: 75
@@ -139,6 +156,8 @@ var GameContentPanel = React.createClass({
 
             {/* Game Details should go here */}
             <div className = "panel-body">
+              <h3> Platforms: </h3>
+              {this.state.platform ? this.state.platform.map(createPlatformLabel) : null}
               <h3> Rating: {this.state.rating} </h3>
               <h3> Tags: </h3>
               {this.state.tags ? this.state.tags.map(createTagLabel) : null}

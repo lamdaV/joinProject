@@ -2,16 +2,20 @@ var http = require("../services/httpService.js");
 var Reflux = require("reflux");
 var PreferenceActions = require("./preferenceActions.jsx");
 
-// global localStorate
+/* global localStorage */
 var PreferenceStore = Reflux.createStore({
-  //listen to PreferenceActions
+  /*
+   Listen to PreferenceActions.
+  */
   listenables: [PreferenceActions],
 
   init: function() {
-    this.jwt = localStorate.getItem("jwt");
+    this.jwt = localStorage.getItem("jwt");
   },
 
-  //create a preference
+  /*
+    Create a preference.
+  */
   postCreatePreference: function(platform, genre) {
     var preference = {
       platform: platform,
@@ -23,7 +27,9 @@ var PreferenceStore = Reflux.createStore({
     });
   },
 
-  //associate a preference with a user
+  /*
+    Associate a preference with a user
+  */
   postAssociatePreference: function(preferenceID, userID) {
     var userPreference = {
       preferenceID: preferenceID,

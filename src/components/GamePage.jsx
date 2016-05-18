@@ -31,7 +31,7 @@ var GamePage = React.createClass({
     Set the initial state.
   */
   getInitialState: function() {
-    return ({gameID: this.props.params.gameID, gameData: "", gameTag: "", isLoggedIn: false, userID: ""});
+    return ({gameID: this.props.params.gameID, gameData: null, gameTag: null, gamePlatform: null, isLoggedIn: false, userID: ""});
   },
 
   /*
@@ -41,9 +41,11 @@ var GamePage = React.createClass({
     if (gameData.details) {
       var gameSpecs = gameData.details.game;
       var gameTag = gameData.details.tag;
+      var gamePlatform = gameData.details.platform;
       console.log("setGameData game: " + JSON.stringify(gameSpecs));
       console.log("setGameData tag: " + JSON.stringify(gameTag));
-      this.setState({gameData: gameSpecs, gameTag: gameTag});
+      console.log("setGameData platform: " + JSON.stringify(gamePlatform));
+      this.setState({gameData: gameSpecs, gameTag: gameTag, gamePlatform: gamePlatform});
     }
   },
 
@@ -84,7 +86,7 @@ var GamePage = React.createClass({
     return (
       <div>
         <div className = "panel-group">
-          <GameContentPanel gameData = {this.state.gameData} gameTag = {this.state.gameTag} headerColor = "#563d7c" gameID = {this.state.gameID} isLoggedIn = {this.state.isLoggedIn} userID = {this.state.userID} />
+          <GameContentPanel gameData = {this.state.gameData} gameTag = {this.state.gameTag} gamePlatform = {this.state.gamePlatform} headerColor = "#563d7c" gameID = {this.state.gameID} isLoggedIn = {this.state.isLoggedIn} userID = {this.state.userID} />
         </div>
       </div>
     );

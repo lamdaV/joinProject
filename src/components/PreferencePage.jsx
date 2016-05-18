@@ -1,10 +1,13 @@
 var React = require("react");
+var Reflux = require("reflux");
 var UserActions = require("../reflux/userActions.jsx");
 var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
+var PreferenceActions = require("../reflux/preferenceActions.jsx");
 var PlatformRadioGroup = require("./PlatformRadioGroup.jsx");
 var GenreRadioGroup = require("./GenreRadioGroup.jsx");
 
+/* global localStorage */
 var PreferencesPage = React.createClass({
   /*
     Listen to the AuthStore.
@@ -70,7 +73,7 @@ var PreferencesPage = React.createClass({
 
     PreferenceActions.postPlatformList(localStorage.getItem("UserID"), platform);
     PreferenceActions.postGenreList(localStorage.getItem("UserID"), genre);
-    
+
     this.context.router.push("/home");
   },
 

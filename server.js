@@ -416,6 +416,7 @@ app.post("/getGame", function(request, response) {
       console.log("RESPONSE: " + JSON.stringify(rows));
       console.log("ROW 0: " + JSON.stringify(rows[0][0]));
       console.log("ROW 1: " + JSON.stringify(rows[1]));
+      console.log("ROW 2: " + JSON.stringify(rows[2]));
       response.send(rows);
     });
     connection.release();
