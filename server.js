@@ -6,6 +6,7 @@ var format = require("string-format");
 var favicon = require("serve-favicon");
 var path = require("path");
 var bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 // TODO: Generate Secret randomly for each user.
 var secret = "SupremeOverlord";
@@ -629,7 +630,6 @@ app.post("/signin", function(request, response) {
     var email = mysql.escape(user.email);
     var password = mysql.escape(user.password);
 
-
     // Log to console.
     console.log("email: " + email);
     console.log("password: " + password);
@@ -684,7 +684,6 @@ app.post("/signin", function(request, response) {
 */
 app.post("/create", function(request, response) {
   console.log("POST create request...");
-  const saltRounds = 10;
   pool.getConnection(function(error, connection) {
     if (error) {
       console.log("ERROR: Failed to Connect");
@@ -697,10 +696,10 @@ app.post("/create", function(request, response) {
     var email = mysql.escape(user.email);
     var password = mysql.escape(user.password);
     var timezone = mysql.escape(user.timezone);
-    var hash = mysql.escape(bcrypt.hashSync(password, saltRounds));
+    var hash = bcrypt.hashSync(password, saltRounds);
 
     // Create create_user query.
-    var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, hash, timezone);
+    var query = format("SET @status = -1; CALL create_user({0}, {1}, {2}, @status); SELECT @status AS status;", email, password, timezone);
 
     console.log("QUERY: " + query);
 
@@ -716,7 +715,7 @@ app.post("/create", function(request, response) {
 
       var userData = {
         email: email,
-        hash: hash
+        password: password
       };
 
       userData = jwt.sign(userData, secret, {expiresIn: "10h"});

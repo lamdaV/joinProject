@@ -7,7 +7,6 @@ var AuthActions = require("../reflux/authActions.jsx");
 var AuthStore = require("../reflux/authStore.jsx");
 var UserActions = require("../reflux/userActions.jsx");
 var UserStore = require("../reflux/userStore.jsx");
-var bcrypt = require("bcrypt");
 
 /* global localStorage */
 var CreateAccountForm = React.createClass({
@@ -69,19 +68,16 @@ var CreateAccountForm = React.createClass({
 
     // Evaluate field validity.
     var isValid = this.checkValidity();
-    const saltRounds = 10;
 
     // Get each field variable.
     var email = this.refs.emailField.state.email;
     var password = this.refs.passwordField.state.password;
     var timezone = this.refs.timezoneRadio.state.selectedValue;
-    var hash = bcrypt.hashSync(password, saltRounds);
 
     // Log.
     console.log("email: " + email);
     console.log("password: " + password);
     console.log("timezone: " + timezone);
-    console.log("hash: " + hash);
 
     // Send a UserStore action to create a user.
     if (isValid) {
