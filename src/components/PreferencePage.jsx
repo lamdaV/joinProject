@@ -59,10 +59,16 @@ var PreferencesPage = React.createClass({
     AuthActions.postAuthenticate();
   },
 
-  componentWillReceiveProps: function(nextProps) {
+  /*
+    Authenticate as component receives props.
+  */
+  componentWillReceiveProps: function() {
     AuthActions.postAuthenticate();
   },
 
+  /*
+    Handle preference changes.
+  */
   handleSubmit: function(event) {
     console.log("handling preference submission");
     event.preventDefault();
