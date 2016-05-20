@@ -168,7 +168,7 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 ## Milestone 05:
 ### David Lam
   - [x] Remove friend frontend
-  - [ ] Work on paper
+  - [x] Work on paper
 
 ### Extras:
   - [x] Updated SQL Stored Procedures:
@@ -178,10 +178,11 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Added dependencies badge.
   - [x] Addded bash shell script for starting servers.
   - [x] Integrated changes introduced by multi-valued Platform changes.
+  - [x] Setup GitHub Pages.
 
 ### Christopher Knight
   - [x] Remove friend backend (David Lam)
-  - [ ] Work on paper
+  - [x] Work on paper
   - [x] Add index to tables
 
 ### Extras:
