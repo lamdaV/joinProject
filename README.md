@@ -42,11 +42,11 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
 # List of Pages:
 |         Page          |    Assigned                       |    Status     |
 |:---------------------:|:---------------------------------:|:-------------:|
-| User Profile          | Kennan French                     | In Progress   |
-| User Account Setting  | Kennan French                     | In Progress   |
+| User Profile          | Kennan French                     | Incomplete    |
+| User Account Setting  | Kennan French                     | Incomplete    |
 | Game Info             | David Lam                         | Completed     |
 | Search Result         | David Lam                         | Completed     |
-| Preference Selection  | Kennan French                     | In Progress   |
+| Preference Selection  | Kennan French                     | Incomplete    |
 | Matching              | David Lam                         | Completed     |
 | Conversation          | ~~Kennan French~~ <br/> David Lam | Completed     |
 
@@ -179,6 +179,9 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [x] Addded bash shell script for starting servers.
   - [x] Integrated changes introduced by multi-valued Platform changes.
   - [x] Setup GitHub Pages.
+  - [x] Fixed Preference Page bugs introduced by Kennan
+  - [x] Updated some pages to meet React Router changes.
+  - [x] User's can now have empty friends list.
 
 ### Christopher Knight
   - [x] Remove friend backend (David Lam)
