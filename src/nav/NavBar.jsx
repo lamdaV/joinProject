@@ -77,7 +77,7 @@ var NavBar = React.createClass({
     }
 
     if (this.props.linkColor) {
-      linkStyle.color = this.props.linkColor + "!important";
+      linkStyle.color = this.props.linkColor;
     }
 
     // Create link items. Used with map.
