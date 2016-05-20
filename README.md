@@ -193,5 +193,5 @@ A repository for our CSSE 333 project. The goal of this project is to create a w
   - [ ] Work on paper
   - [ ] Integrate Profile page
   - [ ] User Rate other Users
-  - [ ] Compatibility with Mozilla Firefox
+  - [x] Compatibility with Mozilla Firefox
   - [ ] Hash Passwords
