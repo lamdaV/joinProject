@@ -32,7 +32,7 @@ var PreferencesPage = React.createClass({
     Set the intial state.
   */
   getInitialState: function() {
-    return ({preferencesID: ""});
+    return ({preferenceID: ""});
   },
 
   /*
@@ -42,10 +42,8 @@ var PreferencesPage = React.createClass({
   verify: function(event, status) {
     if (status) {
       console.log("preferences verify passed");
-      if (this.state.preferencesID !== localStorage.getItem("UserID")) {
-        console.log("preferences illegal access");
-        UserActions.logout();
-        this.context.router.push("/home");
+      if (this.props.params.preferenceID === localStorage.getItem("UserID")) {
+        this.setState({preferenceID: this.props.params.preferenceID});
       }
     } else {
       console.log("preferences verify failed");
@@ -54,14 +52,15 @@ var PreferencesPage = React.createClass({
     }
   },
 
+  /*
+    Authenticate before mounting.
+  */
   componentWillMount: function() {
     AuthActions.postAuthenticate();
-    this.setState({preferencesID: this.props.params.preferencesID});
   },
 
   componentWillReceiveProps: function(nextProps) {
     AuthActions.postAuthenticate();
-    this.setState({inboxID: nextProps.params.preferencesID});
   },
 
   handleSubmit: function(event) {
@@ -77,13 +76,16 @@ var PreferencesPage = React.createClass({
     this.context.router.push("/home");
   },
 
+  /*
+    Render the component.
+  */
   render: function() {
     var buttonStyle = {
       background: "#563d7c"
     };
     return (
       <div>
-        <h1>Preferences for User {this.state.preferencesID}</h1>
+        <h1>Preferences for User {this.state.preferenceID}</h1>
         <h4>Favorite platform: </h4>
         <PlatformRadioGroup />
 
