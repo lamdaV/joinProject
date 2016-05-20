@@ -23,7 +23,12 @@ var MessageManager = React.createClass({
   chatSwitch: function(userID, email) {
     console.log("manager received userID: " + userID);
     console.log("manager received email: " + email);
-    this.setState({chatUserID: userID, chatUserEmail: email});
+
+    if (userID === null || email === null) {
+      this.setState({chatUserID: -1, chatUserEmail: ""});
+    } else {
+      this.setState({chatUserID: userID, chatUserEmail: email});
+    }
   },
 
   /*

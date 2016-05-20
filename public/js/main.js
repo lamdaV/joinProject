@@ -27738,7 +27738,7 @@ var FriendList = React.createClass({
 
   setFriendList: function (event, data) {
     // Only update when necessary.
-    if (this.state.friends !== data.friends) {
+    if (this.state.friends !== data.friends && data.friends.length !== 0) {
       console.log("setFriendList data: " + JSON.stringify(data.friends));
       this.props.propogator(data.friends[0].friendID, data.friends[0].Email);
       this.setState({ friends: data.friends });
@@ -27765,9 +27765,15 @@ var FriendList = React.createClass({
       }
     }
     console.log("updated friendTemp: " + JSON.stringify(friendTemp));
-    this.propogator(friendTemp[0].friendID, friendTemp[0].Email);
+
+    if (friendTemp.length === 0) {
+      this.setState({ friends: null });
+      this.propogator(null, null);
+    } else {
+      this.propogator(friendTemp[0].friendID, friendTemp[0].Email);
+      this.setState({ friends: friendTemp });
+    }
     MessageStore.postDeleteFriend(this.state.inboxID, userID);
-    this.setState({ friends: friendTemp });
   },
 
   /*
@@ -28883,7 +28889,12 @@ var MessageManager = React.createClass({
   chatSwitch: function (userID, email) {
     console.log("manager received userID: " + userID);
     console.log("manager received email: " + email);
-    this.setState({ chatUserID: userID, chatUserEmail: email });
+
+    if (userID === null || email === null) {
+      this.setState({ chatUserID: -1, chatUserEmail: "" });
+    } else {
+      this.setState({ chatUserID: userID, chatUserEmail: email });
+    }
   },
 
   /*
